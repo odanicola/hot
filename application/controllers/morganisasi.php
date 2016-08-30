@@ -448,10 +448,21 @@ class Morganisasi extends CI_Controller {
 
 		$data['title_group']	="Login";
 		$data['title_form']		="Login";
+		$data['bulan']			= array(
+									1	=> "Januari", 
+									2	=> "Februari", 
+									3	=> "Maret", 
+									4	=> "April", 
+									5	=>  "Mei", 
+									6	=> "Juni", 
+									7	=>  "Juli", 
+									8	=> "Agustus", 
+									9	=> "September", 
+									10	=> "Oktober", 
+									11	=> "November", 
+									12	=> "Desember");
 
 		$data['content'] = $this->parser->parse("sik/login",$data,true);
-
-		$BulanIndo = array("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
 
 		$bln = (int) date('m');
 		$thn = date('Y');
