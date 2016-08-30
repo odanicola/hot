@@ -16,12 +16,10 @@
 
 			if($this->obj->session->userdata('username') != ""){
 				
-				//update last active user
 				$update = array('last_active' => time(), 'online' => 1);
 				$user 	= array('username' => $this->obj->session->userdata('username'));
 				$this->obj->db->update('app_users_list', $update, $user);
 
-			//update ofline user
 			$update = array('online' => '0');
 			$user 	= array('last_active < ' => (time()),'online' => 1 );
 			$this->obj->db->update('app_users_list', $update, $user);
@@ -43,8 +41,6 @@
 	        return $code.' - '.$nama;
 	    }
 		function login($type=""){
-			//$this->obj->db-> where('status_active', '1');
-			$this->obj->db-> where('app_users_list.code',$this->obj->input->post('kode'));
 			$this->obj->db-> where('app_users_list.username',$this->obj->input->post('username'));
 			$this->obj->db-> where('password', $this->_prep_password($this->obj->input->post('password')));
 			$this->obj->db-> join('app_users_profile', 'app_users_profile.username=app_users_list.username AND app_users_profile.code=app_users_list.code','right');
@@ -119,15 +115,14 @@
 						'username' 		=> '',
 						'puskesmas'		=> '',
 						'level' 		=> '',
-						'status_active' => '',
-						'status_aproved' => '',
+						'nama' 			=> '',
+						'puskesmas' 	=> '',
 						'logged_in'		=> false
 					);
 					
 			$this->obj->session->unset_userdata($data);
 			
-			foreach ($data as $key => $value)
-			{
+			foreach ($data as $key => $value){
 				$this->$key = $value;
 			}
 		}
@@ -139,8 +134,7 @@
 						'puskesmas'		=> $user->code, 
 						'level'			=> $user->level, 
 						'nama'			=> $user->nama,
-						'status_active'	=> $user->status_active, 
-						'status_aproved'=> $user->status_aproved, 
+						'puskesmas'		=> $user->code, 
 						'logged_in'		=> true
 					);
 					

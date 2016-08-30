@@ -5,7 +5,6 @@
   <tbody><tr>
     <td>
       <form action="<?php echo base_url()?>morganisasi/login" method="POST" id="form_puskesmas">
-      <input type="hidden" name="kode" size="15" value="3172040201">
       <table border="0" cellpadding="0" cellspacing="0" width="80%">
       <tbody><tr>
         <td colspan="2" align="center" height="20">&nbsp;</td>

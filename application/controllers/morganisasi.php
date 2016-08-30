@@ -435,7 +435,6 @@ class Morganisasi extends CI_Controller {
 
 	function login()
 	{
-		$this->form_validation->set_rules('kode', 'Puskesmas', 'trim|required');
 		$this->form_validation->set_rules('username', 'Username', 'trim|required');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 
