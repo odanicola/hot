@@ -221,7 +221,14 @@
 
       $('#signup2').click(function(){
         if($("#nik").val()=="" && $("#bpjs").val()==""){
-          alert("Anda harus mengisi Nomor NIK atau BPJS.");
+          $("#popup_content").html("<div style='text-align:center'><br><br>Anda harus mengisi Nomor NIK atau BPJS.</div>");
+          $("#popup").jqxWindow({
+            theme: theme, resizable: false,
+            width: 300,
+            height: 125,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+          $("#popup").jqxWindow('open');
         }else{
           var nik = $("#nik").val();
           var bpjs = $("#bpjs").val();
@@ -229,7 +236,14 @@
             $("#tbl-register1").hide();
             $("#tbl-register2").show("fade");
           }else{
-            alert("Anda tidak mengisi Nomor NIK atau BPJS dengan benar.");
+            $("#popup_content").html("<div style='text-align:center'><br><br>Anda tidak mengisi Nomor NIK atau BPJS dengan benar.</div>");
+            $("#popup").jqxWindow({
+              theme: theme, resizable: false,
+              width: 300,
+              height: 125,
+              isModal: true, autoOpen: false, modalOpacity: 0.4
+            });
+            $("#popup").jqxWindow('open');
           }
         }
       });
