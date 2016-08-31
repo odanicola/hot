@@ -1,5 +1,5 @@
 <div id="popup" style="display:none;">
-  <div id="popup_title">Login HOT</div><div id="popup_content" style="background:#efefef;color:orange">{popup}</div>
+  <div id="popup_title">Login HOT</div><div id="popup_content">{popup}</div>
 </div>
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" id="tbl-login">
   <form action="<?php echo base_url()?>morganisasi/login" method="POST" id="form_puskesmas">
@@ -194,7 +194,7 @@
       $('#submit').click(function(){
         $(".body-login-table").hide("fade");
 
-        $("#popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url()?>public/themes/login/img/loading.gif' alt='. . . . . . . . .'><br><br>l o a d i n g . . .</div>");
+        $("#popup_content").html("<div style='text-align:center'><br><br><img src='<?php echo base_url()?>public/themes/login/img/loading.gif' alt='. . . . . . . . .'></div>");
         $("#popup").jqxWindow({
           theme: theme, resizable: false,
           width: 300,

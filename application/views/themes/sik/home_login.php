@@ -16,10 +16,20 @@
     <script src="<?php echo base_url()?>plugins/js/jqwidgets/jqxcore.js"></script>
     <script src="<?php echo base_url()?>plugins/js/jqwidgets/jqxwindow.js"></script>
     <script src="<?php echo base_url()?>plugins/js/autocomplete.js"></script>
+    <script type="text/javascript">
+      $(window).load(function () {
+        $("#body-loader").hide();
+        $("#body-main").show('fade');
+      });
+    </script>
   </head>
   <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
   <body class="skin-green layout-top-nav fixed">
-<table class="login-bg" border="0" height="100%" width="100%">
+
+<div id="body-loader" style="width:300px;padding-top:150px;margin:0 auto">
+  <img src='<?php echo base_url()?>public/themes/login/img/loading.gif' alt='. . . . . . . . .' align='center'>
+</div>
+<table id="body-main" class="login-bg" border="0" height="100%" width="100%" style="display:none">
 <tbody><tr><td height="3%">&nbsp;</td></tr>
 <tr><td align="center" >
   <table border="0" cellpadding="0" cellspacing="0" width="100%">

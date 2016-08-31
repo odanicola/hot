@@ -52,9 +52,16 @@
 	 
     <script type="text/javascript">
         var theme = "bootstrap";
+        $(window).load(function () {
+          $("#body-loader").hide();
+          $("#body-main").show('fade');
+        });
     </script>
   </head>
-  <body class="skin-green sidebar-mini wysihtml5-supported ">
+  <div id="body-loader" style="width:300px;padding-top:150px;margin:0 auto">
+    <img src='<?php echo base_url()?>public/themes/login/img/loading.gif' alt='. . . . . . . . .' align='center'>
+  </div>
+  <body id="body-main" class="skin-green sidebar-mini wysihtml5-supported" style="display:none">
 
     <div class="wrapper">
     <div id="top" class="row">
