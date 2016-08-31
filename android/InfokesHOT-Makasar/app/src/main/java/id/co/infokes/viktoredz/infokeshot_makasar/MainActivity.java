@@ -47,7 +47,21 @@ public class MainActivity extends AppCompatActivity
 
         webView = (WebView) findViewById(R.id.webView);
         webView.loadUrl("http://infokes1.aplikasi-puskesmas.com/jaktim/hot/");
-        webView.setWebViewClient(new MainWebViewClient());
+        webView.setWebViewClient(new MainWebViewClient(){
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
+                webView.loadUrl(url);
+                
+                findViewById(R.id.imageLoading1).setVisibility(View.VISIBLE);
+                findViewById(R.id.webView).setVisibility(View.GONE);
+
+                return true;
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                findViewById(R.id.imageLoading1).setVisibility(View.GONE);
+                findViewById(R.id.webView).setVisibility(View.VISIBLE);
+            }
+        });
         webView.getSettings().setJavaScriptEnabled(true);
     }
 
@@ -133,7 +147,25 @@ public class MainActivity extends AppCompatActivity
 
             webView = (WebView) findViewById(R.id.webView);
             webView.loadUrl("http://infokes1.aplikasi-puskesmas.com/jaktim/hot/");
-            webView.setWebViewClient(new MainWebViewClient());
+            webView.setWebViewClient(new MainWebViewClient(){
+                public boolean shouldOverrideUrlLoading(WebView view, String url){
+                    webView.loadUrl(url);
+
+                    findViewById(R.id.imageLoading1).setVisibility(View.VISIBLE);
+                    findViewById(R.id.webView).setVisibility(View.GONE);
+
+                    return true;
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+
+                    findViewById(R.id.imageLoading1).setVisibility(View.GONE);
+                    findViewById(R.id.webView).setVisibility(View.VISIBLE);
+                }
+
+            });
             webView.getSettings().setJavaScriptEnabled(true);
 
         } else if (id == R.id.nav_info) {
