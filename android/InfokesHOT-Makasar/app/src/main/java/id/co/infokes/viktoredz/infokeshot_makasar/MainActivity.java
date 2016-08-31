@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity
         webView.setWebViewClient(new MainWebViewClient(){
             public boolean shouldOverrideUrlLoading(WebView view, String url){
                 webView.loadUrl(url);
-                
+
                 findViewById(R.id.imageLoading1).setVisibility(View.VISIBLE);
                 findViewById(R.id.webView).setVisibility(View.GONE);
 
@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity
             }
             @Override
             public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+
                 findViewById(R.id.imageLoading1).setVisibility(View.GONE);
                 findViewById(R.id.webView).setVisibility(View.VISIBLE);
             }
@@ -118,10 +120,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (id == R.id.action_reload) {
+            webView = (WebView) findViewById(R.id.webView);
+            webView.reload();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
