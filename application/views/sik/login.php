@@ -248,7 +248,75 @@
         }
       });
 
-      
+      $("#nik").keyup(function(){
+        var nik = $("#nik").val();
+        if(nik.length==16){
+          $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/nik/"+nik,function(res){
+              if(res.metaData.code=="200"){
+                if(confirm("Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+". \nJenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+"\nGunakan data?")){
+                  $("#tbl-register1").hide();
+                  $("#tbl-register2").show("fade");
+
+                  $("input[name='nik']").val(nik).change();
+                  $("input[name='bpjs']").val(res.response.noKartu).change();
+                  $("input[name='nama']").val(res.response.nama).change();
+
+                  var tgl = res.response.tglLahir.split("-");
+                  var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
+                  $("#keluarga6_tgl_lahir").jqxDateTimeInput('setDate', date);
+
+                  if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
+                  if(res.response.sex=="P"){
+                    $("select[name='jk']").val("P").change();
+                  }else{
+                    $("select[name='jk']").val("L").change();
+                  }
+                }
+                $("#pass").focus();
+              }
+          },"json");
+        }
+
+        return false;
+      });
+
+      $("#bpjs").keyup(function(){
+        var bpjs = $("#bpjs").val();
+        if(bpjs.length==13){
+          $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/bpjs/"+bpjs,function(res){
+              if(res.metaData.code=="200"){
+                if(confirm("Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+". \nJenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+"\nGunakan data?")){
+                  $("#tbl-register1").hide();
+                  $("#tbl-register2").show("fade");
+
+                  $("input[name='bpjs']").val(bpjs).change();
+                  $("input[name='nik']").val(res.response.noKTP).change();
+                  $("input[name='nama']").val(res.response.nama).change();
+
+                  var tglLhr = res.response.tglLahir.split("-");
+
+                  var tgl   = tglLhr[2];
+                  var bln   = tglLhr[1];
+                  var bulan = bln.substring(1, 2);
+                  var thn   = tglLhr[0];
+
+                  $("select[name='thn']").val(tglLhr[2]).change();
+                  $("select[name='bln']").val(bulan).change();
+                  $("select[name='tgl']").val(tglLhr[0]).change();
+
+                  if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
+                  if(res.response.sex=="P"){
+                    $("select[name='jk']").val("P").change();
+                  }else{
+                    $("select[name='jk']").val("L").change();
+                  }
+                }
+                $("#pass").focus();
+              }
+          },"json");
+        }
+    });
+
   <?php if(validation_errors() !="" || $this->session->flashdata('notification') !=""){ 
     $err_msg = str_replace("\n", "", validation_errors()."<p>".$this->session->flashdata('notification')."</p>");
   ?>
@@ -262,5 +330,5 @@
         $("#popup").jqxWindow('open');
   <?php } ?>
 
-    });
+});
 </script>
