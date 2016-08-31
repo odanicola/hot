@@ -261,9 +261,16 @@
                   $("input[name='bpjs']").val(res.response.noKartu).change();
                   $("input[name='nama']").val(res.response.nama).change();
 
-                  var tgl = res.response.tglLahir.split("-");
-                  var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
-                  $("#keluarga6_tgl_lahir").jqxDateTimeInput('setDate', date);
+                  var tglLhr = res.response.tglLahir.split("-");
+
+                  var tgl   = tglLhr[2];
+                  var bln   = tglLhr[1];
+                  var bulan = bln.substring(1, 2);
+                  var thn   = tglLhr[0];
+
+                  $("select[name='thn']").val(tglLhr[2]).change();
+                  $("select[name='bln']").val(bulan).change();
+                  $("select[name='tgl']").val(tglLhr[0]).change();
 
                   if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
                   if(res.response.sex=="P"){
