@@ -253,7 +253,16 @@
         if(nik.length==16){
           $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/nik/"+nik,function(res){
               if(res.metaData.code=="200"){
-                if(confirm("Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+". \nJenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+"\nGunakan data?")){
+              
+            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+"Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
+              $("#popup").jqxWindow({
+                theme: theme, resizable: false,
+                width: 500,
+                height: 170,
+                isModal: true, autoOpen: false, modalOpacity: 0.4
+              });
+              $("#popup").jqxWindow('open');
+
                   $("#tbl-register1").hide();
                   $("#tbl-register2").show("fade");
 
@@ -278,7 +287,6 @@
                   }else{
                     $("select[name='jk']").val("L").change();
                   }
-                }
                 $("#pass").focus();
               }
           },"json");
@@ -292,7 +300,16 @@
         if(bpjs.length==13){
           $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
-                if(confirm("Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+". \nJenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+"\nGunakan data?")){
+
+            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+"Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
+              $("#popup").jqxWindow({
+                theme: theme, resizable: false,
+                width: 500,
+                height: 170,
+                isModal: true, autoOpen: false, modalOpacity: 0.4
+              });
+              $("#popup").jqxWindow('open');
+
                   $("#tbl-register1").hide();
                   $("#tbl-register2").show("fade");
 
@@ -317,7 +334,6 @@
                   }else{
                     $("select[name='jk']").val("L").change();
                   }
-                }
                 $("#pass").focus();
               }
           },"json");
