@@ -23,11 +23,41 @@ class Admin_menu_model extends CI_Model {
 		return $data;
     }
 
+	function get_data_lv1($id_theme, $id_position)
+	{
+		
+			$this->db->select('app_menus.*,app_files.filename,app_files.module');
+			$this->db->join('app_files','app_files.id=app_menus.file_id');
+			$this->db->where('sub_id',0);
+			$this->db->where('position', $id_position);
+			$this->db->where('app_menus.id_theme', $id_theme);
+			$this->db->where('app_files.lang', $_SESSION['lang']);
+			$this->db->distinct();			
+			$this->db->order_by('sort','asc');
+			$query = $this->db->get($this->tabel);
+			return $query->result_array();
+		
+		
+	}
+	function get_data_lv2($id_theme, $id_position)
+	{
+		$this->db->select('app_menus.*,app_files.filename,app_files.module');
+		$this->db->join('app_files','app_files.id=app_menus.file_id');
+		$this->db->where('sub_id !=',0);
+		$this->db->where('position', $id_position);
+		$this->db->where('app_menus.id_theme', $id_theme);
+		$this->db->where('app_files.lang', $_SESSION['lang']);
+		$this->db->distinct();
+		$this->db->order_by('sort','asc');
+		$query = $this->db->get($this->tabel);
+		return $query->result_array();
+	}
+	
     function get_data($position=1,$sub_id=0)
     {
 		$options['position'] = $position;
 		$options['sub_id'] = $sub_id;
-		$options['lang'] = $this->lang;
+		$options['lang'] = $_SESSION['lang'];
 
 		$this->db->select('app_menus.*,app_files.filename,app_files.module');
 		$this->db->join('app_files','app_files.id=app_menus.file_id');
@@ -64,7 +94,7 @@ class Admin_menu_model extends CI_Model {
 		if(isset($not)) $this->db->where_not_in('id',$not);
  		$this->db->where("id_theme" , $id_theme);
         $query = $this->db->get('app_files');
-
+		$data = array();
         foreach($query->result_array() as $key=>$dt){
 			$data[$dt['id']]=ucfirst($dt['filename']." | ".$dt['module']);
 		}
@@ -102,6 +132,21 @@ class Admin_menu_model extends CI_Model {
 		}
 
     }
+	
+	function update_sort($id, $position, $sort){
+		$data = array(
+			'id' => $id,
+			'position' => $position,
+			'sort' => $sort
+		);
+				
+		$this->db->where('position', $position);
+		$this->db->where('id', $id);		
+		
+		return $this->db->update($this->tabel, $data);
+		
+	}
+	
 
 	function get_last_id($position){
 		$this->db->where('position', $position);
@@ -132,7 +177,11 @@ class Admin_menu_model extends CI_Model {
 		$data['file_id']=$this->input->post('file_id');
 		$data['id']=$this->get_last_id($data['position']);
 		$data['sort']=$this->get_last_sort($data['position'],$data['sub_id']);
-
+		
+		if(!empty($data['sub_id'])){
+			$data['sub_id']=$data['sub_id'];
+		}
+		
         if($this->db->insert($this->tabel, $data)){
 			return $data['position'];
 		}else{
@@ -144,7 +193,12 @@ class Admin_menu_model extends CI_Model {
 	{
 		$this->db->where('position', $position);
 		$this->db->where('id', $id);
-
+		$this->db->delete($this->tabel);
+		
+		$this->db->where('position', $position);
+		$this->db->where('sub_id', $id);
 		return $this->db->delete($this->tabel);
+		
+		
 	}
 }

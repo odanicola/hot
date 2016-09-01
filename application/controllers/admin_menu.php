@@ -4,7 +4,7 @@ class Admin_menu extends CI_Controller {
 
     public function __construct(){
 		parent::__construct();
-		$this->load->model('admin/admin_menu_model');
+		$this->load->model('admin_menu_model');
 	}
 	
 	function index()
