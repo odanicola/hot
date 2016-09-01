@@ -301,7 +301,7 @@
           $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
 
-            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+"Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
+            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+".</br> Tunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
                 width: 500,
