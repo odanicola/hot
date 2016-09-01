@@ -322,6 +322,55 @@ class Morganisasi extends CI_Controller {
 		  return TRUE;
 	  }
 	}
+
+	function daftar(){
+
+        $this->form_validation->set_rules('username','Username', 'trim');
+        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
+        $this->form_validation->set_rules('pass','Password', 'trim');
+        // $this->form_validation->set_rules('pass2','Konfirmasi Password', 'trim|required|min_length[5]|matches[pass]|callback_check_pass2');
+        $this->form_validation->set_rules('nama','Nama', 'trim');
+        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
+        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
+        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
+        $this->form_validation->set_rules('email', 'Email','trim');
+        $this->form_validation->set_rules('alamat', 'Alamat','trim');
+        $this->form_validation->set_rules('code','Puskesmas','trim');
+
+	    $data['action']				    = "add";
+		$data['alert_form'] 		    = '';
+		$data['bulan']			= array(
+									1	=> "Januari", 
+									2	=> "Februari", 
+									3	=> "Maret", 
+									4	=> "April", 
+									5	=>  "Mei", 
+									6	=> "Juni", 
+									7	=>  "Juli", 
+									8	=> "Agustus", 
+									9	=> "September", 
+									10	=> "Oktober", 
+									11	=> "November", 
+									12	=> "Desember");
+
+		$data['datapuskesmas']  = $this->morganisasi_model->get_datawhere("317204","code","cl_phc");
+		$bln = (int) date('m');
+		$thn = date('Y');
+
+		if($this->form_validation->run()== FALSE){
+			die($this->parser->parse("sik/login",$data));
+		}elseif($res = $this->morganisasi_model->daftar()){
+			if ($res == 'false') {
+				die("NOTOK");
+			}else{
+				die("OK");
+			}
+		}else{
+			$data['alert_form'] = 'Save data failed...';
+		}
+
+		die($this->parser->parse("sik/login",$data));
+	}
 	
 
 	function login()

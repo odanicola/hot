@@ -1,6 +1,9 @@
 <div id="popup" style="display:none;">
   <div id="popup_title">Login HOT</div><div id="popup_content">{popup}</div>
 </div>
+<div id="popup_daftar" style="display:none;">
+  <div id="popup_title_Daftar">Infokes-HOT</div><div id="popup_content_daftar">{popup}</div>
+</div>
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" id="tbl-login">
   <form action="<?php echo base_url()?>morganisasi/login" method="POST" id="form_puskesmas">
   <tbody><tr>
@@ -161,6 +164,10 @@
         <td class="textfield-bg"><input placeholder=" Nomot Telepon" name="phone_number" size="20" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
+        <td class="username-bg">Email</td>
+        <td class="textfield-bg"><input placeholder=" Email" name="email" size="20" class="input" autocomplete="off" type="text"></td>
+      </tr>
+      <tr>
         <td class="username-bg">Alamat</td>
         <td class="textfield-bg"><input placeholder=" Alamat" name="alamat" size="20" class="input" autocomplete="off" type="text"></td>
       </tr>
@@ -169,8 +176,8 @@
         <td class="textfield-bg">
           <select name="puskesmas" id="puskesmas" class="input">
               <?php foreach ($datapuskesmas as $pus ) { ;?>
-              <?php $select = $pus->code == $puskesmas  ? 'selected' : '' ?>
-                <option value="<?php echo $pus->code; ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
+              <?php $select = $pus->code ? 'selected=selected' : '' ?>
+                <option value="<?php echo $pus->code;$pus->value; ?>,<?php echo $pus->value ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
               <?php } ;?>
           </select>
       </tr>     
@@ -189,8 +196,6 @@
   </tr>
   </tbody>
 </table>
-
-
 <script>
     $(document).ready(function(){
       var theme = "bootstrap";
@@ -251,6 +256,72 @@
           }
         }
       });
+
+        $("#signup3").click(function(){
+            var data = new FormData();
+            $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+            $('#biodata_notice').show();
+
+            var tgl   = $("[name='tgl']").val();
+            var bln   = $("[name='bln']").val();
+            var thn   = $("[name='thn']").val();
+            var tgl_lahir = tgl+"-"+bln+"-"+thn;
+
+            var puskesmas = $("[name='puskesmas']").val();
+            var fields  = puskesmas.split(",");
+            var kode    = fields[0];
+            var namapus = fields[1];
+
+            var kodepus = kode.substring(11, 1);
+
+            data.append('username',               $("[name='nik']").val());
+            data.append('bpjs',                   $("[name='bpjs']").val());
+            data.append('pass',                   $("#pass").val());
+            // data.append('pass2',                  $("#pass2").val());
+            data.append('nama',                   namapus);
+            data.append('jk',                     $("[name='jk']").val());
+            data.append('tgl_lahir',              tgl_lahir);
+            data.append('phone_number',           $("[name='phone_number']").val());
+            data.append('email',                  $("[name='email']").val());
+            data.append('alamat',                 $("[name='alamat']").val());
+            data.append('code',                   kodepus);
+
+            $.ajax({
+                cache : false,
+                contentType : false,
+                processData : false,
+                type : 'POST',
+                url : '<?php echo base_url()."morganisasi/daftar" ?>',
+                data : data,
+                success : function(response){
+                  if(response=="OK"){
+                    $("#popup_content_daftar").html("<div style='text-align:center'><br>Data berhasil disimpan.</div>");
+                      $("#popup_daftar").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 100,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                      $("#popup_daftar").jqxWindow('open');
+
+                  }else if(response=="NOTOK"){
+                    $("#popup_content_daftar").html("<div style='text-align:center'><br>Data sudah pernah disimpan.</div>");
+                      $("#popup_daftar").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 100,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                      $("#popup_daftar").jqxWindow('open');
+                  }
+                }
+            });
+
+            return false;
+        });
+
+
+
 
       $("#nik").keyup(function(){
         var nik = $("#nik").val();

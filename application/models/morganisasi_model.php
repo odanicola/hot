@@ -126,6 +126,43 @@ class Morganisasi_model extends CI_Model {
 		return $query->num_rows();
 	}
 
+	function daftar(){
+
+        $data_list['username']           = $this->input->post('username');
+        $data_list['code']               = $this->input->post('code');
+        $data_list['level']				 = "member";
+        $data_list['password']			 = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
+        $data_list['status_active']		 = 1;
+        $data_list['status_aproved']	 = 0;
+        $data_list['online']			 = 0;
+        $data_list['last_login']		 = 0;
+        $data_list['last_active']		 = 0;
+        $data_list['datereg']			 = time();	
+
+        $data_profile['username']        = $this->input->post('username');
+        $data_profile['nama']            = $this->input->post('nama');
+        $data_profile['code']            = $this->input->post('code');
+        $data_profile['phone_number'] 	 = $this->input->post('phone_number');
+        $data_profile['email']           = $this->input->post('email');
+        $data_profile['bpjs'] 			 = $this->input->post('bpjs');
+        $data_profile['jk'] 			 = $this->input->post('jk');
+        $data_profile['tgl_lahir'] 		 = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
+        $data_profile['alamat'] 		 = $this->input->post('alamat');
+
+
+        $this->db->where('username',$this->input->post('username'));
+        $query = $this->db->get('app_users_list');
+
+        if ($query->num_rows() > 0) {
+            return 'false';
+        }else{
+        	$this->db->insert('app_users_list', $data_list);
+        	$this->db->insert('app_users_profile', $data_profile);
+                return 'true';  
+        }
+        
+    }
+
     function insert_entry(){
 		
         $data['username']=$this->input->post('username');
