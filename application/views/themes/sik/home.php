@@ -134,16 +134,11 @@
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-          <h1>
-            {title_group}
-            <small>{title_form}</small>
-          </h1>
           <ol class="breadcrumb">
             <li><a href="<?php echo base_url()?>"><i class="fa fa-dashboard"></i> {title_group}</a></li>
             <li class="active">{title_form}</li>
           </ol>
         </section>
-
         <section class="content">
           {content}
         </section><!-- /.content -->

@@ -498,7 +498,7 @@ a:focus {
   background: transparent;
   margin-top: 0px;
   margin-bottom: 0;
-  font-size: 12px;
+  font-size: 14px;
   padding: 7px 5px;
   position: absolute;
   top: 15px;
@@ -518,7 +518,12 @@ a:focus {
 .content-header > .breadcrumb > li + li:before {
   content: '>\00a0';
 }
-@media (max-width: 991px) {
+@media (max-width: 330px) {
+  .content-header > .breadcrumb {
+    display: none;
+  }
+}
+@media (max-width: 1370px) {
   .content-header > .breadcrumb {
     position: relative;
     margin-top: 5px;
@@ -2128,12 +2133,12 @@ a:focus {
  */
 .info-box {
   display: block;
-  min-height: 90px;
+  min-height: 75px;
   background: #fff;
   width: 100%;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   border-radius: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 .info-box small {
   font-size: 14px;
@@ -2157,15 +2162,18 @@ a:focus {
   border-bottom-left-radius: 2px;
   display: block;
   float: left;
-  height: 90px;
-  width: 90px;
+  height: 75px;
+  width: 75px;
   text-align: center;
   font-size: 45px;
-  line-height: 90px;
+  line-height: 75px;
   background: rgba(0, 0, 0, 0.2);
 }
+.info-box-icon a {
+  color: white;
+}
 .info-box-content {
-  padding: 5px 10px;
+  padding: 15px 10px;
   margin-left: 90px;
 }
 .info-box-number {
@@ -2180,6 +2188,9 @@ a:focus {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.info-box-text a {
+  color: #111111;
 }
 .info-box-text {
   text-transform: uppercase;
