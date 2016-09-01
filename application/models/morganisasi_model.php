@@ -8,6 +8,12 @@ class Morganisasi_model extends CI_Model {
         parent::__construct();
     }
 
+    function get_datawhere ($code,$condition,$table){
+        $this->db->select("*");
+        $this->db->like($condition,$code);
+        return $this->db->get($table)->result();
+    }
+
     function get_data_kelurahan(){
     	$kode_kecamatan = substr($this->session->userdata('puskesmas'),0,7);
 		$query = $this->db->like('code',$kode_kecamatan);

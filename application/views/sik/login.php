@@ -166,9 +166,13 @@
       </tr>
       <tr>
         <td class="username-bg">Puskesmas</td>
-        <td class="textfield-bg"><select class="input">
-          <option value="L">Kec. Makasar</option>
-        </select></td>
+        <td class="textfield-bg">
+          <select name="puskesmas" id="puskesmas" class="input">
+              <?php foreach ($datapuskesmas as $pus ) { ;?>
+              <?php $select = $pus->code == $puskesmas  ? 'selected' : '' ?>
+                <option value="<?php echo $pus->code; ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
+              <?php } ;?>
+          </select>
       </tr>     
       <tr><td colspan="2" height="10"></td></tr>
       <tr>

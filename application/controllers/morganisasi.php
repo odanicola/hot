@@ -446,6 +446,7 @@ class Morganisasi extends CI_Controller {
 			}
 		}
 
+		$data['datapuskesmas']  = $this->morganisasi_model->get_datawhere("317204","code","cl_phc");
 		$data['title_group']	="Login";
 		$data['title_form']		="Login";
 		$data['bulan']			= array(
