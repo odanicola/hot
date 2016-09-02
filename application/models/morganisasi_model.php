@@ -130,7 +130,7 @@ class Morganisasi_model extends CI_Model {
 
         $data_list['username']           = $this->input->post('username');
         $data_list['code']               = $this->input->post('code');
-        $data_list['level']				 = "member";
+        $data_list['level']				 = "pasien";
         $data_list['password']			 = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
         $data_list['status_active']		 = 1;
         $data_list['status_aproved']	 = 0;
@@ -149,7 +149,6 @@ class Morganisasi_model extends CI_Model {
         $data_profile['tgl_lahir'] 		 = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
         $data_profile['alamat'] 		 = $this->input->post('alamat');
 
-
         $this->db->where('username',$this->input->post('username'));
         $query = $this->db->get('app_users_list');
 
@@ -160,7 +159,6 @@ class Morganisasi_model extends CI_Model {
         	$this->db->insert('app_users_profile', $data_profile);
                 return 'true';  
         }
-        
     }
 
     function insert_entry(){

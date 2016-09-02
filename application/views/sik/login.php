@@ -196,6 +196,23 @@
   </tr>
   </tbody>
 </table>
+
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" id="tbl-success" style="display:none">
+  <tbody><tr>
+    <td>
+      <table border="0" cellpadding="0" cellspacing="0" width="80%">
+      <tbody><tr>
+        <td colspan="2" align="center" height="20">&nbsp;</td>
+      </tr>
+
+      <h2 align="center">Selamat anda telah terdaftar.</h2>
+
+      </tbody></table>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
 <script>
     $(document).ready(function(){
       var theme = "bootstrap";
@@ -304,6 +321,9 @@
                       });
                       $("#popup_daftar").jqxWindow('open');
 
+                      $("#tbl-register2").hide();
+                      $("#tbl-success").show("fade");
+
                   }else if(response=="NOTOK"){
                     $("#popup_content_daftar").html("<div style='text-align:center'><br>Data sudah pernah disimpan.</div>");
                       $("#popup_daftar").jqxWindow({
@@ -319,9 +339,6 @@
 
             return false;
         });
-
-
-
 
       $("#nik").keyup(function(){
         var nik = $("#nik").val();
