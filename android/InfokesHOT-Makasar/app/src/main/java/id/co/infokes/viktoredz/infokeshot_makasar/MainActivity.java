@@ -31,6 +31,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.activity_info,
+                (ViewGroup) findViewById(R.id.custom_toast_container));
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

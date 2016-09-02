@@ -4,20 +4,22 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="0dp"
-    android:background="#FFFFFF">
+    android:background="#FEFEFE">
 
     <ImageView android:src="@drawable/infokes"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:padding="20dp"
+        android:padding="10dp"
+        android:layout_marginTop="50dp"
         />
 
     <TextView android:id="@+id/text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="50dp"
         android:textColor="#000000"
         android:textAlignment="center"
-        android:text="@string/app_name"
+        android:text="HOT  v 1.0\nHypertension Online Treatment"
         android:padding="@dimen/nav_header_vertical_spacing"
         android:layout_gravity="center_vertical" />
 

@@ -294,8 +294,7 @@
             data.append('username',               $("[name='nik']").val());
             data.append('bpjs',                   $("[name='bpjs']").val());
             data.append('pass',                   $("#pass").val());
-            // data.append('pass2',                  $("#pass2").val());
-            data.append('nama',                   namapus);
+            data.append('nama',                   $("[name='nama']").val());
             data.append('jk',                     $("[name='jk']").val());
             data.append('tgl_lahir',              tgl_lahir);
             data.append('phone_number',           $("[name='phone_number']").val());

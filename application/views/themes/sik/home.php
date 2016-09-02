@@ -85,7 +85,7 @@
         <nav class="navbar" role="navigation">
           <!-- Sidebar toggle button-->
           <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only"></span> <b>Menu</b>
+            <span class="sr-only"></span> &nbsp; <b>MENU</b>
           </a>
 
 
@@ -94,7 +94,7 @@
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <i class="fa fa-user"></i>
-                  <span><?php echo ucwords($this->session-> userdata('username'));?></span>
+                  <span><?php echo ucwords($this->session-> userdata('nama'));?></span>
                 </a>
                 <ul class="dropdown-menu">
                   {login}
@@ -116,7 +116,7 @@
             </a>
             <a href="<?php echo base_url()."morganisasi/profile" ?>" class="sidebar-link">
               <i class="fa fa-user"></i>
-              <span><?php echo ucwords($this->session-> userdata('username'));?></span>
+              <span><?php echo ucwords($this->session-> userdata('nama'));?></span>
             </a>
           </div>
         </nav>
