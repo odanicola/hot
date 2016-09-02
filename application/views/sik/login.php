@@ -326,10 +326,10 @@
       $("#nik").keyup(function(){
         var nik = $("#nik").val();
         if(nik.length==16){
-          $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/nik/"+nik,function(res){
+          $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+nik,function(res){
               if(res.metaData.code=="200"){
               
-            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+"Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+". \nTunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
+            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
                 width: 500,
@@ -373,10 +373,10 @@
       $("#bpjs").keyup(function(){
         var bpjs = $("#bpjs").val();
         if(bpjs.length==13){
-          $.get("<?php echo base_url()?>eform/data_kepala_keluarga/bpjs_search/bpjs/"+bpjs,function(res){
+          $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
 
-            $("#popup_content").html("<div style='text-align:center'><br><br>Anggota keluarga terdaftar sebagai peserta BPJS "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+", Status "+res.response.ketAktif+".</br> Tunggakan sebesar Rp. "+res.response.tunggakan+".</div>");
+            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
                 width: 500,
