@@ -195,6 +195,46 @@
                       ?>"/>
             </div>
             <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-home" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Alamat" name="alamat" value="<?php 
+                      if(set_value('alamat')=="" && isset($alamat)){
+                        echo $alamat;
+                      }else{
+                        echo  set_value('alamat');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-venus-mars" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Jenis Kelamin" name="jk" value="<?php 
+                      if(set_value('jk')=="" && isset($jk)){
+                        echo $jk;
+                      }else{
+                        echo  set_value('jk');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-calendar" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
+                      if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
+                        echo $tgl_lahir;
+                      }else{
+                        echo  set_value('tgl_lahir');
+                      }
+                      ?>"/>
+            </div>
+
+            <br>
             <div class="row">
             </div>
         </div>
