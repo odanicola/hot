@@ -1,11 +1,3 @@
-<?php if($this->session->flashdata('alert')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-	<?php echo $this->session->flashdata('alert')?>
-</div>
-<?php } ?>
-
 <section class="content">
 <form action="<?php echo base_url()?>mst/agama/dodel_multi" method="POST" name="">
   <div class="row">
@@ -16,11 +8,30 @@
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
 	    </div>
-
 	      <div class="box-footer">
 		 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>hot/add_pasien'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
-	     </div>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control">
+			  			<option>-</option>
+			  			<option>L</option>
+			  			<option>P</option>
+			  		</select>
+			  </div>
+			</div>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">BPJS</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control">
+			  			<option>-</option>
+			  			<option>Peserta</option>
+			  			<option>Bukan Peserta</option>
+			  		</select>
+			  </div>
+			</div>
+	    </div>
         <div class="box-body">
 		    <div class="div-grid">
 		        <div id="jqxgrid"></div>
@@ -80,7 +91,7 @@
 
 		$("#jqxgrid").jqxGrid(
 		{		
-			width: '100%',
+			width: '100%', autoheight: true,autorowheight: true,
 			selectionmode: 'singlerow',
 			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
 			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
@@ -89,30 +100,16 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
+				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.kode+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
+					return "<div style='width:100%;padding:7px;' onclick='edit(\""+dataRecord.kode+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
-				{ text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
+				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.delete==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.kode+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
+					return "<div style='width:100%;padding:7px;' onclick='edit(\""+dataRecord.kode+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
-                },
-				{ text: 'Nama', datafield: 'nama', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
-				{ text: 'Usia', datafield: 'usia', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
-				{ text: 'Jenis Kelamin', datafield: 'jk', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
-				{ text: 'Telepon', datafield: 'phone_number', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
-				{ text: 'BPJS', datafield: 'bpjs', columntype: 'textbox', filtertype: 'textbox', width: '20%' }
-            
+                }            
             ]
 		});
 

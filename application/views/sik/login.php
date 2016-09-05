@@ -273,12 +273,14 @@
       });
 
       $('#signup2').click(function(){
+        var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
+
         if($("#nik").val()=="" && $("#bpjs").val()==""){
-          $("#popup_content").html("<div style='text-align:center'><br><br>Anda harus mengisi Nomor NIK atau BPJS.</div>");
+          $("#popup_content").html("<div style='text-align:center'><br><br>Anda harus mengisi Nomor NIK atau BPJS."+btn+"</div>");
           $("#popup").jqxWindow({
             theme: theme, resizable: false,
-            width: 300,
-            height: 125,
+            width: 320,
+            height: 180,
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
           $("#popup").jqxWindow('open');
@@ -289,11 +291,11 @@
             $("#tbl-register1").hide();
             $("#tbl-register2").show("fade");
           }else{
-            $("#popup_content").html("<div style='text-align:center'><br><br>Anda tidak mengisi Nomor NIK atau BPJS dengan benar.</div>");
+            $("#popup_content").html("<div style='text-align:center'><br><br>Anda tidak mengisi Nomor NIK atau BPJS dengan benar."+btn+"</div>");
             $("#popup").jqxWindow({
               theme: theme, resizable: false,
-              width: 300,
-              height: 125,
+              width: 320,
+              height: 180,
               isModal: true, autoOpen: false, modalOpacity: 0.4
             });
             $("#popup").jqxWindow('open');
@@ -378,11 +380,11 @@
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+nik,function(res){
               if(res.metaData.code=="200"){
               
-            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div>");
+            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
                 width: 320,
-                height: 220,
+                height: 210,
                 isModal: true, autoOpen: false, modalOpacity: 0.4
               });
               $("#popup").jqxWindow('open');
@@ -425,11 +427,11 @@
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
 
-            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div>");
+            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
-                width: 500,
-                height: 170,
+                width: 320,
+                height: 210,
                 isModal: true, autoOpen: false, modalOpacity: 0.4
               });
               $("#popup").jqxWindow('open');
