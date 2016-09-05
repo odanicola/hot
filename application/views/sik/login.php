@@ -1,8 +1,8 @@
 <div id="popup" style="display:none;">
-  <div id="popup_title">Login HOT</div><div id="popup_content">{popup}</div>
+  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <div id="popup_daftar" style="display:none;">
-  <div id="popup_title_Daftar">Infokes-HOT</div><div id="popup_content_daftar">{popup}</div>
+  <div id="popup_title_Daftar">Hypertension Online Treatment</div><div id="popup_content_daftar">{popup}</div>
 </div>
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" id="tbl-login">
   <form action="<?php echo base_url()?>morganisasi/login" method="POST" id="form_puskesmas">
@@ -121,7 +121,7 @@
       </tr>
       <tr><td colspan="2" height="10"></td></tr>
       <tr>
-        <td class="username-bg">Nama</td>
+        <td class="username-bg">Nama *</td>
         <td class="textfield-bg"><input placeholder=" Nama Lengkap" name="nama" size="20" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
@@ -160,8 +160,8 @@
         </td>
       </tr>
       <tr>
-        <td class="username-bg">No Telepon</td>
-        <td class="textfield-bg"><input placeholder=" Nomot Telepon" name="phone_number" size="20" class="input" autocomplete="off" type="text"></td>
+        <td class="username-bg">No Telepon *</td>
+        <td class="textfield-bg"><input placeholder=" Nomor Telepon" name="phone_number" size="20" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
         <td class="username-bg">Email</td>
@@ -204,9 +204,23 @@
       <tbody><tr>
         <td colspan="2" align="center" height="20">&nbsp;</td>
       </tr>
-
-      <h2 align="center">Selamat anda telah terdaftar.</h2>
-
+      <tr>
+        <td colspan="2" align="center"><img src="<?php echo base_url()?>public/themes/sik/dist/img/epuskesmas2.png">
+        </td>
+      </tr>      
+      <tr>
+        <td colspan="2" style="font-family:Calibri;font-size:16pt;color:#FFFFFF;font-style:italic;text-shadow:1px 1px 1px #000;padding:0 0 20px 0px;" align="center" height="30">HYPERTENSION ONLINE TREATMENT</td>
+      </tr>
+      <tr><td colspan="2" height="10"></td></tr>
+      <tr><td colspan="2" height="10"></td></tr>
+      <tr>
+        <td align="center" height="20" class="username-bg">Terimakasih, anda berhasil terdaftar.</td>
+      </tr>
+      <tr><td colspan="2" height="10"></td></tr>
+      <tr>
+        <td colspan="2" align="right"><input value="Login" class="btn-green" id="login2" type="button"></td>
+      </tr>
+      <tr><td colspan="2" height="20">&nbsp;</td></tr>
       </tbody></table>
     </td>
   </tr>
@@ -214,13 +228,21 @@
 </table>
 
 <script>
+    function close_popup(){
+        $("#popup").jqxWindow('close');
+    }
+
+    function close_popup_daftar(){
+        $("#popup_daftar").jqxWindow('close');
+    }
+
     $(document).ready(function(){
       var theme = "bootstrap";
 
       $('#submit').click(function(){
         $(".body-login-table").hide("fade");
 
-        $("#popup_content").html("<div style='text-align:center'><br><br><img src='<?php echo base_url()?>public/themes/login/img/loading.gif' alt='. . . . . . . . .'></div>");
+        $("#popup_content").html("<div style='text-align:center'><br><br>. . . . . . . .</div>");
         $("#popup").jqxWindow({
           theme: theme, resizable: false,
           width: 300,
@@ -242,6 +264,11 @@
 
       $('#batal').click(function(){
         $("#tbl-register2").hide();
+        $("#tbl-login").show("fade");
+      });
+
+      $('#login2').click(function(){
+        $("#tbl-success").hide();
         $("#tbl-login").show("fade");
       });
 
@@ -290,6 +317,7 @@
             var namapus = fields[1];
 
             var kodepus = kode.substring(11, 1);
+            var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
 
             data.append('username',               $("[name='nik']").val());
             data.append('bpjs',                   $("[name='bpjs']").val());
@@ -302,39 +330,44 @@
             data.append('alamat',                 $("[name='alamat']").val());
             data.append('code',                   kodepus);
 
-            $.ajax({
-                cache : false,
-                contentType : false,
-                processData : false,
-                type : 'POST',
-                url : '<?php echo base_url()."morganisasi/daftar" ?>',
-                data : data,
-                success : function(response){
-                  if(response=="OK"){
-                    $("#popup_content_daftar").html("<div style='text-align:center'><br>Data berhasil disimpan.</div>");
-                      $("#popup_daftar").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 100,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
-                      $("#popup_daftar").jqxWindow('open');
-
-                      $("#tbl-register2").hide();
-                      $("#tbl-success").show("fade");
-
-                  }else if(response=="NOTOK"){
-                    $("#popup_content_daftar").html("<div style='text-align:center'><br>Data sudah pernah disimpan.</div>");
-                      $("#popup_daftar").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 100,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
-                      $("#popup_daftar").jqxWindow('open');
-                  }
-                }
+            $("#popup_daftar").jqxWindow({
+              theme: theme, resizable: false,
+              width: 300,
+              height: 180,
+              isModal: true, autoOpen: false, modalOpacity: 0.4
             });
+
+            if($("#pass").val() == "" || $("#pass2").val()==""){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi password dengan benar."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if($("#pass").val() != $("#pass2").val()){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Password tidak sama."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if($("[name='nama']").val() == ""){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nama."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if($("[name='phone_number']").val()==""){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nomor telepon."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else{
+                $.ajax({
+                    cache : false,
+                    contentType : false,
+                    processData : false,
+                    type : 'POST',
+                    url : '<?php echo base_url()."morganisasi/daftar" ?>',
+                    data : data,
+                    success : function(response){
+                      if(response=="OK"){
+                          $("#tbl-register2").hide();
+                          $("#tbl-success").show("fade");
+                      }else if(response=="NOTOK"){
+                        $("#popup_content_daftar").html("<div style='text-align:center'><br>NIK atau BPJS sudah terdaftar.</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'></div>");
+                          $("#popup_daftar").jqxWindow('open');
+                      }
+                    }
+                });
+            }
 
             return false;
         });
@@ -345,11 +378,11 @@
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+nik,function(res){
               if(res.metaData.code=="200"){
               
-            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</div>");
+            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
-                width: 500,
-                height: 170,
+                width: 320,
+                height: 220,
                 isModal: true, autoOpen: false, modalOpacity: 0.4
               });
               $("#popup").jqxWindow('open');
@@ -392,7 +425,7 @@
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
 
-            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</div>");
+            $("#popup_content").html("<div style='padding:5px'><br><br>Anda terdaftar sebagai peserta BPJS di "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div>");
               $("#popup").jqxWindow({
                 theme: theme, resizable: false,
                 width: 500,
@@ -430,6 +463,7 @@
           },"json");
         }
     });
+
 
   <?php if(validation_errors() !="" || $this->session->flashdata('notification') !=""){ 
     $err_msg = str_replace("\n", "", validation_errors()."<p>".$this->session->flashdata('notification')."</p>");

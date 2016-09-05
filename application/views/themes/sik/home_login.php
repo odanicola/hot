@@ -7,6 +7,7 @@
     <link rel="icon" href="<?php echo base_url()?>public/themes/login/img/favicon.ico">
     <style type="text/css">
       /* <![CDATA[ */    
+        @import url(<?php echo base_url()?>public/themes/sik/bootstrap/css/bootstrap.min.css);
         @import url(<?php echo base_url()?>public/themes/login/css/style.css);
         @import url(<?php echo base_url()?>plugins/js/jqwidgets/styles/jqx.base.css);
         @import url(<?php echo base_url()?>plugins/js/jqwidgets/styles/jqx.orange.css);

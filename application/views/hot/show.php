@@ -5,7 +5,7 @@
       <span class="info-box-icon bg-yellow"><a href="<?php echo base_url()?>morganisasi/profile"><i class="fa fa-user"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>morganisasi/profile">Profil</a></span>
-        <span class="info-box-number" style="font-size:14px;"><?php echo ucwords($this->session-> userdata('username'));?></span>
+        <span class="info-box-number" style="font-size:14px;"><?php echo ucwords($this->session-> userdata('nama'));?></span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
