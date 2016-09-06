@@ -1,3 +1,9 @@
+<div id="popup" style="display:none;">
+  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
+</div>
+<div id="popup_del" style="display:none;">
+  <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
+</div>
 <section class="content">
 <form action="<?php echo base_url()?>mst/agama/dodel_multi" method="POST" name="">
   <div class="row">
@@ -14,20 +20,30 @@
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
 			  <div class="col-xs-6">
-			  		<select class="form-control">
+			  		<select class="form-control" id="jenis_kelamin">
 			  			<option>-</option>
-			  			<option>L</option>
-			  			<option>P</option>
+			  			<option value="L">L</option>
+			  			<option value="P">P</option>
 			  		</select>
 			  </div>
 			</div>
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">BPJS</div>
 			  <div class="col-xs-6">
-			  		<select class="form-control">
+			  		<select class="form-control" id="jenis_bpjs">
 			  			<option>-</option>
-			  			<option>Peserta</option>
-			  			<option>Bukan Peserta</option>
+			  			<option value="01">Peserta</option>
+			  			<option value="02">Bukan Peserta</option>
+			  		</select>
+			  </div>
+			</div>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Urutan</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control" id="urutan_usia">
+			  			<option>-</option>
+			  			<option value="01">Usia Termuda</option>
+			  			<option value="02">Usia Tertua</option>
 			  		</select>
 			  </div>
 			</div>
@@ -53,6 +69,7 @@
 			datatype: "json",
 			type	: "POST",
 			datafields: [
+			{ name: 'username', type: 'string'},
 			{ name: 'jk', type: 'string'},
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
@@ -61,7 +78,7 @@
 			{ name: 'edit', type: 'number'},
 			{ name: 'delete', type: 'number'}
         ],
-		url: "<?php echo site_url('hot/json_pasien'); ?>",
+		url: "<?php echo site_url('hot/pasien/json'); ?>",
 		cache: false,
 		updaterow: function (rowid, rowdata, commit) {
 			},
@@ -102,29 +119,80 @@
 			columns: [
 				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='edit(\""+dataRecord.kode+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
 				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='edit(\""+dataRecord.kode+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
 		});
 
-	function edit(id){
-		document.location.href="<?php echo base_url().'mst/agama/edit';?>/" + id;
+	function aksi(id){
+        $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+id,function(res){
+
+        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+res.response.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+id+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del()'></div></div>");
+          $("#popup").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+          $("#popup").jqxWindow('open');
+        },"json");
+
 	}
 
-	function del(id){
-		var confirms = confirm("Hapus Data ?");
-		if(confirms == true){
-			$.post("<?php echo base_url().'hot/dodel_pasien' ?>/" + id,  function(){
-				alert('data berhasil dihapus');
-
-				$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-			});
-		}
+	function btn_edit(id){
+      	document.location.href="<?php echo base_url()?>hot/pasien/edit/" + id;
 	}
+
+	function btn_del(id){
+		$("#popup").hide();
+
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='del_pasien()'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Cancel' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 120,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+          $("#popup_del").jqxWindow('open');
+	}
+
+	function del_pasien (argument) {
+		document.location.href="<?php echo base_url().'hot/del_pasien';?>/" + id;
+	}
+
+	function close_popup(){
+        $("#popup").jqxWindow('close');
+    }
+
+    function close_popup_del(){
+        $("#popup").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
+    }
+
+	$("#jenis_bpjs").change(function(){
+		$.post("<?php echo base_url().'hot/pasien/filter_jenis_bpjs' ?>", 'jenis_bpjs='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#jenis_kelamin").change(function(){
+		$.post("<?php echo base_url().'hot/pasien/filter_jenis_kelamin' ?>", 'jenis_kelamin='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#urutan_usia").change(function(){
+		$.post("<?php echo base_url().'hot/pasien/filter_urutan_usia' ?>", 'urutan_usia='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    
+
 </script>
