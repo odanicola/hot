@@ -11,9 +11,9 @@
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>kunjungan"><i class="fa fa-th-list"></i></a></span>
+      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>hot/kunjungan"><i class="fa fa-th-list"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>kunjungan">Data</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/kunjungan">Data</a></span>
         <span class="info-box-number" style="font-size:14px;">Kunjungan</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
@@ -24,18 +24,18 @@
 
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>pasein/resume"><i class="fa fa-list-alt"></i></a></span>
+      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>hot/pasein/resume"><i class="fa fa-list-alt"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>pasein/resume">Resume</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/pasein/resume">Resume</a></span>
         <span class="info-box-number" style="font-size:14px;">Pribadi</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-red"><a href="<?php echo base_url()?>pasein/jadwal"><i class="fa fa-calendar"></i></a></span>
+      <span class="info-box-icon bg-red"><a href="<?php echo base_url()?>hot/pasein/jadwal"><i class="fa fa-calendar"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>pasein/jadwal">Jadwal</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/pasein/jadwal">Jadwal</a></span>
         <span class="info-box-number" style="font-size:14px;">Kunjungan</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->

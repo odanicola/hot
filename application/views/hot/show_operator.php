@@ -2,36 +2,36 @@
 <div class="row">
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>kunjungan"><i class="fa fa-list-ol"></i></a></span>
+      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>hot/kunjungan"><i class="fa fa-list-ol"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>kunjungan">Kunjungan</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/kunjungan">Kunjungan</a></span>
         <span class="info-box-number" style="font-size:14px;">2 Antrian</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-yellow"><a href="<?php echo base_url()?>pasien"><i class="fa fa-user"></i></a></span>
+      <span class="info-box-icon bg-yellow"><a href="<?php echo base_url()?>hot/pasien"><i class="fa fa-user"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>pasien">Data Pasien</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/pasien">Data Pasien</a></span>
         <span class="info-box-number" style="font-size:14px;">212 Orang</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-purple"><a href="<?php echo base_url()?>dokter"><i class="fa fa-user-md"></i></a></span>
+      <span class="info-box-icon bg-purple"><a href="<?php echo base_url()?>hot/dokter"><i class="fa fa-user-md"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>dokter">Data Dokter</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/dokter">Data Dokter</a></span>
         <span class="info-box-number" style="font-size:14px;">1 Orang</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-red"><a href="<?php echo base_url()?>guideline"><i class="fa fa-sitemap"></i></a></span>
+      <span class="info-box-icon bg-red"><a href="<?php echo base_url()?>hot/guideline"><i class="fa fa-sitemap"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>guideline">Guideline</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/guideline">Guideline</a></span>
         <span class="info-box-number" style="font-size:14px;">Panduan JNC 8</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
@@ -40,7 +40,7 @@
     <div class="info-box">
       <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>sync"><i class="fa fa-refresh"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>sync">Sinkronisasi</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/sync">Sinkronisasi</a></span>
         <span class="info-box-number" style="font-size:14px;">PCare</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
