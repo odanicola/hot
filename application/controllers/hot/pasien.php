@@ -164,7 +164,7 @@ class Pasien extends CI_Controller {
 	}
 
 	function index(){
-		$this->authentication->verify('mst','edit');
+		$this->authentication->verify('mst','show');
 		$data['title_group'] = "Dashboard";
 		$data['title_form']  = "Data Pasien";
 
@@ -180,7 +180,7 @@ class Pasien extends CI_Controller {
 	function add(){
 		$this->authentication->verify('mst','add');
 
-        $this->form_validation->set_rules('username','Username', 'trim');
+        $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
         $this->form_validation->set_rules('pass','Password', 'trim');
         $this->form_validation->set_rules('nama','Nama', 'trim');
@@ -192,30 +192,25 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('code','Puskesmas','trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Tambah Data Pasien";
-			$data['action']		    = "add";
+			$data['title_group'] = "Dashboard";
+			$data['title_form']  = "Tambah Data Pasien";
+			$data['action']      = "add";
+			$data['alert_form']  = '';
+
 			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-		
+
 			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
 			$this->template->show($data,"home");
-		}elseif($this->hot_model->inesert_pasien()){
-		    if ($res == 'false') {
-				$this->session->set_flashdata('alert_form', 'Save data failed...');
-				redirect(base_url()."hot");
-				
-				$data['alert_form'] = 'Save data failed...';
-				die("NOTOK");
-			}else{
-		    	$this->session->set_flashdata('alert', 'Save data successful...');
-				redirect(base_url()."hot/add_pasien");
-				die("OK");
-			}
-
+		}elseif($this->hot_model->inesert_pasien()=='true'){
+			$this->session->set_flashdata('alert', 'Save data successful...');
+			$data['alert_form'] = 'Save data successful...';
+			redirect(base_url()."hot/pasien/add");
+			die("OK");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/add_pasien");
-
+			redirect(base_url()."hot/pasien/add");
+			$data['alert_form'] = 'Save data failed...';
+			die("NOTOK");
 		}
 	}
 
@@ -233,6 +228,9 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('alamat', 'Alamat','trim');
         $this->form_validation->set_rules('code','Puskesmas','trim');
 
+			$data['action']		    = "edit";
+
+
 		if($this->form_validation->run()== FALSE){
 			$data['title_group']    = "Dashboard";
 			$data['title_form']     = "Ubah Data Pasien";
@@ -248,29 +246,29 @@ class Pasien extends CI_Controller {
 		    if ($res == 'false') {
 				$this->session->set_flashdata('alert_form', 'Save data failed...');
 				redirect(base_url()."hot");
-				
 				$data['alert_form'] = 'Save data failed...';
 				die("NOTOK");
 			}else{
 		    	$this->session->set_flashdata('alert', 'Save data successful...');
-				redirect(base_url()."hot/add_pasien");
+				// redirect(base_url()."hot/add_pasien");
 				die("OK");
 			}
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/add_pasien");
+			// redirect(base_url()."hot/add_pasien");
 		}
 	}
 
-	function delete($username=0){
+	function del($username=0){
 		$this->authentication->verify('mst','del');
 
+		$data['username']		= $username;
 		if($this->hot_model->delete_pasien($username)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$kode.')');
-			redirect(base_url()."mst/agama");
+			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
+			redirect(base_url()."hot/pasien");
 		}else{
 			$this->session->set_flashdata('alert', 'Delete data error');
-			redirect(base_url()."mst/agama");
+			redirect(base_url()."hot/pasien");
 		}
 	}
 

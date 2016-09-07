@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/{action}/{id}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/pasien/{action}/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -29,14 +29,14 @@
         </div><!-- /.box-header -->
 
           <div class="box-footer pull-right">
-            <button type="button"class="btn btn-primary" id="btn_simpan">Simpan</button>
+            <button type="submit"class="btn btn-primary">Simpan</button>
             <button type="reset" class="btn btn-warning">Ulang</button>
-            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>mst/agama?>'">Kembali</button>
+            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
           <div class="box-body">
             <div class="form-group">
-              <label>NIK</label>
-              <input type="text" class="form-control" name="nik" placeholder="NIK" value="<?php 
+              <label>NIK*</label>
+              <input type="text" class="form-control" name="username" placeholder="NIK" value="<?php 
                 if(set_value('username')=="" && isset($username)){
                   echo $username;
                 }else{
@@ -55,7 +55,7 @@
                 ?>">
             </div>
             <div class="form-group">
-              <label>Password</label>
+              <label>Password*</label>
               <input type="password" class="form-control" name="password" placeholder="Password" value="<?php 
                 if(set_value('password')=="" && isset($password)){
                   echo $password;
@@ -69,7 +69,7 @@
               <input type="text" class="form-control" name="password2" placeholder="Konfirmasi Password">
             </div>
             <div class="form-group">
-              <label>Nama</label>
+              <label>Nama*</label>
               <input type="text" class="form-control" name="nama" placeholder="Nama" value="<?php 
                 if(set_value('nama')=="" && isset($nama)){
                   echo $nama;
@@ -80,7 +80,7 @@
             </div>
 
             <div class="form-group">
-                <label> Jenis Kelamin </label>&nbsp;&nbsp;
+                <label>Jenis Kelamin*</label>&nbsp;&nbsp;
                 <?php
                   if(set_value('jk')=="" && isset($jk)){
                     $jk = $jk;
@@ -89,10 +89,10 @@
                   }
                 ?>
                 <label class="radio-inline">
-                  <input type="radio" name="jenis_kelamin" value="L" class="iCheck-helper" <?php echo  ('L' == $jk) ? 'checked' : '' ?>>Pria
+                  <input type="radio" name="jk" value="L" class="iCheck-helper" <?php echo  ('L' == $jk) ? 'checked' : '' ?>>Pria
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="jenis_kelamin" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
+                  <input type="radio" name="jk" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
                 </label>
             </div>
 
@@ -122,7 +122,7 @@
              </div>
            
             <div class="form-group">
-              <label>Email</label>
+              <label>Email*</label>
               <input type="text" class="form-control" name="email" placeholder="Email" value="<?php 
                 if(set_value('email')=="" && isset($email)){
                   echo $email;
@@ -164,77 +164,6 @@
 
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
-
-    $("#btn_simpan").click(function(){
-            var data = new FormData();
-            $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
-            $('#biodata_notice').show();
-
-            var tgl   = $("[name='tgl']").val();
-            var bln   = $("[name='bln']").val();
-            var thn   = $("[name='thn']").val();
-            var tgl_lahir = tgl+"-"+bln+"-"+thn;
-
-            var puskesmas = $("[name='puskesmas']").val();
-            var fields  = puskesmas.split(",");
-            var kode    = fields[0];
-            var namapus = fields[1];
-
-            var kodepus = kode.substring(11, 1);
-            var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
-
-            data.append('username',               $("[name='nik']").val());
-            data.append('bpjs',                   $("[name='bpjs']").val());
-            data.append('pass',                   $("#pass").val());
-            data.append('nama',                   $("[name='nama']").val());
-            data.append('jk',                     $("[name='jk']").val());
-            data.append('tgl_lahir',              tgl_lahir);
-            data.append('phone_number',           $("[name='phone_number']").val());
-            data.append('email',                  $("[name='email']").val());
-            data.append('alamat',                 $("[name='alamat']").val());
-            data.append('code',                   kodepus);
-
-            $("#popup").jqxWindow({
-              theme: theme, resizable: false,
-              width: 300,
-              height: 180,
-              isModal: true, autoOpen: false, modalOpacity: 0.4
-            });
-
-            if($("#pass").val() == "" || $("#pass2").val()==""){
-                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi password dengan benar."+btn+"</div>");
-                $("#popup").jqxWindow('open');
-            }else if($("#pass").val() != $("#pass2").val()){
-                $("#popup_content_daftar").html("<div style='text-align:center'><br>Password tidak sama."+btn+"</div>");
-                $("#popup").jqxWindow('open');
-            }else if($("[name='nama']").val() == ""){
-                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nama."+btn+"</div>");
-                $("#popup").jqxWindow('open');
-            }else if($("[name='phone_number']").val()==""){
-                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nomor telepon."+btn+"</div>");
-                $("#popup").jqxWindow('open');
-            }else{
-                $.ajax({
-                    cache : false,
-                    contentType : false,
-                    processData : false,
-                    type : 'POST',
-                    url : '<?php echo base_url()."hot/pasien/{action}/{id}" ?>',
-                    data : data,
-                    success : function(response){
-                      if(response=="OK"){
-                          $("#tbl-register2").hide();
-                          $("#tbl-success").show("fade");
-                      }else if(response=="NOTOK"){
-                        $("#popup_content_daftar").html("<div style='text-align:center'><br>NIK atau BPJS sudah terdaftar.</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'></div>");
-                          $("#popup").jqxWindow('open');
-                      }
-                    }
-                });
-            }
-
-            return false;
-        });
 
 	});
 </script>

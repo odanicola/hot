@@ -1,3 +1,19 @@
+<?php if(validation_errors()!=""){ ?>
+<div class="alert alert-warning alert-dismissable">
+	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo validation_errors()?>
+</div>
+<?php } ?>
+
+<?php if($this->session->flashdata('alert_form')!=""){ ?>
+<div class="alert alert-success alert-dismissable">
+  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo $this->session->flashdata('alert_form')?>
+</div>
+<?php } ?>
+
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -15,7 +31,7 @@
           <h3 class="box-title">{title_form}</h3>
 	    </div>
 	      <div class="box-footer">
-		 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>hot/add_pasien'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
+		 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>hot/pasien/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
@@ -133,7 +149,7 @@
 	function aksi(id){
         $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+id,function(res){
 
-        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+res.response.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+id+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del()'></div></div>");
+        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+res.response.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+id+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+id+")'></div></div>");
           $("#popup").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
@@ -151,19 +167,23 @@
 
 	function btn_del(id){
 		$("#popup").hide();
-
-		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='del_pasien()'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Cancel' onClick='close_popup_del()'></div></div>");
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='del_pasien("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Cancel' onClick='close_popup_del()'></div></div>");
           $("#popup_del").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
             height: 120,
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
-          $("#popup_del").jqxWindow('open');
+        $("#popup_del").jqxWindow('open');
 	}
 
-	function del_pasien (argument) {
-		document.location.href="<?php echo base_url().'hot/del_pasien';?>/" + id;
+	function del_pasien(id){
+		$.post("<?php echo base_url().'hot/pasien/del' ?>/" + id,  function(){
+			alert('data berhasil dihapus');
+        	$("#popup_del").jqxWindow('close');
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+		
 	}
 
 	function close_popup(){
