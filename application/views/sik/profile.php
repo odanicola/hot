@@ -142,19 +142,6 @@
                       ?>"/>
             </div>
             <br>
-             <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-envelope" style="width:20px"></i>
-              </span>
-              <input type="text" class="form-control" placeholder="Email" name="email" value="<?php 
-                      if(set_value('email')=="" && isset($email)){
-                        echo $email;
-                      }else{
-                        echo  set_value('email');
-                      }
-                      ?>"/>
-            </div>
-            <br>
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-user" style="width:20px"></i>
@@ -164,6 +151,32 @@
                         echo $nama;
                       }else{
                         echo  set_value('nama');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+             <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-hospital-o" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="BPJS" name="bpjs" value="<?php 
+                      if(set_value('bpjs')=="" && isset($bpjs)){
+                        echo $bpjs;
+                      }else{
+                        echo  set_value('bpjs');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+             <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-envelope" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Email" name="email" value="<?php 
+                      if(set_value('email')=="" && isset($email)){
+                        echo $email;
+                      }else{
+                        echo  set_value('email');
                       }
                       ?>"/>
             </div>
@@ -180,6 +193,50 @@
                       }
                       ?>"/>
             </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-home" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Alamat" name="alamat" value="<?php 
+                      if(set_value('alamat')=="" && isset($alamat)){
+                        echo $alamat;
+                      }else{
+                        echo  set_value('alamat');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-home" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
+                      if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
+                        echo $tgl_lahir;
+                      }else{
+                        echo  set_value('tgl_lahir');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-venus-mars" style="width:20px"></i>
+              </span>
+                <select name="jk" type="text" class="form-control">
+                  <?php
+                    if(set_value('jk')=="" && isset($jk)){
+                      $jk = $jk;
+                    }else{
+                      $jk = set_value('jk');
+                    }
+                  ?>
+                    <option value="L" <?php echo  ('L' == $jk) ? 'selected' : '' ?> >Laki-laki</option>
+                    <option value="P" <?php echo  ('P' == $jk) ? 'selected' : '' ?> >Perempuan</option>
+                </select>
+            </div>
+
             <br>
             <div class="row">
               <div class="col-xs-4">
