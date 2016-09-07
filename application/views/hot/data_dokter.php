@@ -58,6 +58,7 @@
 			datatype: "json",
 			type	: "POST",
 			datafields: [
+			{ name: 'code', type: 'string'},
 			{ name: 'value', type: 'string'},
 			{ name: 'status', type: 'int'},
 			{ name: 'edit', type: 'number'},
@@ -104,20 +105,37 @@
 			columns: [
 				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.code+"\");'>"+dataRecord.value+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.code+"-"+dataRecord.value+"\");'>"+dataRecord.value+"</div>";
                  }
                 },
 				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;text-align:center;' onclick='aksi(\""+dataRecord.code+"\");'>"+dataRecord.status==1 ? "-" : "<i class='icon fa fa-check-square-o'></i>"+"</div>";
+					return "<div style='width:100%;padding:7px;text-align:center;' onclick='aksi(\""+dataRecord.code+"-"+dataRecord.value+"\");'>"+dataRecord.status==1 ? "-" : "<i class='icon fa fa-check-square-o'></i>"+"</div>";
                  }
                 }            
             ]
 		});
 
+	function aksi(code){
+		 var code     = code;
+		 var new_code = code.split("-");
+
+	    $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_code[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+new_code[0]+")'></div></div>");
+	      $("#popup").jqxWindow({
+	        theme: theme, resizable: false,
+	        width: 250,
+	        height: 150,
+	        isModal: true, autoOpen: false, modalOpacity: 0.4
+	      });
+	      $("#popup").jqxWindow('open');
+	}
+
+	function btn_edit(code){
+      	document.location.href="<?php echo base_url()?>hot/dokter/edit/" + code;
+	}
+
 	$("#btn_syncronize").click(function(){
 	    
-
 	});
 
     $("#puskesmas").change(function(){

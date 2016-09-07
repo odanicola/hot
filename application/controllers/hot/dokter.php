@@ -65,9 +65,9 @@ class Dokter extends CI_Controller {
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
+				'code'	    => $act->code,
 				'status'	=> $act->status,
 				'value'		=> $act->value,
-				'code'	    => $act->code,
 				'edit'		=> 1,
 				'delete'	=> 1
 			);
@@ -96,7 +96,6 @@ class Dokter extends CI_Controller {
 	function add(){
 		$this->authentication->verify('mst','add');
 
-
         $this->form_validation->set_rules('kode', 'Kode Agama', 'trim|required');
         $this->form_validation->set_rules('value', 'Nama Agama', 'trim|required');
 
@@ -118,31 +117,31 @@ class Dokter extends CI_Controller {
 		}
 	}
 
-	function edit($kode=0)
-	{
-		$this->authentication->verify('mst','add');
+	function edit($code=0){
+		$this->authentication->verify('mst','edit');
 
-        $this->form_validation->set_rules('value', 'Nama Agama', 'trim|required');
-        $this->form_validation->set_rules('kode', 'Kode Agama', 'trim|required');
+        $this->form_validation->set_rules('value','Nama', 'trim');
+        $this->form_validation->set_rules('status','Status', 'trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data = $this->agama_model->get_data_row($kode); 
+			$data 					= $this->hot_model->get_data_dokter_where($code); 
+			$data['title_group']    = "Dashboard";
+			$data['title_form']     = "Ubah Data Dokter";
+			$data['action']		    = "edit";
+			$data['code']			= $code;
+			$data['content'] 		= $this->parser->parse("hot/data_dokter_add",$data,true);
 
-			$data['title_group'] = "Parameter";
-			$data['title_form']="Ubah Agama";
-			$data['action']="edit";
-			$data['kode']=$kode;
-
-		
-			$data['content'] = $this->parser->parse("mst/agama/form",$data,true);
-			$this->template->show($data,"home");
-		}elseif($this->agama_model->update_entry($kode)){
-			$this->session->set_flashdata('alert_form', 'Save data successful...');
-			redirect(base_url()."mst/agama/edit/".$this->input->post('kode'));
+		}elseif($this->hot_model->update_dokter($code)==1){
+				$this->session->set_flashdata('alert_form', 'Save data successful...');
+				redirect(base_url()."hot/dokter");
+				die("OK");
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."mst/agama/edit/".$kode);
+			redirect(base_url()."hot/dokter/edit");
+			$data['alert_form'] = 'Save data failed...';
+			die("NOTOK");
 		}
+		$this->template->show($data,"home");
 	}
 
 	function dodel($kode=0){
