@@ -231,7 +231,7 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('code','Puskesmas','trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data 				    = $this->hot_model->get_pasien_where($username); 
+			$data 					= $this->hot_model->get_pasien_where($username); 
 			$data['title_group']    = "Dashboard";
 			$data['title_form']     = "Ubah Data Pasien";
 			$data['action']		    = "edit";

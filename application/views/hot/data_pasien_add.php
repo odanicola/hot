@@ -1,218 +1,262 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
+<!-- JS & CSS for Galley Photo -->
+<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/fineuploader.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/photogallery.css" />
+<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/colorbox.css" />
+<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery-ui-1.9.0.custom.min.js"></script>
+<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/fineuploader-3.2.min.js"></script>
+<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery.colorbox-min.js"></script>
+<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btn_updatePassword').click(function(){
+          $.ajax({ 
+            type: "POST",
+            url: "<?php echo base_url()?>morganisasi/profile_dopasswd",
+            data: $('#updatePassword').serialize(),
+            success: function(response){
+              console.log(response);
+               if (response == "1") {
+                  $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
+                  $('#notification span').html("Password berhasil disimpan");
+                  $('#password').html("");
+                  $('#npassword').html("");
+                  $('#cpassword').html("");
+                      $('html, body').animate({
+                          scrollTop: $("#top").offset().top
+                      }, 300);
+               } else {
+                  $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
+                  $('#notification span').html(response);
+                      $('html, body').animate({
+                          scrollTop: $("#top").offset().top
+                      }, 300);
+               }
+            }
+           });    
+        });
 
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
+        $('#btn_updateProfile').click(function(){
+          $.ajax({ 
+            type: "POST",
+            url: "<?php echo base_url()?>morganisasi/profile_doupdate",
+            data: $('#updateProfile').serialize(),
+            success: function(response){
+              $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
+              $('#notification span').html(response);
+                  $('html, body').animate({
+                      scrollTop: $("#top").offset().top
+                  }, 300);
+               // if (response == "1") {
+               //    $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
+               //    $('#notification span').html("Data berhasil disimpan");
+               //        $('html, body').animate({
+               //            scrollTop: $("#top").offset().top
+               //        }, 300);
+               // } else {
+               //    $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
+               //    $('#notification span').html(response);
+               //        $('html, body').animate({
+               //            scrollTop: $("#top").offset().top
+               //        }, 300);
+               // }
+            }
+           });    
+        });
+    });
+</script>
+
+ <div id="notification">
+</div>
+<?php if($this->session->flashdata('alert')!=""){ ?>
 <div class="alert alert-success alert-dismissable">
   <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
   <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
+  <?php echo $this->session->flashdata('alert')?>
 </div>
 <?php } ?>
+<div class="row" style="background:#FAFAFA">
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#tab_1" data-toggle="tab">Profil Pengguna</a></li>
+      <li><a href="#tab_2" data-toggle="tab">Akun Pengguna</a></li>
+    </ul>
+    <div class="tab-content">
 
-<div id="popup" style="display:none;">
-  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
-</div>
-<section class="content">
-<form action="<?php echo base_url()?>hot/pasien/{action}/{username}" method="POST" name="">
-  <div class="row">
-    <!-- left column -->
-    <div class="col-md-6">
-      <!-- general form elements -->
-      <div class="box box-primary">
-        <div class="box-header">
-          <h3 class="box-title">{title_form}</h3>
-        </div><!-- /.box-header -->
 
-          <div class="box-footer pull-right">
-            <button type="submit"class="btn btn-primary">Simpan</button>
-            <button type="reset" class="btn btn-warning">Ulang</button>
-            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
-          </div>
-          <div class="box-body">
-            <div class="form-group">
-              <label>NIK*</label>
-              <input type="text" class="form-control" name="username" placeholder="NIK" <?php if($action == "edit") echo "disabled"?> value="<?php 
-                if(set_value('username')=="" && isset($username)){
-                  echo $username;
-                }else{
-                  echo  set_value('username');
-                }
-                ?>">
+      <div class="tab-pane " id="tab_2">    
+        <!-- <form action="<?php echo base_url()?>morganisasi/profile_dopasswd" method="post"> -->
+        <form name="updatePassword" id="updatePassword">
+        <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <p class="login-box-msg">Berikut adalah informasi akun anda, anda dapat melakukan perubahan password:</p>
+            <div class="form-group has-feedback">
+              <input type="text" class="form-control" placeholder="Username" name="username" readonly value="<?php 
+                      if(set_value('username')=="" && isset($username)){
+                        echo $username;
+                      }else{
+                        echo  set_value('username');
+                      }
+                      ?>"/>
+              <span class="glyphicon glyphicon-user form-control-feedback"></span>
             </div>
-            <div class="form-group">
-              <label>BPJS</label>
-              <input type="text" class="form-control" name="bpjs" placeholder="BPJS" value="<?php 
-                if(set_value('bpjs')=="" && isset($bpjs)){
-                  echo $bpjs;
-                }else{
-                  echo  set_value('bpjs');
-                }
-                ?>">
+            <div class="form-group has-feedback">
+              <input type="password" class="form-control" placeholder="Password Lama" name="password" id="password"/>
+              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
-
-            <div class="form-group">
-              <label>Password*</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php 
-               
-                if(set_value('password')=="" && isset($password)){
-                  echo $password;
-                }else{
-                  echo  set_value('password');
-                }
-                ?>">
-              <span id="confirmMessage1" class="confirmMessage"></span>
+            <div class="form-group has-feedback">
+              <input type="password" class="form-control" placeholder="Password Baru" name="npassword" id="npassword"/>
+              <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
-
-            <div class="form-group">
-              <label>Konfirmasi Password</label>
-              <input type="password" class="form-control" id="password2" name="password2" placeholder="Konfirmasi Password">
-              <span id="confirmMessage2" class="confirmMessage"></span>
+            <div class="form-group has-feedback">
+              <input type="password" class="form-control" placeholder="Retype password" name="cpassword" id="cpassword"/>
+              <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
             </div>
-
-            <div class="form-group">
-              <label>Nama*</label>
-              <input type="text" class="form-control" name="nama" placeholder="Nama" value="<?php 
-                if(set_value('nama')=="" && isset($nama)){
-                  echo $nama;
-                }else{
-                  echo  set_value('nama');
-                }
-                ?>">
+            <br>
+            <div class="row">
+              <div class="col-xs-5">
+                <button type="button" id="btn_updatePassword" class="btn btn-primary btn-block btn-flat">Ubah Password</button>
+              </div><!-- /.col -->
             </div>
+        </div>
+        </div>
+        </form>
+      </div>
 
-            <div class="form-group">
-                <label>Jenis Kelamin*</label>&nbsp;&nbsp;
-                <?php
-                  if(set_value('jk')=="" && isset($jk)){
-                    $jk = $jk;
-                  }else{
-                    $jk = set_value('jk');
-                  }
-                ?>
-                <label class="radio-inline">
-                  <input type="radio" name="jk" value="L" class="iCheck-helper" <?php echo  ('L' == $jk) ? 'checked' : '' ?>>Pria
-                </label>
-                <label class="radio-inline">
-                  <input type="radio" name="jk" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
-                </label>
+
+      <div class="tab-pane active" id="tab_1">    
+        <!-- <form action="<?php echo base_url()?>morganisasi/profile_doupdate" method="post"> -->
+        <form name="updateProfile" id="updateProfile">
+        <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <p class="login-box-msg">Silahkan periksa kembali kelengkapan data profil anda :</p>
+             <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-qrcode" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Kode Puskesmas" name="code" readonly value="<?php 
+                      if(set_value('code')=="" && isset($code)){
+                        echo $code;
+                      }else{
+                        echo  set_value('code');
+                      }
+                      ?>"/>
             </div>
-
-            <div class="form-group">
-              <label>No Telepon</label>
-              <input type="text" class="form-control" name="phone_number" placeholder="No Telepon" value="<?php 
-                if(set_value('phone_number')=="" && isset($phone_number)){
-                  echo $phone_number;
-                }else{
-                  echo  set_value('phone_number');
-                }
-                ?>">
-            </div> 
-
-              <div class="form-group">
-                <label>Tanggal Lahir</label>
-                <div id='tgl_lahir' name="tgl_lahir" value="<?php
-                  if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
-                    $tgl_lahir = strtotime($tgl_lahir);
-                  }else{
-                    $tgl_lahir = strtotime(set_value('tgl_lahir'));
-                  }
-                  if($tgl_lahir=="") $tgl_lahir = time();
-                  echo date("Y-m-d",$tgl_lahir);
-                ?>" >
-                </div>
-             </div>
-           
-            <div class="form-group">
-              <label>Email*</label>
-              <input type="text" class="form-control" name="email" placeholder="Email" value="<?php 
-                if(set_value('email')=="" && isset($email)){
-                  echo $email;
-                }else{
-                  echo  set_value('email');
-                }
-                ?>">
-            </div>            
-            <div class="form-group">
-              <label>Alamat</label>
-              <input type="text" class="form-control" name="alamat" placeholder="Alamat" value="<?php 
-                if(set_value('alamat')=="" && isset($alamat)){
-                  echo $alamat;
-                }else{
-                  echo  set_value('alamat');
-                }
-                ?>">
-            </div>            
-            <div class="form-group">
-              <label>Puskesmas</label>
-                <select  name="code" type="text" class="form-control">
-                    <option value="">Pilih Puskesmas</option>
-                    <?php foreach($datapuskesmas as $pus) : ?>
-                      <?php $select = $pus->code == $code ? 'selected' : '' ?>
-                      <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
-                    <?php endforeach ?>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-user" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="** Nama Lengkap" name="nama" value="<?php 
+                      if(set_value('nama')=="" && isset($nama)){
+                        echo $nama;
+                      }else{
+                        echo  set_value('nama');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+             <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-hospital-o" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="BPJS" name="bpjs" value="<?php 
+                      if(set_value('bpjs')=="" && isset($bpjs)){
+                        echo $bpjs;
+                      }else{
+                        echo  set_value('bpjs');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+             <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-envelope" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Email" name="email" value="<?php 
+                      if(set_value('email')=="" && isset($email)){
+                        echo $email;
+                      }else{
+                        echo  set_value('email');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-phone" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="** No. Tlp" name="phone_number" value="<?php 
+                      if(set_value('phone_number')=="" && isset($phone_number)){
+                        echo $phone_number;
+                      }else{
+                        echo  set_value('phone_number');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-home" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Alamat" name="alamat" value="<?php 
+                      if(set_value('alamat')=="" && isset($alamat)){
+                        echo $alamat;
+                      }else{
+                        echo  set_value('alamat');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-calendar" style="width:20px"></i>
+              </span>
+              <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
+                      if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
+                        echo $tgl_lahir;
+                      }else{
+                        echo  set_value('tgl_lahir');
+                      }
+                      ?>"/>
+            </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-venus-mars" style="width:20px"></i>
+              </span>
+                <select name="jk" type="text" class="form-control">
+                  <?php
+                    if(set_value('jk')=="" && isset($jk)){
+                      $jk = $jk;
+                    }else{
+                      $jk = set_value('jk');
+                    }
+                  ?>
+                    <option value="L" <?php echo  ('L' == $jk) ? 'selected' : '' ?> >Laki-laki</option>
+                    <option value="P" <?php echo  ('P' == $jk) ? 'selected' : '' ?> >Perempuan</option>
                 </select>
             </div>
-          </div>
-          </div><!-- /.box-body -->
-      </div><!-- /.box -->
-  	</div><!-- /.box -->
-  </div><!-- /.box -->
-</form>
-</section>
 
-<script>
+            <br>
+            <div class="row">
+              <div class="col-xs-4">
+                <button type="button" id="btn_updateProfile" class="btn btn-primary btn-block btn-flat">Simpan</button>
+              </div><!-- /.col -->
+            </div>
+        </div>
+        </div>
+        </form>        
+      </div>
 
-  $("#password").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
+      <div class="tab-pane" id="tab_3">   
 
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
+    </div>
+  </div><!-- /.form-box -->
+</div><!-- /.register-box -->
 
-      }else if(pass1!=''&& pass2==""){
-
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-
-      };
-  });
-
-  $("#password2").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-      };
-  });
-
-  $(this).css('background-color', '#FFFFFF');
-
-	$(function () {	
-    $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
-
+<script type="text/javascript">
+$(function(){
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
-
-	});
+  });
 </script>
