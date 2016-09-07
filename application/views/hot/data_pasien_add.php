@@ -36,7 +36,7 @@
           <div class="box-body">
             <div class="form-group">
               <label>NIK*</label>
-              <input type="text" class="form-control" name="username" placeholder="NIK" value="<?php 
+              <input type="text" class="form-control" name="username" placeholder="NIK" <?php if($action == "edit") echo "disabled"?> value="<?php 
                 if(set_value('username')=="" && isset($username)){
                   echo $username;
                 }else{
