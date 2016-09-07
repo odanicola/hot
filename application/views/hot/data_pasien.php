@@ -20,6 +20,9 @@
 <div id="popup_del" style="display:none;">
   <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
 </div>
+<div id="popup_del1" style="display:none;">
+  <div id="popup_title_del1">Hypertension Online Treatment</div><div id="popup_content_del1">{popup}</div>
+</div>
 <section class="content">
 <form action="<?php echo base_url()?>mst/agama/dodel_multi" method="POST" name="">
   <div class="row">
@@ -179,7 +182,15 @@
 
 	function del_pasien(id){
 		$.post("<?php echo base_url().'hot/pasien/del' ?>/" + id,  function(){
-			alert('data berhasil dihapus');
+		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
+          $("#popup_del1").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 120,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+        $("#popup_del1").jqxWindow('open');
+        	$("#popup").jqxWindow('close');
         	$("#popup_del").jqxWindow('close');
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
@@ -193,6 +204,12 @@
     function close_popup_del(){
         $("#popup").jqxWindow('close');
         $("#popup_del").jqxWindow('close');
+    }
+
+    function close_popup_del1(){
+        $("#popup").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
+        $("#popup_del1").jqxWindow('close');
     }
 
 	$("#jenis_bpjs").change(function(){
