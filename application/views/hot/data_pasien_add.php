@@ -207,18 +207,21 @@
                       ?>"/>
             </div>
             <br>
-            <div class="input-group">
-              <span class="input-group-addon">
-                <i class="fa fa-calendar" style="width:20px"></i>
-              </span>
-              <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
-                      if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
-                        echo $tgl_lahir;
-                      }else{
-                        echo  set_value('tgl_lahir');
-                      }
-                      ?>"/>
-            </div>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="fa fa-calendar" style="width:20px"></i>
+                </span>
+                <div id='tgl_lahir' name="tgl_lahir" value="<?php
+                  if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
+                    $tgl_lahir = strtotime($tgl_lahir);
+                  }else{
+                    $tgl_lahir = strtotime(set_value('tgl_lahir'));
+                  }
+                  if($tgl_lahir=="") $tgl_lahir = time();
+                  echo date("Y-m-d",$tgl_lahir);
+                ?>" >
+                </div>
+             </div>
             <br>
             <div class="input-group">
               <span class="input-group-addon">
@@ -232,6 +235,7 @@
                       $jk = set_value('jk');
                     }
                   ?>
+                    <option>-</option>
                     <option value="L" <?php echo  ('L' == $jk) ? 'selected' : '' ?> >Laki-laki</option>
                     <option value="P" <?php echo  ('P' == $jk) ? 'selected' : '' ?> >Perempuan</option>
                 </select>
@@ -258,5 +262,7 @@
 $(function(){
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
+    $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
+
   });
 </script>
