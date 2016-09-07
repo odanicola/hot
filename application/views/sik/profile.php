@@ -209,7 +209,7 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-home" style="width:20px"></i>
+                <i class="fa fa-calendar" style="width:20px"></i>
               </span>
               <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
                       if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){

@@ -109,7 +109,7 @@
                 },
 				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.code+"\");'>"+dataRecord.status==1 ? "<i class='icon fa fa-check-square-o'></i>" : "-"+"</div>";
+					return "<div style='width:100%;padding:7px;text-align:center;' onclick='aksi(\""+dataRecord.code+"\");'>"+dataRecord.status==1 ? "-" : "<i class='icon fa fa-check-square-o'></i>"+"</div>";
                  }
                 }            
             ]
