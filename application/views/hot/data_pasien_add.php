@@ -143,11 +143,12 @@
             </div>            
             <div class="form-group">
               <label>Puskesmas</label>
-                <select name="puskesmas" id="puskesmas" class="form-control">
-                    <?php foreach ($datapuskesmas as $pus ) { ;?>
-                    <?php $select = $pus->code ? 'selected=selected' : '' ?>
-                      <option value="<?php echo $pus->code;$pus->value; ?>,<?php echo $pus->value ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
-                    <?php } ;?>
+                <select  name="code" type="text" class="form-control">
+                    <option value="">Pilih Puskesmas</option>
+                    <?php foreach($datapuskesmas as $pus) : ?>
+                      <?php $select = $pus->code == $code ? 'selected' : '' ?>
+                      <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
+                    <?php endforeach ?>
                 </select>
             </div>
           </div>

@@ -182,12 +182,12 @@ class Pasien extends CI_Controller {
 
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('pass','Password', 'trim');
-        $this->form_validation->set_rules('nama','Nama', 'trim');
-        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
+        $this->form_validation->set_rules('password','Password', 'trim|required');
+        $this->form_validation->set_rules('nama','Nama', 'trim|required');
+        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim|required');
         $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
         $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
-        $this->form_validation->set_rules('email', 'Email','trim');
+        $this->form_validation->set_rules('email', 'Email','trim|required');
         $this->form_validation->set_rules('alamat', 'Alamat','trim');
         $this->form_validation->set_rules('code','Puskesmas','trim');
 
@@ -200,18 +200,20 @@ class Pasien extends CI_Controller {
 			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
 
 			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
-			$this->template->show($data,"home");
 		}elseif($this->hot_model->inesert_pasien()=='true'){
-			$this->session->set_flashdata('alert', 'Save data successful...');
-			$data['alert_form'] = 'Save data successful...';
-			redirect(base_url()."hot/pasien/add");
+			$this->session->set_flashdata('alert_form', 'Save data successful...');
+			redirect(base_url()."hot/pasien");
 			die("OK");
+
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
 			redirect(base_url()."hot/pasien/add");
 			$data['alert_form'] = 'Save data failed...';
 			die("NOTOK");
 		}
+		
+		$this->template->show($data,"home");
+
 	}
 
 	function edit($username=0){
@@ -246,7 +248,6 @@ class Pasien extends CI_Controller {
 			redirect(base_url()."hot/pasien/edit");
 			$data['alert_form'] = 'Save data failed...';
 			die("NOTOK");
-
 		}
 		$this->template->show($data,"home");
 	}

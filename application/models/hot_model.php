@@ -47,7 +47,7 @@ class Hot_model extends CI_Model {
     function inesert_pasien(){
 
         $data_list['username']           = $this->input->post('username');
-        $data_list['code']               = $this->input->post('code');
+        $data_list['code']               = substr($this->input->post('code'),1,10);
         $data_list['level']              = "pasien";
         $data_list['password']           = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
         $data_list['status_active']      = 1;
@@ -59,7 +59,7 @@ class Hot_model extends CI_Model {
 
         $data_profile['username']        = $this->input->post('username');
         $data_profile['nama']            = $this->input->post('nama');
-        $data_profile['code']            = $this->input->post('code');
+        $data_profile['code']            = substr($this->input->post('code'),1,10);
         $data_profile['phone_number']    = $this->input->post('phone_number');
         $data_profile['email']           = $this->input->post('email');
         $data_profile['bpjs']            = $this->input->post('bpjs');
@@ -81,7 +81,7 @@ class Hot_model extends CI_Model {
 
     function update_pasien($username){
 
-        $data_list['code']               = $this->input->post('code');
+        $data_list['code']               = substr($this->input->post('code'),1,10);
         $data_list['level']              = "pasien";
         $data_list['password']           = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
         $data_list['status_active']      = 1;
@@ -92,7 +92,7 @@ class Hot_model extends CI_Model {
         $data_list['datereg']            = time();  
 
         $data_profile['nama']            = $this->input->post('nama');
-        $data_profile['code']            = $this->input->post('code');
+        $data_profile['code']            = substr($this->input->post('code'),1,10);
         $data_profile['phone_number']    = $this->input->post('phone_number');
         $data_profile['email']           = $this->input->post('email');
         $data_profile['bpjs']            = $this->input->post('bpjs');
