@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/data_pasien/2/{username}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/pasien/data_pasien_{action}/2/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -29,9 +29,9 @@
         </div><!-- /.box-header -->
 
           <div class="box-footer pull-right">
-            <button type="submit"class="btn btn-primary">Simpan</button>
-            <button type="reset" class="btn btn-warning">Ulang</button>
-            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
+            <button type="submit" class="btn btn-primary" id="btn_simpan">Simpan</button>
+            <button type="reset"  class="btn btn-warning">Ulang</button>
+            <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
           <div class="box-body">
             <div class="form-group">
@@ -80,10 +80,12 @@
       if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
           $("#password2").css("background-color", "#b3b3ff");
           $("#confirmMessage2").text("Passwords Match!");
+          $("#btn_simpan").prop('disabled', false);
       
       }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
           $("#password2").css("background-color", "#ff9999");
           $("#confirmMessage2").text("Passwords Do Not Match!");
+          $("#btn_simpan").prop('disabled', true);
 
       }else if(pass1!=''&& pass2==""){
 
@@ -91,7 +93,7 @@
           $("#password2").css("background-color", "#ffffff");
           $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
           $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-
+          $("#btn_simpan").prop('disabled', true);
       };
   });
 
@@ -102,13 +104,18 @@
       if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
           $("#password2").css("background-color", "#b3b3ff");
           $("#confirmMessage2").text("Passwords Match!");
+          $("#btn_simpan").prop('disabled', false);
+
       }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
           $("#password2").css("background-color", "#ff9999");
           $("#confirmMessage2").text("Passwords Do Not Match!");
+          $("#btn_simpan").prop('disabled', true);
+
       }else if (pass1=='' && pass2==''){
           $("#password2").css("background-color", "#ffffff");
           $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
           $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
+          $("#btn_simpan").prop('disabled', true);
       };
   });
 

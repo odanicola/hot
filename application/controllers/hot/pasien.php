@@ -6,7 +6,6 @@ class Pasien extends CI_Controller {
 		$this->load->model('hot_model');
 	}
 
-
 	function filter_jenis_bpjs(){
 		if($_POST) {
 			if($this->input->post('jenis_bpjs') != '') {
@@ -190,6 +189,8 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('email', 'Email','trim|required');
         $this->form_validation->set_rules('alamat', 'Alamat','trim');
         $this->form_validation->set_rules('code','Puskesmas','trim');
+        $this->form_validation->set_rules('tb','Tinggi Badan','trim');
+        $this->form_validation->set_rules('bb','Berat Badan','trim');
 
 		if($this->form_validation->run()== FALSE){
 			$data['title_group'] = "Dashboard";
@@ -215,116 +216,24 @@ class Pasien extends CI_Controller {
 		$this->template->show($data,"home");
 	}
 
-	function edit($username=0) {
-		$this->authentication->verify('mst','add');
+	function profil_pasien_edit($username){
 
-        $data 				 = $this->hot_model->get_pasien_where($username); 
-		$data['username']	 = $username;
-		$data['title_group'] = "Dashboard";
-		$data['title_form']  = "Data Pasien";
-		$data['content'] 	 = $this->parser->parse("hot/data_pasien_add",$data,true);
-
-		$this->template->show($data,"home");
-	}
-
-	// function edit($username=0){
-	// 	$this->authentication->verify('mst','edit');
-
- //        $this->form_validation->set_rules('username','Username', 'trim');
- //        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
- //        $this->form_validation->set_rules('pass','Password', 'trim');
- //        $this->form_validation->set_rules('nama','Nama', 'trim');
- //        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
- //        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
- //        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
- //        $this->form_validation->set_rules('email', 'Email','trim');
- //        $this->form_validation->set_rules('alamat', 'Alamat','trim');
- //        $this->form_validation->set_rules('code','Puskesmas','trim');
-
- //        	$data 					= $this->hot_model->get_pasien_where($username); 
-	// 		$data['title_group']    = "Dashboard";
-	// 		$data['title_form']     = "Data Pasien";
-	// 		$data['action']		    = "edit";
-	// 		$data['username']		= $username;
-	// 		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-	// 		$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
-
-	// 	if($this->form_validation->run()== FALSE){
-	// 		$data 					= $this->hot_model->get_pasien_where($username); 
-	// 		$data['title_group']    = "Dashboard";
-	// 		$data['title_form']     = "Data Pasien";
-	// 		$data['action']		    = "edit";
-	// 		$data['username']		= $username;
-	// 		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-	// 		$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
-
-	// 	}elseif($this->hot_model->update_pasien($username)==1){
-	// 		$data['alert_form'] = 'Save data successful...';
-	// 		$this->session->set_flashdata('alert_form', 'Save data successful...');
-	// 		// redirect(base_url()."hot/pasien");
-	// 		die("OK");
-	// 	}else{
-	// 		$this->session->set_flashdata('alert_form', 'Save data failed...');
-	// 		// redirect(base_url()."hot/pasien/edit");
-	// 		$data['alert_form'] = 'Save data failed...';
-	// 		die("NOTOK");
-	// 	}
-	// 	$this->template->show($data,"home");
-	// }
-
-	function del($username=0){
-		$this->authentication->verify('mst','del');
-
-		$data['username']		= $username;
-		if($this->hot_model->delete_pasien($username)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
-			redirect(base_url()."hot/pasien");
-		}else{
-			$this->session->set_flashdata('alert', 'Delete data error');
-			redirect(base_url()."hot/pasien");
-		}
-	}
-
-	function data_pasien($pageIndex,$username){
-		$data = array();
-		$data['username']=$username;
-
-		switch ($pageIndex) {
-			case 1:
-				$this->profil_pasien($username);
-
-				break;
-			case 2:
-				$this->akun_pasien($username);
-
-
-				die($this->parser->parse("hot/data_pasien_akun",$data));
-				break;
-		}
-
-	}
-
-	function profil_pasien($username){
-        $this->form_validation->set_rules('nama', 'Nama', 'trim');
-        $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim');
-        $this->form_validation->set_rules('nik', 'NIK', 'trim');
-        $this->form_validation->set_rules('gelar_depan', 'Gelar Depan', 'trim');
-        $this->form_validation->set_rules('gelar_belakang', 'Gelar Belakang', 'trim');
-        $this->form_validation->set_rules('tgl_lhr', 'Tanggal Lahir', 'trim');
-        $this->form_validation->set_rules('tmp_lahir', 'Tempat Lahir', 'trim');
-        $this->form_validation->set_rules('kode_mst_agama', 'Agama', 'trim');
-        $this->form_validation->set_rules('kedudukan_hukum', 'Kedudukan Hukum', 'trim');
-        $this->form_validation->set_rules('alamat', 'Alamat', 'trim');
-        $this->form_validation->set_rules('npwp', 'NPWP', 'trim');
-        $this->form_validation->set_rules('npwp_tgl', 'Tanggal NPWP', 'trim');
-        $this->form_validation->set_rules('kartu_pegawai', 'Kartu Pegawai', 'trim');
-        $this->form_validation->set_rules('goldar', 'Golongan Darah', 'trim');
-        $this->form_validation->set_rules('kode_mst_nikah', 'Status Nikah', 'trim');
+        $this->form_validation->set_rules('username','NIK', 'trim');
+        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
+        $this->form_validation->set_rules('nama','Nama', 'trim');
+        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
+        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
+        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
+        $this->form_validation->set_rules('email', 'Email','trim');
+        $this->form_validation->set_rules('alamat', 'Alamat','trim');
+        $this->form_validation->set_rules('code','Puskesmas','trim');
+        $this->form_validation->set_rules('tb','Tinggi Badan','trim');
+        $this->form_validation->set_rules('bb','Berat Badan','trim');
         
         $data 				   = $this->hot_model->get_profil_pasien_where($username); 
         $data['title_group']   = "Dashboard";
 		$data['title_form']    = "Profil Pasien";
-		$data['action']		   = 'add';
+		$data['action']		   = 'edit';
 		$data['username']	   = $username;
 		$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
 		$data['alert_form'] = '';
@@ -347,8 +256,9 @@ class Pasien extends CI_Controller {
 
 		die($this->parser->parse("hot/data_pasien_profil",$data));
 	}
-
-	function akun_pasien($username){
+	
+	function akun_pasien_edit($username){
+		$this->form_validation->set_rules('username','Username', 'trim|required');
 		$this->form_validation->set_rules('password','Password', 'trim');
 
 	        $data 				   = $this->hot_model->get_akun_pasien_where($username); 
@@ -366,14 +276,59 @@ class Pasien extends CI_Controller {
         	$data['title_group']   = "Dashboard";
 			$data['title_form']    = "Data Pasien";
 			$data['username']	   = $username;
-			$data['action']  	   = 'add';
+			$data['action']  	   = 'edit';
 			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
 			$data['alert_form']    = 'Save data successful...';
 		}else{
 			$data['alert_form'] = 'Save data failed...';
 		}
 		die($this->parser->parse("hot/data_pasien_akun",$data));
+	}
+
+	function edit($username=0) {
+		$this->authentication->verify('mst','add');
+
+        $data 				 = $this->hot_model->get_pasien_where($username); 
+		$data['username']	 = $username;
+		$data['title_group'] = "Dashboard";
+		$data['title_form']  = "Data Pasien";
+		$data['content'] 	 = $this->parser->parse("hot/data_pasien_edit",$data,true);
+
+		$this->template->show($data,"home");
+	}
+
+	function del($username=0){
+		$this->authentication->verify('mst','del');
+
+		$data['username']		= $username;
+		if($this->hot_model->delete_pasien($username)){
+			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
+			redirect(base_url()."hot/pasien");
+		}else{
+			$this->session->set_flashdata('alert', 'Delete data error');
+			redirect(base_url()."hot/pasien");
+		}
+	}
+
+	function data_pasien_edit($pageIndex,$username){
+		$data = array();
+		$data['username']=$username;
+
+		switch ($pageIndex) {
+			case 1:
+				$this->profil_pasien_edit($username);
+
+				break;
+			case 2:
+				$this->akun_pasien_edit($username);
+
+
+				die($this->parser->parse("hot/data_pasien_akun",$data));
+				break;
+		}
 
 	}
+
+
 
 }

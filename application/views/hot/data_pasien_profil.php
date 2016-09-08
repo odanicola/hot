@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/data_pasien/1/{username}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/pasien/data_pasien_{action}/1/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -82,6 +82,28 @@
                   <input type="radio" name="jk" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
                 </label>
             </div>
+
+            <div class="form-group">
+              <label>Tinggi Badan</label>
+              <input type="text" class="form-control" name="tb" placeholder="Berat Badan" value="<?php 
+                if(set_value('tb')=="" && isset($tb)){
+                  echo $tb;
+                }else{
+                  echo  set_value('tb');
+                }
+                ?>">
+            </div> 
+
+            <div class="form-group">
+              <label>Berat Badan</label>
+              <input type="text" class="form-control" name="bb" placeholder="Tinggi Badan" value="<?php 
+                if(set_value('bb')=="" && isset($bb)){
+                  echo $bb;
+                }else{
+                  echo  set_value('bb');
+                }
+                ?>">
+            </div> 
 
             <div class="form-group">
               <label>No Telepon</label>
