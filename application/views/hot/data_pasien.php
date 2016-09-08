@@ -138,21 +138,21 @@
 			columns: [
 				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"|"+dataRecord.nama+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
 				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"|"+dataRecord.nama+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
 		});
 
 	function aksi(id){
-        $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+id,function(res){
-
-        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+res.response.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+id+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+id+")'></div></div>");
+		var id     = id;
+		var new_id = id.split("|");
+        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_id[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+new_id[0]+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+new_id[0]+")'></div></div>");
           $("#popup").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
@@ -160,8 +160,6 @@
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
           $("#popup").jqxWindow('open');
-        },"json");
-
 	}
 
 	function btn_edit(id){
@@ -189,12 +187,12 @@
             height: 120,
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
+        
         $("#popup_del1").jqxWindow('open');
         	$("#popup").jqxWindow('close');
         	$("#popup_del").jqxWindow('close');
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
-		
 	}
 
 	function close_popup(){
