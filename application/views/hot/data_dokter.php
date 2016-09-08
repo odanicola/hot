@@ -1,3 +1,19 @@
+<?php if(validation_errors()!=""){ ?>
+<div class="alert alert-warning alert-dismissable">
+	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo validation_errors()?>
+</div>
+<?php } ?>
+
+<?php if($this->session->flashdata('alert_form')!=""){ ?>
+<div class="alert alert-success alert-dismissable">
+  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo $this->session->flashdata('alert_form')?>
+</div>
+<?php } ?>
+
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -105,12 +121,12 @@
 			columns: [
 				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.code+"-"+dataRecord.value+"\");'>"+dataRecord.value+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.code+"|"+dataRecord.value+"\");'>"+dataRecord.value+"</div>";
                  }
                 },
 				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;text-align:center;' onclick='aksi(\""+dataRecord.code+"-"+dataRecord.value+"\");'>"+dataRecord.status==1 ? "-" : "<i class='icon fa fa-check-square-o'></i>"+"</div>";
+					return "<div style='width:100%;padding:7px;text-align:center;' onclick='aksi(\""+dataRecord.code+"|"+dataRecord.value+"\");'>"+dataRecord.status==1 ? "-" : "<i class='icon fa fa-check-square-o'></i>"+"</div>";
                  }
                 }            
             ]
@@ -118,7 +134,7 @@
 
 	function aksi(code){
 		 var code     = code;
-		 var new_code = code.split("-");
+		 var new_code = code.split("|");
 
 	    $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_code[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+new_code[0]+")'></div></div>");
 	      $("#popup").jqxWindow({
@@ -131,7 +147,10 @@
 	}
 
 	function btn_edit(code){
-      	document.location.href="<?php echo base_url()?>hot/dokter/edit/" + code;
+		var code ="" +code;
+		var pad  = "000"
+		var new_code = pad.substring(0, pad.length - code.length) + code
+      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code;
 	}
 
 	$("#btn_syncronize").click(function(){

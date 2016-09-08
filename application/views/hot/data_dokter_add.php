@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/{action}/{username}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/dokter/{action}/{code}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -31,7 +31,7 @@
           <div class="box-footer pull-right">
             <button type="submit"class="btn btn-primary">Simpan</button>
             <button type="reset" class="btn btn-warning">Ulang</button>
-            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
+            <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/dokter'">Kembali</button>
           </div>
           <div class="box-body">
             <div class="form-group">
@@ -45,7 +45,7 @@
                 ?>">
             </div>
             <div class="form-group">
-              <label>Status</label>
+              <label>Status*</label>
               <input type="text" class="form-control" name="status" placeholder="BPJS" value="<?php 
                 if(set_value('status')=="" && isset($status)){
                   echo $status;
