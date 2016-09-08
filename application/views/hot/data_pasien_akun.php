@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/{action}/{username}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/pasien/data_pasien/2/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -49,7 +49,7 @@
               <label>Password*</label>
               <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php 
                 if(set_value('password')=="" && isset($password)){
-                  echo $password;
+                  // echo $password;
                 }else{
                   echo  set_value('password');
                 }

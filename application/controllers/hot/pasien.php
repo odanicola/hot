@@ -215,50 +215,62 @@ class Pasien extends CI_Controller {
 		$this->template->show($data,"home");
 	}
 
-	function edit($username=0){
-		$this->authentication->verify('mst','edit');
+	function edit($username=0) {
+		$this->authentication->verify('mst','add');
 
-        $this->form_validation->set_rules('username','Username', 'trim');
-        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('pass','Password', 'trim');
-        $this->form_validation->set_rules('nama','Nama', 'trim');
-        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
-        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
-        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
-        $this->form_validation->set_rules('email', 'Email','trim');
-        $this->form_validation->set_rules('alamat', 'Alamat','trim');
-        $this->form_validation->set_rules('code','Puskesmas','trim');
+        $data 				 = $this->hot_model->get_pasien_where($username); 
+		$data['username']	 = $username;
+		$data['title_group'] = "Dashboard";
+		$data['title_form']  = "Data Pasien";
+		$data['content'] 	 = $this->parser->parse("hot/data_pasien_add",$data,true);
 
-        	$data 					= $this->hot_model->get_pasien_where($username); 
-			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Data Pasien";
-			$data['action']		    = "edit";
-			$data['username']		= $username;
-			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-			$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
-
-		if($this->form_validation->run()== FALSE){
-			$data 					= $this->hot_model->get_pasien_where($username); 
-			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Data Pasien";
-			$data['action']		    = "edit";
-			$data['username']		= $username;
-			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-			$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
-
-		}elseif($this->hot_model->update_pasien($username)==1){
-			$data['alert_form'] = 'Save data successful...';
-			$this->session->set_flashdata('alert_form', 'Save data successful...');
-			// redirect(base_url()."hot/pasien");
-			die("OK");
-		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			// redirect(base_url()."hot/pasien/edit");
-			$data['alert_form'] = 'Save data failed...';
-			die("NOTOK");
-		}
 		$this->template->show($data,"home");
 	}
+
+	// function edit($username=0){
+	// 	$this->authentication->verify('mst','edit');
+
+ //        $this->form_validation->set_rules('username','Username', 'trim');
+ //        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
+ //        $this->form_validation->set_rules('pass','Password', 'trim');
+ //        $this->form_validation->set_rules('nama','Nama', 'trim');
+ //        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
+ //        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
+ //        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
+ //        $this->form_validation->set_rules('email', 'Email','trim');
+ //        $this->form_validation->set_rules('alamat', 'Alamat','trim');
+ //        $this->form_validation->set_rules('code','Puskesmas','trim');
+
+ //        	$data 					= $this->hot_model->get_pasien_where($username); 
+	// 		$data['title_group']    = "Dashboard";
+	// 		$data['title_form']     = "Data Pasien";
+	// 		$data['action']		    = "edit";
+	// 		$data['username']		= $username;
+	// 		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+	// 		$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
+
+	// 	if($this->form_validation->run()== FALSE){
+	// 		$data 					= $this->hot_model->get_pasien_where($username); 
+	// 		$data['title_group']    = "Dashboard";
+	// 		$data['title_form']     = "Data Pasien";
+	// 		$data['action']		    = "edit";
+	// 		$data['username']		= $username;
+	// 		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+	// 		$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
+
+	// 	}elseif($this->hot_model->update_pasien($username)==1){
+	// 		$data['alert_form'] = 'Save data successful...';
+	// 		$this->session->set_flashdata('alert_form', 'Save data successful...');
+	// 		// redirect(base_url()."hot/pasien");
+	// 		die("OK");
+	// 	}else{
+	// 		$this->session->set_flashdata('alert_form', 'Save data failed...');
+	// 		// redirect(base_url()."hot/pasien/edit");
+	// 		$data['alert_form'] = 'Save data failed...';
+	// 		die("NOTOK");
+	// 	}
+	// 	$this->template->show($data,"home");
+	// }
 
 	function del($username=0){
 		$this->authentication->verify('mst','del');
@@ -282,7 +294,7 @@ class Pasien extends CI_Controller {
 				$this->profil_pasien($username);
 
 				break;
-			default:
+			case 2:
 				$this->akun_pasien($username);
 
 
@@ -293,9 +305,9 @@ class Pasien extends CI_Controller {
 	}
 
 	function profil_pasien($username){
-        $this->form_validation->set_rules('nama', 'Nama', 'trim|required');
-        $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim|required');
-        $this->form_validation->set_rules('nik', 'NIK', 'trim|required');
+        $this->form_validation->set_rules('nama', 'Nama', 'trim');
+        $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim');
+        $this->form_validation->set_rules('nik', 'NIK', 'trim');
         $this->form_validation->set_rules('gelar_depan', 'Gelar Depan', 'trim');
         $this->form_validation->set_rules('gelar_belakang', 'Gelar Belakang', 'trim');
         $this->form_validation->set_rules('tgl_lhr', 'Tanggal Lahir', 'trim');
@@ -309,7 +321,7 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('goldar', 'Golongan Darah', 'trim');
         $this->form_validation->set_rules('kode_mst_nikah', 'Status Nikah', 'trim');
         
-        $data 				   = $this->hot_model->get_pasien_where($username); 
+        $data 				   = $this->hot_model->get_profil_pasien_where($username); 
         $data['title_group']   = "Dashboard";
 		$data['title_form']    = "Profil Pasien";
 		$data['action']		   = 'add';
@@ -319,14 +331,16 @@ class Pasien extends CI_Controller {
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_profil",$data));
-		}elseif($this->drh_model->update_entry($id)){
-        	$data 			 	   = $this->hot_model->get_pasien_where($username); 
+		}elseif($this->hot_model->update_pasien_profil($username)){
+        	
+        	$data 			 	   = $this->hot_model->get_profil_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
 			$data['title_form']    = "Data Pasien";
 			$data['username']	   = $username;
 			$data['action']  	   = 'add';
 			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
 			$data['alert_form'] = 'Save data successful...';
+		
 		}else{
 			$data['alert_form'] = 'Save data failed...';
 		}
@@ -335,45 +349,31 @@ class Pasien extends CI_Controller {
 	}
 
 	function akun_pasien($username){
-        $this->form_validation->set_rules('nama', 'Nama', 'trim|required');
-        $this->form_validation->set_rules('jenis_kelamin', 'Jenis Kelamin', 'trim|required');
-        $this->form_validation->set_rules('nik', 'NIK', 'trim|required');
-        $this->form_validation->set_rules('gelar_depan', 'Gelar Depan', 'trim');
-        $this->form_validation->set_rules('gelar_belakang', 'Gelar Belakang', 'trim');
-        $this->form_validation->set_rules('tgl_lhr', 'Tanggal Lahir', 'trim');
-        $this->form_validation->set_rules('tmp_lahir', 'Tempat Lahir', 'trim');
-        $this->form_validation->set_rules('kode_mst_agama', 'Agama', 'trim');
-        $this->form_validation->set_rules('kedudukan_hukum', 'Kedudukan Hukum', 'trim');
-        $this->form_validation->set_rules('alamat', 'Alamat', 'trim');
-        $this->form_validation->set_rules('npwp', 'NPWP', 'trim');
-        $this->form_validation->set_rules('npwp_tgl', 'Tanggal NPWP', 'trim');
-        $this->form_validation->set_rules('kartu_pegawai', 'Kartu Pegawai', 'trim');
-        $this->form_validation->set_rules('goldar', 'Golongan Darah', 'trim');
-        $this->form_validation->set_rules('kode_mst_nikah', 'Status Nikah', 'trim');
-        
-        $data 				   = $this->hot_model->get_pasien_where($username); 
-        $data['title_group']   = "Dashboard";
-		$data['title_form']    = "Akun Pasien";
-		$data['action']		   = 'add';
-		$data['username']	   = $username;
-		$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
-		$data['alert_form'] = '';
+		$this->form_validation->set_rules('password','Password', 'trim');
+
+	        $data 				   = $this->hot_model->get_akun_pasien_where($username); 
+	        $data['title_group']   = "Dashboard";
+			$data['title_form']    = "Akun Pasien";
+			$data['action']		   = 'edit';
+			$data['username']	   = $username;
+			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
+			$data['alert_form']    = '';
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_akun",$data));
-		}elseif($this->drh_model->update_entry($id)){
-        	$data 			 	   = $this->hot_model->get_pasien_where($username); 
+		}elseif($this->hot_model->update_pasien_akun($username)){
+        	$data 			 	   = $this->hot_model->get_akun_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
 			$data['title_form']    = "Data Pasien";
 			$data['username']	   = $username;
 			$data['action']  	   = 'add';
 			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
-			$data['alert_form'] = 'Save data successful...';
+			$data['alert_form']    = 'Save data successful...';
 		}else{
 			$data['alert_form'] = 'Save data failed...';
 		}
-
 		die($this->parser->parse("hot/data_pasien_akun",$data));
+
 	}
 
 }

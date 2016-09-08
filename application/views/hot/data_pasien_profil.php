@@ -18,7 +18,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/pasien/{action}/{username}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/pasien/data_pasien/1/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -131,7 +131,6 @@
             <div class="form-group">
               <label>Puskesmas</label>
                 <select  name="code" type="text" class="form-control">
-                    <option value="">Pilih Puskesmas</option>
                     <?php foreach($datapuskesmas as $pus) : ?>
                       <?php $select = $pus->code == $code ? 'selected' : '' ?>
                       <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
@@ -147,48 +146,6 @@
 </section>
 
 <script>
-
-  $("#password").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-
-      }else if(pass1!=''&& pass2==""){
-
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-
-      };
-  });
-
-  $("#password2").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-      };
-  });
-
-  $(this).css('background-color', '#FFFFFF');
-
   $(function () { 
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
