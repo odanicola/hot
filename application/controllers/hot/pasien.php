@@ -236,7 +236,7 @@ class Pasien extends CI_Controller {
 		$data['action']		   = 'edit';
 		$data['username']	   = $username;
 		$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
-		$data['alert_form'] = '';
+		$data['alert_form']    = '';
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_profil",$data));
@@ -244,21 +244,20 @@ class Pasien extends CI_Controller {
         	
         	$data 			 	   = $this->hot_model->get_profil_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
-			$data['title_form']    = "Data Pasien";
+			$data['title_form']    = "Profil Pasien";
 			$data['username']	   = $username;
-			$data['action']  	   = 'add';
+			$data['action']  	   = 'edit';
 			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
-			$data['alert_form'] = 'Save data successful...';
-		
+			
+			$data['alert_form']    = 'Save data successful...';
 		}else{
-			$data['alert_form'] = 'Save data failed...';
+			$data['alert_form']    = 'Save data failed...';
 		}
 
 		die($this->parser->parse("hot/data_pasien_profil",$data));
 	}
 	
 	function akun_pasien_edit($username){
-		$this->form_validation->set_rules('username','Username', 'trim|required');
 		$this->form_validation->set_rules('password','Password', 'trim');
 
 	        $data 				   = $this->hot_model->get_akun_pasien_where($username); 
@@ -266,7 +265,6 @@ class Pasien extends CI_Controller {
 			$data['title_form']    = "Akun Pasien";
 			$data['action']		   = 'edit';
 			$data['username']	   = $username;
-			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
 			$data['alert_form']    = '';
 
 		if($this->form_validation->run() == FALSE){
@@ -274,10 +272,9 @@ class Pasien extends CI_Controller {
 		}elseif($this->hot_model->update_pasien_akun($username)){
         	$data 			 	   = $this->hot_model->get_akun_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
-			$data['title_form']    = "Data Pasien";
+			$data['title_form']    = "Akun Pasien";
 			$data['username']	   = $username;
 			$data['action']  	   = 'edit';
-			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
 			$data['alert_form']    = 'Save data successful...';
 		}else{
 			$data['alert_form'] = 'Save data failed...';

@@ -1,18 +1,22 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
+  <div class="row" style="margin: 10px 285px -11px 2px">
+    <div class="col-sm-8">
+      <?php if(validation_errors()!=""){ ?>
+      <div class="alert alert-warning alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+        <?php echo validation_errors()?>
+      </div>
+      <?php } ?>
 
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
+      <?php if($alert_form!=""){ ?>
+      <div class="alert alert-success alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+        <?php echo $alert_form?>
+      </div>
+      <?php } ?>
+    </div>
+  </div>
 
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
@@ -29,7 +33,7 @@
         </div><!-- /.box-header -->
 
           <div class="box-footer pull-right">
-            <button type="submit" class="btn btn-primary" id="btn_simpan">Simpan</button>
+            <button type="button" class="btn btn-primary" id="btn_simpan_akun">Simpan</button>
             <button type="reset"  class="btn btn-warning">Ulang</button>
             <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
@@ -72,60 +76,81 @@
 </section>
 
 <script>
-
-  $("#password").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-          $("#btn_simpan").prop('disabled', false);
-      
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-          $("#btn_simpan").prop('disabled', true);
-
-      }else if(pass1!=''&& pass2==""){
-
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-          $("#btn_simpan").prop('disabled', true);
-      };
-  });
-
-  $("#password2").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-          $("#btn_simpan").prop('disabled', false);
-
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-          $("#btn_simpan").prop('disabled', true);
-
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-          $("#btn_simpan").prop('disabled', true);
-      };
-  });
-
-  $(this).css('background-color', '#FFFFFF');
-
   $(function () { 
+    tabIndex = 2;
+
+    $("#btn_simpan_akun").click(function(){
+        var data = new FormData();
+        $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+        $('#biodata_notice').show();
+
+        data.append('password',     $("[name='password']").val());
+
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()."hot/pasien/data_pasien_edit/2/{username}"   ?>',
+            data : data,
+            success : function(response){
+                $('#content' + tabIndex).html(response);
+            }
+        });
+
+        return false;
+    });
+
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
+
+    $("#password").keyup(function(){
+        var pass1 = $("#password").val();
+        var pass2 = $("#password2").val();
+
+        if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
+            $("#password2").css("background-color", "#b3b3ff");
+            $("#confirmMessage2").text("Passwords Match!");
+            $("#btn_simpan_akun").prop('disabled', false);
+        
+        }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
+            $("#password2").css("background-color", "#ff9999");
+            $("#confirmMessage2").text("Passwords Do Not Match!");
+            $("#btn_simpan_akun").prop('disabled', true);
+
+        }else if(pass1!=''&& pass2==""){
+
+        }else if (pass1=='' && pass2==''){
+            $("#password2").css("background-color", "#ffffff");
+            $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
+            $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
+            $("#btn_simpan_akun").prop('disabled', true);
+        };
+    });
+
+    $("#password2").keyup(function(){
+        var pass1 = $("#password").val();
+        var pass2 = $("#password2").val();
+
+        if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
+            $("#password2").css("background-color", "#b3b3ff");
+            $("#confirmMessage2").text("Passwords Match!");
+            $("#btn_simpan_akun").prop('disabled', false);
+
+        }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
+            $("#password2").css("background-color", "#ff9999");
+            $("#confirmMessage2").text("Passwords Do Not Match!");
+            $("#btn_simpan_akun").prop('disabled', true);
+
+        }else if (pass1=='' && pass2==''){
+            $("#password2").css("background-color", "#ffffff");
+            $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
+            $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
+            $("#btn_simpan_akun").prop('disabled', true);
+        };
+    });
 
   });
 </script>

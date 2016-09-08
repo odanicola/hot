@@ -1,19 +1,23 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
+  <div class="row" style="margin: 10px 285px -11px 2px">
+    <div class="col-sm-8">
+      <?php if(validation_errors()!=""){ ?>
+      <div class="alert alert-warning alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+        <?php echo validation_errors()?>
+      </div>
+      <?php } ?>
 
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
-
+      <?php if($alert_form!=""){ ?>
+      <div class="alert alert-success alert-dismissable">
+        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+        <?php echo $alert_form?>
+      </div>
+      <?php } ?>
+    </div>
+  </div>
+  
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -29,7 +33,7 @@
         </div><!-- /.box-header -->
 
           <div class="box-footer pull-right">
-            <button type="submit"class="btn btn-primary">Simpan</button>
+            <button type="button"class="btn btn-primary" id="btn_simpan">Simpan</button>
             <button type="reset" class="btn btn-warning">Ulang</button>
             <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
@@ -169,6 +173,40 @@
 
 <script>
   $(function () { 
+    tabIndex = 1;
+
+    $("#btn_simpan").click(function(){
+          var data = new FormData();
+          $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
+          $('#biodata_notice').show();
+
+          data.append('username',     $("[name='username']").val());
+          data.append('jk',           $("[name='jk']:checked").val());
+          data.append('nama',         $("[name='nama']").val());
+          data.append('bpjs',         $("[name='bpjs']").val());
+          data.append('tb',           $("[name='tb']").val());
+          data.append('bb',           $("[name='bb']").val());
+          data.append('phone_number', $("[name='phone_number']").val());
+          data.append('tgl_lahir',    $("[name='tgl_lahir']").val());
+          data.append('email',        $("[name='email']").val());
+          data.append('alamat',       $("[name='alamat']").val());
+          data.append('code',         $("[name='code']").val());
+
+          $.ajax({
+              cache : false,
+              contentType : false,
+              processData : false,
+              type : 'POST',
+              url : '<?php echo base_url()."hot/pasien/data_pasien_edit/1/{username}"   ?>',
+              data : data,
+              success : function(response){
+                  $('#content' + tabIndex).html(response);
+              }
+          });
+
+          return false;
+    });
+
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
     $("#menu_dashboard").addClass("active");
