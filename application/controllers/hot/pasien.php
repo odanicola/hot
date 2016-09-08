@@ -186,7 +186,7 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim|required');
         $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
         $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
-        $this->form_validation->set_rules('email', 'Email','trim|required');
+        $this->form_validation->set_rules('email', 'Email','trim|required|callback_check_email2');
         $this->form_validation->set_rules('alamat', 'Alamat','trim');
         $this->form_validation->set_rules('code','Puskesmas','trim');
         $this->form_validation->set_rules('tb','Tinggi Badan','trim');
@@ -324,6 +324,18 @@ class Pasien extends CI_Controller {
 				break;
 		}
 
+	}
+
+	function check_email2($str){
+			$check = $this->hot_model->check_email($str);
+			
+			if($check>0){
+				$this->form_validation->set_message('check_email2', 'Email tidak dapat digunakan');
+				return FALSE;
+			}else{
+				return TRUE;
+			}
+		
 	}
 
 
