@@ -233,21 +233,20 @@ class Pasien extends CI_Controller {
 		if($this->form_validation->run()== FALSE){
 			$data 					= $this->hot_model->get_pasien_where($username); 
 			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Ubah Data Pasien";
+			$data['title_form']     = "Data Pasien";
 			$data['action']		    = "edit";
 			$data['username']		= $username;
 			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
 			$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
 
 		}elseif($this->hot_model->update_pasien($username)==1){
-				$this->session->set_flashdata('alert_form', 'Save data successful...');
-				redirect(base_url()."hot/pasien");
-				die("OK");
+				// $this->session->set_flashdata('alert_form', 'Save data successful...');
+				// $data['alert_form'] = 'Save data successful ...';
+				die("Data berhasil disimpan");
 		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/pasien/edit");
-			$data['alert_form'] = 'Save data failed...';
-			die("NOTOK");
+				// $this->session->set_flashdata('alert_form', 'Save data failed...');
+				// $data['alert_form'] = 'Save data failed...';
+				die("Penyimpanan data gagal dilakukan");
 		}
 		$this->template->show($data,"home");
 	}

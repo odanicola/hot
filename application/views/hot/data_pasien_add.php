@@ -38,7 +38,7 @@
         $('#btn_updateProfile').click(function(){
           $.ajax({ 
             type: "POST",
-            url: "<?php echo base_url()?>morganisasi/profile_doupdate",
+            url: "<?php echo base_url()?>hot/pasien/edit/{username}",
             data: $('#updateProfile').serialize(),
             success: function(response){
               $('#notification').html('<div id="information" class="alert alert-warning alert-dismissable"><button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button><h4>  <i class="icon fa fa-check"></i> Information!</h4><span></span></div>');
@@ -77,8 +77,8 @@
 <div class="row" style="background:#FAFAFA">
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#tab_1" data-toggle="tab">Profil Pengguna</a></li>
-      <li><a href="#tab_2" data-toggle="tab">Akun Pengguna</a></li>
+      <li class="active"><a href="#tab_1" data-toggle="tab">Profil Pasien</a></li>
+      <li><a href="#tab_2" data-toggle="tab">Akun Pasien</a></li>
     </ul>
     <div class="tab-content">
 
