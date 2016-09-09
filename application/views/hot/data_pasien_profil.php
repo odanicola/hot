@@ -89,7 +89,7 @@
 
             <div class="form-group">
               <label>Tinggi Badan</label>
-              <input type="text" class="form-control" name="tb" placeholder="Berat Badan" value="<?php 
+              <input type="number" class="form-control" name="tb" placeholder="Berat Badan" value="<?php 
                 if(set_value('tb')=="" && isset($tb)){
                   echo $tb;
                 }else{
@@ -100,7 +100,7 @@
 
             <div class="form-group">
               <label>Berat Badan</label>
-              <input type="text" class="form-control" name="bb" placeholder="Tinggi Badan" value="<?php 
+              <input type="number" class="form-control" name="bb" placeholder="Tinggi Badan" value="<?php 
                 if(set_value('bb')=="" && isset($bb)){
                   echo $bb;
                 }else{
