@@ -75,7 +75,7 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_hot_pasien").addClass("active");
+		$("#menu_hot_kunjungan").addClass("active");
 		$("#menu_dashboard").addClass("active");
 	});
 
