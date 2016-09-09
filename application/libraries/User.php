@@ -41,7 +41,7 @@
 	        return $code.' - '.$nama;
 	    }
 		function login($type=""){
-			$this->obj->db-> where('app_users_list.username',$this->obj->input->post('username'));
+			$this->obj->db-> where("(app_users_list.username ='".$this->obj->input->post('username')."' OR app_users_profile.bpjs='".$this->obj->input->post('username')."')");
 			$this->obj->db-> where('password', $this->_prep_password($this->obj->input->post('password')));
 			$this->obj->db-> join('app_users_profile', 'app_users_profile.username=app_users_list.username AND app_users_profile.code=app_users_list.code','right');
 			$user = $this->obj->db-> get($this->table)->row();

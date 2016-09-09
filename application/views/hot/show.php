@@ -11,9 +11,9 @@
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>hot/kunjungan"><i class="fa fa-th-list"></i></a></span>
+      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>hot/kunjungan/daftar"><i class="fa fa-th-list"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text"><a href="<?php echo base_url()?>hot/kunjungan">Data</a></span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>hot/kunjungan/daftar">Pendaftaran</a></span>
         <span class="info-box-number" style="font-size:14px;">Kunjungan</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
