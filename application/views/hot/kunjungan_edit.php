@@ -1,12 +1,13 @@
 <script>
     $(function () { 
-      var date = new Date(<?php echo date("Y, ").(date("j")-1).", ".(date("n")+1) ?>);
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
       var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
       var btn_batal = "</br></br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='batal()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
 
-      $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height: '30px'});
-      $("#tgl").jqxDateTimeInput('setDate', date);
+      $("#systolic").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#diastolic").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#pulse").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "danger", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+
 
       $("#popup").jqxWindow({
         theme: theme, resizable: false,
@@ -82,7 +83,6 @@
           }
       });
     }
-
 </script>
 
 <div id="popup" style="display:none;">
@@ -96,30 +96,87 @@
           <h3 class="box-title">{title_form}</h3>
         </div>
 
-        <div id="daftar" <?php if(isset($kunjungan['id_kunjungan'])){ echo "style='display:none'"; } ?>>
+        <div>
+          <div class="box-body">
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>Nama</b></div>
+              <div class="col-xs-8">{nama}</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>Usia</b></div>
+              <div class="col-xs-8">{jk} / {usia} Tahun</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-12"><button type="button" name="" class="btn btn-warning">Data Kunjungan Sebelumnya</button></div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-12"><b>Kunjungan Baru : </b></div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>Tanggal</b></div>
+              <div class="col-xs-8">{tgl}</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>Jam</b></div>
+              <div class="col-xs-8">{waktu}</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>TB</b></div>
+              <div class="col-xs-6"><input type="number" class="form-control" name="tb" value="{tb}" placeholder="Tinggi Badan"></div>
+              <div class="col-xs-2 text-left">cm</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>BB</b></div>
+              <div class="col-xs-6"><input type="number" class="form-control" name="bb" value="{bb}" placeholder="Berat Badan"></div>
+              <div class="col-xs-2 text-left">kg</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>BMI</b></div>
+              <div class="col-xs-4"><input type="text" class="form-control" name="bmi" value="{bmi}" readonly placeholder="BMI"></div>
+              <div class="col-xs-4"><input type="text" class="form-control" name="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
+            </div>
+
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4 text-center"><b>Systolic</b></div>
+              <div class="col-xs-4 text-center"><b>Diastolic</b></div>
+              <div class="col-xs-4 text-center"><b>Pulse</b></div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4 text-center"><div id="systolic"></div></div>
+              <div class="col-xs-4 text-center"><div id="diastolic"></div></div>
+              <div class="col-xs-4 text-center"><div id="pulse"></div></div>
+            </div>
+
+            <div class="row" style="padding:4px">
+              <div class="col-xs-12"><b>Pemeriksaan Lab :</b></div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>GDS</b></div>
+              <div class="col-xs-5"><input type="number" class="form-control" name="gds" placeholder="mb/dl" value="{gds}"></div>
+              <div class="col-xs-3 text-center">mg/dl</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>GDP</b></div>
+              <div class="col-xs-5"><input type="number" class="form-control" name="gdp" placeholder="mb/dl" value="gdp"></div>
+              <div class="col-xs-3 text-center">mg/dl</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>GDPP</b></div>
+              <div class="col-xs-5"><input type="number" class="form-control" name="gdpp" placeholder="mb/dl" value="gdpp"></div>
+              <div class="col-xs-3 text-center">mg/dl</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-4"><b>Kolesterol</b></div>
+              <div class="col-xs-5"><input type="number" class="form-control" name="kolesterol" placeholder="mb/dl" value="kolesterol"></div>
+              <div class="col-xs-3 text-center">mg/dl</div>
+            </div>
+
+          </div>
           <div class="box-footer pull-right">
-            <button type="button" class="btn btn-primary" id="btn-daftar">Daftar</button>
+            <button type="button" class="btn btn-primary" id="btn-daftar">Simpan</button>
             <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/kunjungan'">Kembali</button>
           </div>
           <div style="clear:both"></div>
-          <div class="box-body">
-            <div class="form-group">
-              <label>Tentukan Tanggal *</label>
-               <div id='tgl' name="tgl" ></div>
-            </div>
-
-            <div class="form-group">
-              <label>Puskesmas</label>
-              <div>
-                <select name="puskesmas" id="puskesmas" class="form-control">
-                  <?php foreach ($datapuskesmas as $pus ) { ?>
-                  <?php $select = substr($pus->code,1)==$code ? 'selected=selected' : '' ?>
-                    <option value="<?php echo substr($pus->code,1); ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
-                  <?php } ;?>
-                </select>
-              </div>
-            </div>
-          </div>
         </div>
 
 

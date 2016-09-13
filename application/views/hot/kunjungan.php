@@ -1,18 +1,3 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
-
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -27,37 +12,61 @@
           <h3 class="box-title">{title_form}</h3>
 	    </div>
 	      <div class="box-footer">
-	      	<a href="<?php echo base_url()?>hot/pasien/add">
-		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah</button>
+	      	<a href="<?php echo base_url()?>hot/kunjungan/daftar">
+		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Pendaftaran</button>
 		 	</a>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+			<div class="row" style="padding-top:15px">
+			  <div class="col-xs-4">
+			  		<select class="form-control" id="tahun">
+			  			<?php
+			  			foreach($tahun_option as $x=>$y){
+			  				echo "<option value='".$x."' ".($x==$filter_tahun ? 'selected':'').">".$y."</option>";
+			  			}
+			  			?>
+			  		</select>
+			  </div>
+			  <div class="col-xs-5" style="padding-left:2px">
+			  		<select class="form-control" id="bulan">
+			  			<?php
+			  			foreach($bulan_option as $x=>$y){
+			  				if($x>0) {
+			  					echo "<option value='".$x."'".($x==$filter_bulan ? 'selected':'').">".$y."</option>";
+			  				}
+			  			}
+			  			?>
+			  		</select>
+			  </div>
+			  <div class="col-xs-3" style="padding-left:2px">
+			  		<select class="form-control" id="tanggal">
+			  			<?php
+			  			foreach($tanggal_option as $x=>$y){
+			  				if($x>0) {
+			  					echo "<option value='".$x."'".($y==$filter_tanggal ? 'selected':'').">".$y."</option>";
+			  				}
+			  			}
+			  			?>
+			  		</select>
+			  </div>
+			</div>
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
 			  <div class="col-xs-6">
 			  		<select class="form-control" id="jenis_kelamin">
 			  			<option>-</option>
-			  			<option value="L">L</option>
-			  			<option value="P">P</option>
+			  			<option value="L" <?php echo ("L"==$filter_jenis_kelamin ? 'selected':'')?>>L</option>
+			  			<option value="P" <?php echo ("P"==$filter_jenis_kelamin ? 'selected':'')?>>P</option>
 			  		</select>
 			  </div>
 			</div>
 			<div class="row" style="padding-top:5px">
-			  <div class="col-xs-6" style="text-align:right;padding:5px">BPJS</div>
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
 			  <div class="col-xs-6">
-			  		<select class="form-control" id="jenis_bpjs">
-			  			<option>-</option>
-			  			<option value="01">Peserta</option>
-			  			<option value="02">Bukan Peserta</option>
-			  		</select>
-			  </div>
-			</div>
-			<div class="row" style="padding-top:5px">
-			  <div class="col-xs-6" style="text-align:right;padding:5px">Urutan</div>
-			  <div class="col-xs-6">
-			  		<select class="form-control" id="urutan_usia">
-			  			<option>-</option>
-			  			<option value="01">Usia Termuda</option>
-			  			<option value="02">Usia Tertua</option>
+			  		<select class="form-control" id="status_antri">
+			  			<option value="antri" <?php echo ("antri"==$filter_status_antri ? 'selected':'')?>>Antri</option>
+			  			<option value="periksa" <?php echo ("periksa"==$filter_status_antri ? 'selected':'')?>>Periksa</option>
+			  			<option value="selesai" <?php echo ("selesai"==$filter_status_antri ? 'selected':'')?>>Selesai</option>
+			  			<option value="batal" <?php echo ("batal"==$filter_status_antri ? 'selected':'')?>>Batal</option>
 			  		</select>
 			  </div>
 			</div>
@@ -83,6 +92,8 @@
 			datatype: "json",
 			type	: "POST",
 			datafields: [
+			{ name: 'id_kunjungan', type: 'string'},
+			{ name: 'urut', type: 'string'},
 			{ name: 'username', type: 'string'},
 			{ name: 'jk', type: 'string'},
 			{ name: 'usia', type: 'int'},
@@ -92,7 +103,7 @@
 			{ name: 'edit', type: 'number'},
 			{ name: 'delete', type: 'number'}
         ],
-		url: "<?php echo site_url('hot/pasien/json'); ?>",
+		url: "<?php echo site_url('hot/kunjungan/json'); ?>",
 		cache: false,
 		updaterow: function (rowid, rowdata, commit) {
 			},
@@ -125,29 +136,34 @@
 			width: '100%', autoheight: true,autorowheight: true,
 			selectionmode: 'singlerow',
 			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
+			showfilterrow: false, filterable: false, sortable: false, autoheight: true, pageable: true, virtualmode: true, editable: false,
 			rendergridrows: function(obj)
 			{
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
+				{ text: 'No', align: 'center', width: '12%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;text-align:center' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'><br>"+dataRecord.urut+"<br></div>";
+                 }
+                },				
+                { text: 'Nama', datafield: 'nama', align: 'center', width: '43%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
-				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
+				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
 		});
 
 	function aksi(id){
-        $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+id,function(res){
-
-        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+res.response.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+id+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+id+")'></div></div>");
+		var id     = id;
+		var new_id = id.split("|");
+        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_id[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+new_id[0]+"\")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
           $("#popup").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
@@ -155,76 +171,45 @@
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
           $("#popup").jqxWindow('open');
-        },"json");
-
 	}
 
 	function btn_edit(id){
-      	document.location.href="<?php echo base_url()?>hot/pasien/edit/" + id;
-	}
-
-	function btn_del(id){
-		$("#popup").hide();
-		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='del_pasien("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Cancel' onClick='close_popup_del()'></div></div>");
-          $("#popup_del").jqxWindow({
-            theme: theme, resizable: false,
-            width: 250,
-            height: 120,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
-          });
-        $("#popup_del").jqxWindow('open');
-	}
-
-	function del_pasien(id){
-		$.post("<?php echo base_url().'hot/pasien/del' ?>/" + id,  function(){
-		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
-          $("#popup_del1").jqxWindow({
-            theme: theme, resizable: false,
-            width: 250,
-            height: 120,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
-          });
-        $("#popup_del1").jqxWindow('open');
-        	$("#popup").jqxWindow('close');
-        	$("#popup_del").jqxWindow('close');
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-		
+      	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
 	}
 
 	function close_popup(){
         $("#popup").jqxWindow('close');
     }
 
-    function close_popup_del(){
-        $("#popup").jqxWindow('close');
-        $("#popup_del").jqxWindow('close');
-    }
-
-    function close_popup_del1(){
-        $("#popup").jqxWindow('close');
-        $("#popup_del").jqxWindow('close');
-        $("#popup_del1").jqxWindow('close');
-    }
-
-	$("#jenis_bpjs").change(function(){
-		$.post("<?php echo base_url().'hot/pasien/filter_jenis_bpjs' ?>", 'jenis_bpjs='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
     $("#jenis_kelamin").change(function(){
-		$.post("<?php echo base_url().'hot/pasien/filter_jenis_kelamin' ?>", 'jenis_kelamin='+$(this).val(),  function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_jenis_kelamin' ?>", 'filter_jenis_kelamin='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
 
-    $("#urutan_usia").change(function(){
-		$.post("<?php echo base_url().'hot/pasien/filter_urutan_usia' ?>", 'urutan_usia='+$(this).val(),  function(){
+    $("#tahun").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_tahun' ?>", 'filter_tahun='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
 
-    
+    $("#bulan").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#tanggal").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_tanggal' ?>", 'filter_tanggal='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#status_antri").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_status_antri' ?>", 'filter_status_antri='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
 
 </script>

@@ -4,10 +4,11 @@ class Kunjungan extends CI_Controller {
     public function __construct(){
 		parent::__construct();
 		$this->load->model('hot/kunjungan_model');
+		$this->load->model('hot_model');
 	}
 
 	function daftar(){
-		//$this->authentication->verify('hot','add');
+		$this->authentication->verify('hot','add');
 
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
@@ -25,9 +26,12 @@ class Kunjungan extends CI_Controller {
 			$data['title_form']  = "Pendaftaran Kunjungan Pasien";
 			$data['action']      = "add";
 			$data['nik']  		 = $this->session->userdata('username');
+
+			$data['kunjungan']  = $this->kunjungan_model->get_kunjungan($data['nik']);
+
 			$data['code']  		 = $this->session->userdata('puskesmas');
 
-			$data['datapuskesmas']  = $this->kunjungan_model->get_pus("317204","code","cl_phc");
+			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
 
 			$data['content'] = $this->parser->parse("hot/kunjungan_daftar_add",$data,true);
 			$this->template->show($data,"home");
@@ -38,119 +42,126 @@ class Kunjungan extends CI_Controller {
 		}
 	}
 
+	function daftar_batal(){
+		$username = $this->input->post('username');
+
+		if($this->kunjungan_model->batal($username)){
+			echo "OK";
+		}else{
+			echo "ERROR";
+		}
+	}
+
+	function index(){
+		$this->authentication->verify('hot','show');
+		$data['title_group'] = "Kunjungan";
+		$data['title_form']  = "Data Kunjungan";
+
+		$this->session->userdata('filter_tahun')		=="" ? $this->session->set_userdata('filter_tahun',date('Y')): '';
+		$this->session->userdata('filter_bulan')		=="" ? $this->session->set_userdata('filter_bulan',date('n')): '';
+		$this->session->userdata('filter_tanggal')		=="" ? $this->session->set_userdata('filter_tanggal',date('d')): '';
+		$this->session->userdata('filter_status_antri')	=="" ? $this->session->set_userdata('filter_status_antri','antri'): '';
+		$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
+
+		$data['filter_tahun'] 			= $this->session->userdata('filter_tahun');
+		$data['filter_bulan'] 			= $this->session->userdata('filter_bulan');
+		$data['filter_tanggal']	 		= $this->session->userdata('filter_tanggal');
+		$data['filter_status_antri'] 	= $this->session->userdata('filter_status_antri');
+		$data['filter_jenis_kelamin'] 	= $this->session->userdata('filter_jenis_kelamin');
+
+		$data['bulan_option'] = array("0","Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
+		$data['tahun_option'] = array();
+		for($i=date("Y");$i>=(date("Y"))-5;$i--){
+			$data['tahun_option'][] = $i;
+		}
+		$data['tanggal_option'] = array();
+		for($i=0;$i<=31;$i++){
+			$d = $i <10 ? '0'.$i : $i;
+			$data['tanggal_option'][] = $d;
+		}
+
+		$data['content'] = $this->parser->parse("hot/kunjungan",$data,true);
+
+		$this->template->show($data,"home");
+	}
+
+	function filter_jenis_kelamin(){
+		if($_POST) {
+			if($this->input->post('filter_jenis_kelamin') != '') {
+				$this->session->set_userdata('filter_jenis_kelamin',$this->input->post('filter_jenis_kelamin'));
+			}
+		}
+	}
+
+	function filter_status_antri(){
+		if($_POST) {
+			if($this->input->post('filter_status_antri') != '') {
+				$this->session->set_userdata('filter_status_antri',$this->input->post('filter_status_antri'));
+			}
+		}
+	}
+
+	function filter_tahun(){
+		if($_POST) {
+			if($this->input->post('filter_tahun') != '') {
+				$this->session->set_userdata('filter_tahun',$this->input->post('filter_tahun'));
+			}
+		}
+	}
+
+	function filter_bulan(){
+		if($_POST) {
+			if($this->input->post('filter_bulan') != '') {
+				$this->session->set_userdata('filter_bulan',$this->input->post('filter_bulan'));
+			}
+		}
+	}
+	
+	function filter_tanggal(){
+		if($_POST) {
+			if($this->input->post('filter_tanggal') != '') {
+				$this->session->set_userdata('filter_tanggal',$this->input->post('filter_tanggal'));
+			}
+		}
+	}
+	
 
 	function json(){
+		$tgl = $this->session->userdata('filter_tahun')."-".($this->session->userdata('filter_bulan')<10 ? "0":"").$this->session->userdata('filter_bulan')."-".($this->session->userdata('filter_tanggal')<10 ? "0":"").$this->session->userdata('filter_tanggal');
 
-		if($_POST) {
-			$fil = $this->input->post('filterscount');
-			$ord = $this->input->post('sortdatafield');
-
-			for($i=0;$i<$fil;$i++) {
-				$field = $this->input->post('filterdatafield'.$i);
-				$value = $this->input->post('filtervalue'.$i);
-
-				$this->db->like($field,$value);
-			}
-
-			if(!empty($ord)) {
-				$this->db->order_by($ord, $this->input->post('sortorder'));
-			}
-		}
-
-		if($this->session->userdata('filter_jenis_bpjs')!=''){
-			if($this->session->userdata('filter_jenis_bpjs')==01){
-				$this->db->where('app_users_profile.bpjs IS NOT NULL');
-			}elseif($this->session->userdata('filter_jenis_bpjs')==02) {
-				$this->db->where('app_users_profile.bpjs IS NULL ');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
+		if($this->session->userdata('level')=="pasien"){
+			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
 		}else{
+			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
+		} 
 
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		if($this->session->userdata('filter_jenis_kelamin')!=''){
-			if($this->session->userdata('filter_jenis_kelamin')=='L'){
-				$this->db->where('app_users_profile.jk','L');
-			}elseif ($this->session->userdata('filter_jenis_kelamin')=='P') {
-				$this->db->where('app_users_profile.jk','P');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
-		}
-
-		if($this->session->userdata('filter_urutan_usia')!=''){
-			if($this->session->userdata('filter_urutan_usia')==01){
-				$this->db->order_by("usia", "ASC");
-			}elseif($this->session->userdata('filter_urutan_usia')==02){
-				$this->db->order_by("usia", "DESC");
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
-		}
-
+		$this->db->where('kunjungan.tgl',$tgl);
+		$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
 		$rows_all = $this->kunjungan_model->get_data_pasien();
 
-		if($_POST) {
-			$fil = $this->input->post('filterscount');
-			$ord = $this->input->post('sortdatafield');
 
-			for($i=0;$i<$fil;$i++) {
-				$field = $this->input->post('filterdatafield'.$i);
-				$value = $this->input->post('filtervalue'.$i);
-
-				$this->db->like($field,$value);
-			}
-
-			if(!empty($ord)) {
-				$this->db->order_by($ord, $this->input->post('sortorder'));
-			}
-		}
-
-		if($this->session->userdata('filter_jenis_bpjs')!=''){
-			if($this->session->userdata('filter_jenis_bpjs')==01){
-				$this->db->where('app_users_profile.bpjs IS NOT NULL');
-			}elseif($this->session->userdata('filter_jenis_bpjs')==02) {
-				$this->db->where('app_users_profile.bpjs IS NULL ');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
+		if($this->session->userdata('level')=="pasien"){
+			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
 		}else{
+			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
+		} 
 
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		if($this->session->userdata('filter_jenis_kelamin')!=''){
-			if($this->session->userdata('filter_jenis_kelamin')=='L'){
-				$this->db->where('app_users_profile.jk','L');
-			}elseif ($this->session->userdata('filter_jenis_kelamin')=='P') {
-				$this->db->where('app_users_profile.jk','P');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
-		}
-
-		if($this->session->userdata('filter_urutan_usia')!=''){
-			if($this->session->userdata('filter_urutan_usia')==01){
-				$this->db->order_by("usia", "ASC");
-			}elseif($this->session->userdata('filter_urutan_usia')==02){
-				$this->db->order_by("usia", "DESC");
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
-		}
-
+		$this->db->where('kunjungan.tgl',$tgl);
+		$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
 		$rows = $this->kunjungan_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
+				'id_kunjungan'	=> $act->id_kunjungan,
+				'urut'	    	=> substr($act->id_kunjungan,-3),
 				'username'	    => $act->username,
 				'jk'			=> $act->jk,
 				'nama'   	    => $act->nama,
@@ -171,104 +182,22 @@ class Kunjungan extends CI_Controller {
 		echo json_encode(array($json));
 	}
 
-	function index(){
-		$this->authentication->verify('mst','show');
-		$data['title_group'] = "Dashboard";
-		$data['title_form']  = "Data Pasien";
+	function edit($id_kunjungan=0){
+		$this->authentication->verify('hot','edit');
 
-		$this->session->set_userdata('filter_jenis_bpjs','');
-		$this->session->set_userdata('filter_urutan_usia','');
-		$this->session->set_userdata('filter_jenis_kelamin','');
+		$data 				    = $this->kunjungan_model->get_pemeriksaan($id_kunjungan); 
+		$data['title_group']    = "Kunjungan";
+		$data['title_form']     = "Pengukuran";
+		$data['action']		    = "edit";
+		$data['id_kunjungan']	= $id_kunjungan;
 
-		$data['content'] = $this->parser->parse("hot/kunjungan",$data,true);
+		$data['content'] 		= $this->parser->parse("hot/kunjungan_edit",$data,true);
 
 		$this->template->show($data,"home");
 	}
 
-	function add(){
-		$this->authentication->verify('mst','add');
-
-        $this->form_validation->set_rules('username','NIK', 'trim|required');
-        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('pass','Password', 'trim');
-        $this->form_validation->set_rules('nama','Nama', 'trim');
-        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
-        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
-        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
-        $this->form_validation->set_rules('email', 'Email','trim');
-        $this->form_validation->set_rules('alamat', 'Alamat','trim');
-        $this->form_validation->set_rules('code','Puskesmas','trim');
-
-		if($this->form_validation->run()== FALSE){
-			$data['title_group'] = "Dashboard";
-			$data['title_form']  = "Tambah Data Pasien";
-			$data['action']      = "add";
-			$data['alert_form']  = '';
-
-			$data['datapuskesmas']  = $this->kunjungan_model->get_pus("317204","code","cl_phc");
-
-			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
-			$this->template->show($data,"home");
-		}elseif($this->kunjungan_model->inesert_pasien()=='true'){
-			$this->session->set_flashdata('alert', 'Save data successful...');
-			$data['alert_form'] = 'Save data successful...';
-			redirect(base_url()."hot/pasien/add");
-			die("OK");
-		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/pasien/add");
-			$data['alert_form'] = 'Save data failed...';
-			die("NOTOK");
-		}
-	}
-
-	function edit($username=0){
-		$this->authentication->verify('mst','edit');
-
-        $this->form_validation->set_rules('username','Username', 'trim');
-        $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('pass','Password', 'trim');
-        $this->form_validation->set_rules('nama','Nama', 'trim');
-        $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
-        $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
-        $this->form_validation->set_rules('phone_number','No.Telepon', 'trim');
-        $this->form_validation->set_rules('email', 'Email','trim');
-        $this->form_validation->set_rules('alamat', 'Alamat','trim');
-        $this->form_validation->set_rules('code','Puskesmas','trim');
-
-			$data['action']		    = "edit";
-
-
-		if($this->form_validation->run()== FALSE){
-			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Ubah Data Pasien";
-			$data['action']		    = "edit";
-			$data['username']		= $username;
-			$data 				    = $this->kunjungan_model->get_pasien_where($username); 
-
-			$data['datapuskesmas']  = $this->kunjungan_model->get_pus("317204","code","cl_phc");
-			$data['content'] 		= $this->parser->parse("hot/data_pasien_add",$data,true);
-
-			$this->template->show($data,"home");
-		}elseif($this->kunjungan_model->update_pasien($username)){
-		    if ($res == 'false') {
-				$this->session->set_flashdata('alert_form', 'Save data failed...');
-				redirect(base_url()."hot");
-				$data['alert_form'] = 'Save data failed...';
-				die("NOTOK");
-			}else{
-		    	$this->session->set_flashdata('alert', 'Save data successful...');
-				// redirect(base_url()."hot/add_pasien");
-				die("OK");
-			}
-		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			// redirect(base_url()."hot/add_pasien");
-		}
-	}
-
 	function del($username=0){
-		$this->authentication->verify('mst','del');
+		$this->authentication->verify('hot','del');
 
 		$data['username']		= $username;
 		if($this->kunjungan_model->delete_pasien($username)){

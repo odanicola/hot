@@ -16,32 +16,33 @@ class Kunjungan_model extends CI_Model {
     }
 
     function get_data_pasien($options=array()){
-        $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
-        $this->db->join('app_users_list','app_users_profile.username = app_users_list.username','left');
-        $this->db->where("level","pasien");
-        $query = $this->db->get($this->tabel_pasien);
+        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
+        $this->db->order_by('id_kunjungan','asc');
+        $query = $this->db->get('kunjungan');
         return $query->result();
     }
 
-    function get_pasien_where($username){
-        $this->db->select("app_users_profile.username,app_users_list.password,app_users_profile.alamat,app_users_profile.email,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
-        $this->db->join('app_users_list','app_users_profile.username = app_users_list.username','left');
-        $this->db->where("level","pasien");
-        $this->db->where("app_users_profile.username",$username);
-        $query = $this->db->get($this->tabel_pasien);
+    function get_pemeriksaan($id_kunjungan){
+        $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
+        $this->db->order_by('id_kunjungan','asc');
+        $this->db->where('id_kunjungan',$id_kunjungan);
+        $query = $this->db->get('kunjungan');
+        return $query->row_array();
+    }
+
+    function get_kunjungan($nik=""){
+        $data = array();
+        $this->db->where("username",$nik);
+        $this->db->where("status_antri","antri");
+        $query = $this->db->get("kunjungan");
         if ($query->num_rows()>0) {
             $data = $query->row_array();
         }
 
         $query->free_result();
         return $data;
-    }
-
-    function get_pus ($code,$condition,$table){
-        $this->db->select("*");
-        $this->db->like($condition,$code);
-        $query = $this->db->get($table);
-        return $query->result();
     }
 
     function insert(){
@@ -64,38 +65,16 @@ class Kunjungan_model extends CI_Model {
         }
     }
 
-    function update_pasien($username){
-
-        $data_list['username']           = $this->input->post('username');
-        $data_list['code']               = $this->input->post('code');
-        $data_list['level']              = "pasien";
-        $data_list['password']           = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
-        $data_list['status_active']      = 1;
-        $data_list['status_aproved']     = 0;
-        $data_list['online']             = 0;
-        $data_list['last_login']         = 0;
-        $data_list['last_active']        = 0;
-        $data_list['datereg']            = time();  
-
-        $data_profile['username']        = $this->input->post('username');
-        $data_profile['nama']            = $this->input->post('nama');
-        $data_profile['code']            = $this->input->post('code');
-        $data_profile['phone_number']    = $this->input->post('phone_number');
-        $data_profile['email']           = $this->input->post('email');
-        $data_profile['bpjs']            = $this->input->post('bpjs');
-        $data_profile['jk']              = $this->input->post('jk');
-        $data_profile['tgl_lahir']       = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
-        $data_profile['alamat']          = $this->input->post('alamat');
+    function batal(){
+        $data['status_antri']   = 'batal';
 
         $this->db->where('username',$this->input->post('username'));
-        $query = $this->db->get('app_users_list');
+        $this->db->where('status_antri','antri');
 
-        if ($query->num_rows() > 0) {
-            return 'false';
+        if ($this->db->update('kunjungan',$data)) {
+            return true;
         }else{
-            $this->db->update('app_users_list', $data_list);
-            $this->db->update('app_users_profile', $data_profile);
-                return 'true';  
+            return false;  
         }
     }
 
