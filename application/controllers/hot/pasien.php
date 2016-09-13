@@ -182,7 +182,7 @@ class Pasien extends CI_Controller {
 
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('password','Password', 'trim|required|callback_check_pass2|matches[password2]');
+        $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
         $this->form_validation->set_rules('nama','Nama', 'trim|required');
         $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim|required');
         $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
@@ -259,7 +259,7 @@ class Pasien extends CI_Controller {
 	}
 	
 	function akun_pasien_edit($username){
-		$this->form_validation->set_rules('password','Password', 'trim');
+        $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
 
 	        $data 				   = $this->hot_model->get_akun_pasien_where($username); 
 	        $data['title_group']   = "Dashboard";
@@ -285,6 +285,7 @@ class Pasien extends CI_Controller {
 
 	function edit($username=0) {
 		$this->authentication->verify('hot','add');
+        $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
 
         $data 				 = $this->hot_model->get_pasien_where($username); 
 		$data['username']	 = $username;
@@ -364,6 +365,8 @@ class Pasien extends CI_Controller {
 			return TRUE;
  		 }
   	}
+
+
 
 
 

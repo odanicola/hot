@@ -55,7 +55,7 @@
                 if(set_value('password')=="" && isset($password)){
                   // echo $password;
                 }else{
-                  echo  set_value('password');
+                  // echo  set_value('password');
                 }
                 ?>">
               <span id="confirmMessage1" class="confirmMessage"></span>
@@ -64,7 +64,6 @@
             <div class="form-group">
               <label>Konfirmasi Password</label>
               <input type="password" class="form-control" id="password2" name="password2" placeholder="Konfirmasi Password">
-              <span id="confirmMessage2" class="confirmMessage"></span>
             </div>
 
           </div>
@@ -85,6 +84,7 @@
         $('#biodata_notice').show();
 
         data.append('password',     $("[name='password']").val());
+        data.append('password2',    $("[name='password2']").val());
 
         $.ajax({
             cache : false,
@@ -105,52 +105,6 @@
 
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
-
-    $("#password").keyup(function(){
-        var pass1 = $("#password").val();
-        var pass2 = $("#password2").val();
-
-        if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-            $("#password2").css("background-color", "#b3b3ff");
-            $("#confirmMessage2").text("Passwords Match!");
-            $("#btn_simpan_akun").prop('disabled', false);
-        
-        }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
-            $("#password2").css("background-color", "#ff9999");
-            $("#confirmMessage2").text("Passwords Do Not Match!");
-            $("#btn_simpan_akun").prop('disabled', true);
-
-        }else if(pass1!=''&& pass2==""){
-
-        }else if (pass1=='' && pass2==''){
-            $("#password2").css("background-color", "#ffffff");
-            $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-            $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-            $("#btn_simpan_akun").prop('disabled', true);
-        };
-    });
-
-    $("#password2").keyup(function(){
-        var pass1 = $("#password").val();
-        var pass2 = $("#password2").val();
-
-        if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-            $("#password2").css("background-color", "#b3b3ff");
-            $("#confirmMessage2").text("Passwords Match!");
-            $("#btn_simpan_akun").prop('disabled', false);
-
-        }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
-            $("#password2").css("background-color", "#ff9999");
-            $("#confirmMessage2").text("Passwords Do Not Match!");
-            $("#btn_simpan_akun").prop('disabled', true);
-
-        }else if (pass1=='' && pass2==''){
-            $("#password2").css("background-color", "#ffffff");
-            $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-            $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-            $("#btn_simpan_akun").prop('disabled', true);
-        };
-    });
 
   });
 </script>
