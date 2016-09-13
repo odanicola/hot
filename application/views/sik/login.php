@@ -339,8 +339,11 @@
               isModal: true, autoOpen: false, modalOpacity: 0.4
             });
 
-            if($("#pass").val() == "" || $("#pass2").val()==""){
-                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi password dengan benar."+btn+"</div>");
+            if ($("[name='nik']").val() == "" || $("[name='bpjs']").val()==""){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Isi data dengan lengkap."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if($("#pass").val() == "" || $("#pass2").val()==""){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi password."+btn+"</div>");
                 $("#popup_daftar").jqxWindow('open');
             }else if($("#pass").val() != $("#pass2").val()){
                 $("#popup_content_daftar").html("<div style='text-align:center'><br>Password tidak sama."+btn+"</div>");
