@@ -163,7 +163,8 @@ class Pasien extends CI_Controller {
 	}
 
 	function index(){
-		$this->authentication->verify('hot','show');
+		$this->authentication->verify('mst','edit');
+
 		$data['title_group'] = "Dashboard";
 		$data['title_form']  = "Data Pasien";
 
