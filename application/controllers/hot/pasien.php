@@ -202,7 +202,7 @@ class Pasien extends CI_Controller {
 			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
 
 			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
-		}elseif($this->hot_model->inesert_pasien()=='true'){
+		}elseif($this->hot_model->insert_pasien()=='true'){
 			$this->session->set_flashdata('alert_form', 'Save data successful...');
 			redirect(base_url()."hot/pasien");
 			die("OK");

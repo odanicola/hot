@@ -78,12 +78,12 @@ class Hot_model extends CI_Model {
         return $query->result();
     }
 
-    function inesert_pasien(){
+    function insert_pasien(){
 
         $data_list['username']           = $this->input->post('username');
         $data_list['code']               = substr($this->input->post('code'),1,10);
         $data_list['level']              = "pasien";
-        $data_list['password']           = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
+        $data_list['password']           = $this->_prep_password($this->input->post('password'));
         $data_list['status_active']      = 1;
         $data_list['status_aproved']     = 0;
         $data_list['online']             = 0;
@@ -100,6 +100,8 @@ class Hot_model extends CI_Model {
         $data_profile['jk']              = $this->input->post('jk');
         $data_profile['tgl_lahir']       = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
         $data_profile['alamat']          = $this->input->post('alamat');
+        $data_profile['tb']              = $this->input->post('tb');
+        $data_profile['bb']              = $this->input->post('bb');
 
         $this->db->where('username',$this->input->post('username'));
         $query = $this->db->get('app_users_list');
@@ -117,7 +119,7 @@ class Hot_model extends CI_Model {
 
         $data_list['code']               = substr($this->input->post('code'),1,10);
         $data_list['level']              = "pasien";
-        $data_list['password']           = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
+        $data_list['password']           = $this->_prep_password($this->input->post('password'));
         $data_list['status_active']      = 1;
         $data_list['status_aproved']     = 0;
         $data_list['online']             = 0;
@@ -145,7 +147,6 @@ class Hot_model extends CI_Model {
     }
 
     function update_pasien_profil($username){
-
         $data_profile['nama']            = $this->input->post('nama');
         $data_profile['code']            = substr($this->input->post('code'),1,10);
         $data_profile['phone_number']    = $this->input->post('phone_number');
@@ -154,6 +155,8 @@ class Hot_model extends CI_Model {
         $data_profile['jk']              = $this->input->post('jk');
         $data_profile['tgl_lahir']       = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
         $data_profile['alamat']          = $this->input->post('alamat');
+        $data_profile['tb']              = $this->input->post('tb');
+        $data_profile['bb']              = $this->input->post('bb');
         
         $this->db->where('username',$username);
         if($this->db->update('app_users_profile',$data_profile)){
@@ -164,8 +167,7 @@ class Hot_model extends CI_Model {
     }
 
     function update_pasien_akun($username){
-
-        $data_list['password'] = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
+        $data_list['password'] = $this->_prep_password($this->input->post('password'));
         
         $this->db->where('username',$username);
         if($this->db->update('app_users_list', $data_list)){
@@ -192,6 +194,18 @@ class Hot_model extends CI_Model {
         $this->db->delete('app_users_list', array('username' => $username));
         $this->db->delete('app_users_profile', array('username' => $username));
     } 
+
+    function check_email($str){
+        $uid = ($this->session->userdata('username')!="") ? $this->session->userdata('username') : "";
+        $this->db->where('email',$str);
+        $this->db->where('username <>', $uid);
+        $query = $this->db->get('app_users_profile');
+        return $query->num_rows();
+    }
+
+    function _prep_password($password){
+        return $this->encrypt->sha1($password.$this->config->item('encryption_key'));
+    }
 }
 
 
