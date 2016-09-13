@@ -178,7 +178,7 @@ class Pasien extends CI_Controller {
 	}
 
 	function add(){
-		$this->authentication->verify('hot','add');
+		$this->authentication->verify('mst','add');
 
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
@@ -284,7 +284,7 @@ class Pasien extends CI_Controller {
 	}
 
 	function edit($username=0) {
-		$this->authentication->verify('hot','add');
+		$this->authentication->verify('mst','add');
 
         $data 				 = $this->hot_model->get_pasien_where($username); 
 		$data['username']	 = $username;
@@ -296,7 +296,7 @@ class Pasien extends CI_Controller {
 	}
 
 	function del($username=0){
-		$this->authentication->verify('hot','del');
+		$this->authentication->verify('mst','del');
 
 		$data['username']		= $username;
 		if($this->hot_model->delete_pasien($username)){
