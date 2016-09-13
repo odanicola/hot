@@ -182,7 +182,7 @@ class Pasien extends CI_Controller {
 
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
-        $this->form_validation->set_rules('password','Password', 'trim|required');
+        $this->form_validation->set_rules('password','Password', 'trim|required|callback_check_pass2|matches[password2]');
         $this->form_validation->set_rules('nama','Nama', 'trim|required');
         $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim|required');
         $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
@@ -338,6 +338,32 @@ class Pasien extends CI_Controller {
 			}
 		
 	}
+
+	function check_pass2($str){
+		$regex1=preg_match('/[A-Z]/', $str);
+		$regex2=preg_match('/[a-z]/', $str);
+		$regex3=preg_match('/[0-9]/', $str);
+		
+		
+		 if (!$regex1 || !$regex2 || !$regex3){
+			if(!$regex1==true)
+			{
+				$this->form_validation->set_message('check_pass2', 'Format password harus kombinasi huruf besar');
+			}
+			else if(!$regex2==true)
+			{
+				$this->form_validation->set_message('check_pass2', 'Format password harus kombinasi huruf kecil');
+			}
+			else
+			{
+				$this->form_validation->set_message('check_pass2', 'Format password harus kombinasi angka');
+			}
+			return FALSE;
+		 }
+		 else{
+			return TRUE;
+ 		 }
+  	}
 
 
 

@@ -64,13 +64,11 @@
                   echo  set_value('password');
                 }
                 ?>">
-              <span id="confirmMessage1" class="confirmMessage"></span>
             </div>
 
             <div class="form-group">
               <label>Konfirmasi Password</label>
               <input type="password" class="form-control" id="password2" name="password2" placeholder="Konfirmasi Password">
-              <span id="confirmMessage2" class="confirmMessage"></span>
             </div>
 
             <div class="form-group">
@@ -103,7 +101,7 @@
 
             <div class="form-group">
               <label>Tinggi Badan</label>
-              <input type="number" class="form-control" name="tb" placeholder="Berat Badan" value="<?php 
+              <input type="number" class="form-control" name="tb" placeholder="Tinggi Badan" value="<?php 
                 if(set_value('tb')=="" && isset($tb)){
                   echo $tb;
                 }else{
@@ -114,7 +112,7 @@
 
             <div class="form-group">
               <label>Berat Badan</label>
-              <input type="number" class="form-control" name="bb" placeholder="Tinggi Badan" value="<?php 
+              <input type="number" class="form-control" name="bb" placeholder="Berat Badan" value="<?php 
                 if(set_value('bb')=="" && isset($bb)){
                   echo $bb;
                 }else{
@@ -186,45 +184,6 @@
 </section>
 
 <script>
-
-  $("#password").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1==""&&pass2!='')){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-
-      }else if(pass1!=''&& pass2==""){
-
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-
-      };
-  });
-
-  $("#password2").keyup(function(){
-      var pass1 = $("#password").val();
-      var pass2 = $("#password2").val();
-
-      if ((pass1 == pass2)&&(pass1!="" && pass2!="")) {
-          $("#password2").css("background-color", "#b3b3ff");
-          $("#confirmMessage2").text("Passwords Match!");
-      }else if((pass1 != pass2)&&(pass1!="" && pass2!="")||(pass1!=''&&pass2=="")){
-          $("#password2").css("background-color", "#ff9999");
-          $("#confirmMessage2").text("Passwords Do Not Match!");
-      }else if (pass1=='' && pass2==''){
-          $("#password2").css("background-color", "#ffffff");
-          $("#confirmMessage1").text("Passwords Tidak Boleh Kosong!");
-          $("#confirmMessage2").text("Passwords Tidak Boleh Kosong!");
-      };
-  });
 
   $(function () { 
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
