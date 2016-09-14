@@ -17,6 +17,7 @@ class Morganisasi extends CI_Controller {
 		$data['title_form'] 	= "Home";
 		$data['j_pasien'] 		= $this->morganisasi_model->get_jml_pasien();
 		$data['j_dokter'] 		= $this->morganisasi_model->get_jml_dokter();
+		$data['j_antrian'] 		= $this->morganisasi_model->get_jml_antrian();
 
 
 		if($this->session->userdata('level')=="pasien"){

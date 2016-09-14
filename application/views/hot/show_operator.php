@@ -5,7 +5,10 @@
       <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>hot/kunjungan"><i class="fa fa-list-ol"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>hot/kunjungan">Kunjungan</a></span>
-        <span class="info-box-number" style="font-size:14px;">2 Antrian</span>
+        <span class="info-box-number" style="font-size:14px;"><?php foreach ($j_antrian as $row) { 
+        echo number_format($row->jml);  
+        }?> Antrian</span>
+
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
@@ -26,10 +29,10 @@
       <span class="info-box-icon bg-purple"><a href="<?php echo base_url()?>hot/dokter"><i class="fa fa-user-md"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>hot/dokter">Data Dokter</a></span>
-        <!-- <span class="info-box-number" style="font-size:14px;">1 Orang</span> -->
         <span class="info-box-number" style="font-size:14px;"><?php foreach ($j_dokter as $row) { 
         echo number_format($row->jml);  
         }?> Orang</span>
+
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->

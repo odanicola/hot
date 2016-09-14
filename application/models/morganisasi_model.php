@@ -20,6 +20,12 @@ class Morganisasi_model extends CI_Model {
 		return $query->result();
 	}
 
+	function get_jml_antrian(){
+		$query = $this->db->query("SELECT COUNT(`id_kunjungan`) AS jml FROM kunjungan WHERE status_antri = 'antri' ");
+
+		return $query->result();
+	}
+
     function get_datawhere ($code,$condition,$table){
         $this->db->select("*");
         $this->db->like($condition,$code);
