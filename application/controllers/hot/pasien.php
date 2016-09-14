@@ -245,7 +245,7 @@ class Pasien extends CI_Controller {
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_profil",$data));
-		}elseif($this->hot_model->update_pasien_profil($username)){
+		}elseif($res=$this->hot_model->update_pasien_profil($username)=='true'){
         	
         	$data 			 	   = $this->hot_model->get_profil_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
@@ -253,12 +253,10 @@ class Pasien extends CI_Controller {
 			$data['username']	   = $username;
 			$data['action']  	   = 'edit';
 			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
-			
-			$data['alert_form']    = 'Save data successful...';
+			echo "OK|";
 		}else{
-			$data['alert_form']    = 'Save data failed...';
+			echo "NOTOK|";
 		}
-
 		die($this->parser->parse("hot/data_pasien_profil",$data));
 	}
 	
@@ -280,9 +278,11 @@ class Pasien extends CI_Controller {
 			$data['title_form']    = "Akun Pasien";
 			$data['username']	   = $username;
 			$data['action']  	   = 'edit';
-			$data['alert_form']    = 'Save data successful...';
+			echo "OK|";
+			// $data['alert_form']    = 'Save data successful...';
 		}else{
-			$data['alert_form'] = 'Save data failed...';
+			echo "NOTOK|";
+			// $data['alert_form'] = 'Save data failed...';
 		}
 		die($this->parser->parse("hot/data_pasien_akun",$data));
 	}

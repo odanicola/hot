@@ -7,20 +7,13 @@
         <?php echo validation_errors()?>
       </div>
       <?php } ?>
-
-      <?php if($alert_form!=""){ ?>
-      <div class="alert alert-success alert-dismissable">
-        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-        <?php echo $alert_form?>
-      </div>
-      <?php } ?>
     </div>
   </div>
 
-<div id="popup" style="display:none;">
-  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
+<div id="popup_akun" style="display:none;">
+  <div id="popup_title_akun">Hypertension Online Treatment</div><div id="popup_content_akun">{popup}</div>
 </div>
+
 <section class="content">
 <form action="<?php echo base_url()?>hot/pasien/data_pasien_{action}/2/{username}" method="POST" name="">
   <div class="row">
@@ -69,6 +62,11 @@
 </section>
 
 <script>
+
+  function close_popup(){
+        $("#popup_akun").jqxWindow('close');
+  }
+  
   $(function () { 
     tabIndex = 2;
 
@@ -88,7 +86,27 @@
             url : '<?php echo base_url()."hot/pasien/data_pasien_edit/2/{username}"   ?>',
             data : data,
             success : function(response){
-                $('#content' + tabIndex).html(response);
+              a = response.split("|");
+                if(a[0]=='OK'){
+                  $("#popup_content_akun").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil diubah.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                      $("#popup_akun").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 120,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                  $("#popup_akun").jqxWindow('open');
+                }else{
+                  $("#popup_content_akun").html("<div style='padding:5px'><br><div style='text-align:center'>Data gagal diubah.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                      $("#popup_akun").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 120,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                  $("#popup_akun").jqxWindow('open');
+                }
+                // $('#content' + tabIndex).html(response);
             }
         });
 
