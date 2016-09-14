@@ -31,8 +31,8 @@
       </tr>
       <tr><td colspan="2" height="10"></td></tr>
       <tr>
-        <td align="right"><input value="Login" class="btn-green" id="submit" type="submit"></td>
         <td align="right"><input value="Sign Up" class="btn-green" id="signup" type="button"></td>
+        <td align="right"><input value="Login" class="btn-green" id="submit" type="submit"></td>
       </tr>
       <tr>
         <td colspan="2" style="font-size:9pt;font-family:Calibri;color:#FFFFFF;padding:10px 20px;">Silahkan anda login terlebih dahulu, untuk menggunakan fasilitas <i>infoKes</i><br>&nbsp;</td>

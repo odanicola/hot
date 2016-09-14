@@ -35,5 +35,12 @@ class Bpjs_api extends CI_Controller {
       	$data = $this->bpjs->bpjs_search($by,$no);
       	echo json_encode($data);
 	}
+
+	function get_dokter(){
+		$code = $this->input->post('puskesmas');
+
+      	$data = $this->bpjs->get_dokter($code);
+      	echo json_encode($data);
+	}
 	
 }

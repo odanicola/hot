@@ -54,6 +54,7 @@ class Bpjs extends CI_Model {
 	        		$data = $this->get_demo_bpjs();
 		        }
     		}
+    		//print_r($data);die();
 	    }
     	elseif($default=="global"){
 	    	$id='P'.$this->session->userdata('puskesmas');
@@ -88,8 +89,13 @@ class Bpjs extends CI_Model {
 	    return $data;
     }
 
-	function getApi($url="",$methode="global",$ver = 1){
-	   $this->get_data_bpjs($methode);
+	function getApi($url="",$methode="global",$ver = 1,$provider=""){
+		if($provider!=""){
+		   $this->get_data_bpjs("live",$provider);
+		}else{
+		   $this->get_data_bpjs($methode);
+		}
+
 	   if($ver!=1){
 			$this->server = str_replace("v1", "v2", $this->server);
 	   }
@@ -261,6 +267,31 @@ class Bpjs extends CI_Model {
 
       	return $data;
 	}
+
+	function get_dokter($code){
+    	$this->db->where('code',$code);
+    	$data = $this->db->get('cl_phc_bpjs')->row_array();
+
+		if(isset($data['username'])){
+			$data = $this->getApi('dokter/0/99',"live",1,$data['username']);
+			if(isset($data['response']['count']) && $data['response']['count']>0){
+	    		$this->db->where('cl_phc', $code);
+	    		$this->db->delete('bpjs_data_dokter');
+
+				foreach ($data['response']['list'] as $dokter) {
+					$dt['code']		= $dokter['kdDokter'];
+					$dt['value']	= $dokter['nmDokter'];
+					$dt['cl_phc']	= $code;
+					$dt['status']	= 1;
+
+		    		$this->db->insert('bpjs_data_dokter', $dt);
+				}
+			}
+
+	      	return $data['response']['count'];
+		}
+	}
+
 	function inserbpjs($kode){
        $tampildata = $this->getApi('peserta/'.$kode);
        if (($tampildata['metaData']['message']=='error')&&($tampildata['metaData']['code']=='777')) {

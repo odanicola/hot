@@ -15,7 +15,7 @@ class Dokter extends CI_Controller {
 	}
 	
 	function json(){
-		$this->authentication->verify('mst','show');
+		$this->authentication->verify('hot','show');
 
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -82,7 +82,7 @@ class Dokter extends CI_Controller {
 	}
 
 	function index(){
-		$this->authentication->verify('mst','edit');
+		$this->authentication->verify('hot','edit');
 		$data['title_group'] 	= "Dashboard";
 		$data['title_form']  	= "Data Dokter";
 		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
@@ -93,32 +93,14 @@ class Dokter extends CI_Controller {
 		$this->template->show($data,"home");
 	}
 
-	function add(){
-		$this->authentication->verify('mst','add');
+	function sync(){
+		$this->authentication->verify('hot','add');
 
-        $this->form_validation->set_rules('kode', 'Kode Agama', 'trim|required');
-        $this->form_validation->set_rules('value', 'Nama Agama', 'trim|required');
 
-		if($this->form_validation->run()== FALSE){
-			$data['title_group'] = "Parameter";
-			$data['title_form']="Tambah Agama";
-			$data['action']="add";
-			$data['kode']="";
-
-		
-			$data['content'] = $this->parser->parse("mst/agama/form",$data,true);
-			$this->template->show($data,"home");
-		}elseif($this->agama_model->insert_entry()==1){
-			$this->session->set_flashdata('alert', 'Save data successful...');
-			redirect(base_url()."mst/agama/");
-		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."mst/agama/add");
-		}
 	}
 
 	function edit($code=0){
-		$this->authentication->verify('mst','edit');
+		$this->authentication->verify('hot','edit');
 
         $this->form_validation->set_rules('value','Nama', 'trim');
         $this->form_validation->set_rules('status','Status', 'trim');
@@ -142,17 +124,5 @@ class Dokter extends CI_Controller {
 			die("NOTOK");
 		}
 		$this->template->show($data,"home");
-	}
-
-	function dodel($kode=0){
-		$this->authentication->verify('mst','del');
-
-		if($this->agama_model->delete_entry($kode)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$kode.')');
-			redirect(base_url()."mst/agama");
-		}else{
-			$this->session->set_flashdata('alert', 'Delete data error');
-			redirect(base_url()."mst/agama");
-		}
 	}
 }

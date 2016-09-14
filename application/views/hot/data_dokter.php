@@ -1,25 +1,7 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
-
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
-
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
-<div id="popup_del" style="display:none;">
-  <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
-</div>
+
 <section class="content">
 <form>
   <div class="row">
@@ -68,7 +50,17 @@
 	$(function () {	
 		$("#menu_hot_dokter").addClass("active");
 		$("#menu_dashboard").addClass("active");
+
+		$("#popup").jqxWindow({
+			theme: theme, resizable: false,
+			width: 250,
+			height: 180,
+			isModal: true, autoOpen: false, modalOpacity: 0.4
+		});
 	});
+
+      var btn_confirm = "</br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='sync()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
+      var btn_ok = "</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
 
 	   var source = {
 			datatype: "json",
@@ -105,7 +97,7 @@
 		});
      
 		$('#btn-refresh').click(function () {
-			$("#jqxgrid_dokter").jqxDataTable('clearfilters');
+			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'filter');
 		});
 
 		$("#jqxgrid_dokter").jqxDataTable(
@@ -126,14 +118,8 @@
 			var args = event.args;
 			var rowData = args.row;
 
-		    $("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'></div></div>");
-		      $("#popup").jqxWindow({
-		        theme: theme, resizable: false,
-		        width: 250,
-		        height: 150,
-		        isModal: true, autoOpen: false, modalOpacity: 0.4
-		      });
-		      $("#popup").jqxWindow('open');
+			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'></div></div>");
+			$("#popup").jqxWindow('open');
 		});
 
 	function btn_edit(code){
@@ -143,8 +129,21 @@
       	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code;
 	}
 
+	function sync(){
+		$.post("<?php echo base_url().'bpjs_api/get_dokter' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
+			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'filter');
+			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter sebanyak "+res+" data.<br>"+btn_ok+"</div>");
+			$("#popup").jqxWindow('open');
+		});
+	}
+
+    function close_popup(){
+        $("#popup").jqxWindow('close');
+    }
+
 	$("#btn_syncronize").click(function(){
-	    
+		$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter dengan PCare? <br>"+btn_confirm+"</div>");
+		$("#popup").jqxWindow('open');
 	});
 
     $("#puskesmas").change(function(){
@@ -152,7 +151,5 @@
 			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'cells');
 		});
     });
-
-    
 
 </script>
