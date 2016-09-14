@@ -42,5 +42,10 @@ class Bpjs_api extends CI_Controller {
       	$data = $this->bpjs->get_dokter($code);
       	echo json_encode($data);
 	}
+
+	function get_obat(){
+      	$data = $this->bpjs->get_obat();
+      	echo json_encode($data);
+	}
 	
 }

@@ -77,10 +77,10 @@
 		updaterow: function (rowid, rowdata, commit) {
 			},
 		filter: function(){
-			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'filter');
+			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'filter');
 		},
 		sort: function(){
-			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'sort');
+			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'sort');
 		},
 		root: 'Rows',
         pagesize: 10,
@@ -97,14 +97,19 @@
 		});
      
 		$('#btn-refresh').click(function () {
-			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'filter');
+			$("#jqxgrid_dokter").jqxGrid('clearfilters');
 		});
 
-		$("#jqxgrid_dokter").jqxDataTable(
+		$("#jqxgrid_dokter").jqxGrid(
 		{		
-			width: '100%', filterHeight: 32, 
-			source: dataadapter, theme: theme,showtoolbar: false, 
-			filterable: true, sortable: true,  pageable: true,  editable: false,
+			width: '100%', autoheight: true,autorowheight: true,
+			selectionmode: 'singlerow',
+			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
+			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
+			rendergridrows: function(obj)
+			{
+				return obj.data;    
+			},
 			columns: [
 				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '75%'},
 				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '25%', cellsrenderer: function (row,column,value) {
@@ -131,7 +136,7 @@
 
 	function sync(){
 		$.post("<?php echo base_url().'bpjs_api/get_dokter' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
-			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'filter');
+			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'filter');
 			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter sebanyak "+res+" data.<br>"+btn_ok+"</div>");
 			$("#popup").jqxWindow('open');
 		});
@@ -148,7 +153,7 @@
 
     $("#puskesmas").change(function(){
 		$.post("<?php echo base_url().'hot/dokter/filter_puskesmas' ?>", 'puskesmas='+$(this).val(),  function(){
-			$("#jqxgrid_dokter").jqxDataTable('updateBoundData', 'cells');
+			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'cells');
 		});
     });
 

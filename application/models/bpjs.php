@@ -282,7 +282,7 @@ class Bpjs extends CI_Model {
 					$dt['code']		= $dokter['kdDokter'];
 					$dt['value']	= $dokter['nmDokter'];
 					$dt['cl_phc']	= $code;
-					$dt['status']	= 1;
+					$dt['status']	= '1';
 
 		    		$this->db->insert('bpjs_data_dokter', $dt);
 				}
@@ -290,6 +290,25 @@ class Bpjs extends CI_Model {
 
 	      	return $data['response']['count'];
 		}
+	}
+
+	function get_obat(){
+		$data = $this->getApi('obat/dpho/1301/0/9999',"live");
+		if(isset($data['response']['count']) && $data['response']['count']>0){
+    		$this->db->where('code <> ""');
+    		$this->db->delete('bpjs_data_obat');
+
+			foreach ($data['response']['list'] as $dokter) {
+				$dt['code']		= $dokter['kdObat'];
+				$dt['value']	= $dokter['nmObat'];
+				$dt['sediaan']	= $dokter['sedia'];
+				$dt['status']	= '1';
+
+	    		$this->db->insert('bpjs_data_obat', $dt);
+			}
+		}
+
+      	return $data['response']['count'];
 	}
 
 	function inserbpjs($kode){
