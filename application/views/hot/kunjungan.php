@@ -86,6 +86,12 @@
 	$(function () {	
 		$("#menu_hot_kunjungan").addClass("active");
 		$("#menu_dashboard").addClass("active");
+		$("#popup").jqxWindow({
+			theme: theme, resizable: false,
+			width: 250,
+			height: 150,
+			isModal: true, autoOpen: false, modalOpacity: 0.4
+		});
 	});
 
 	   var source = {
@@ -144,34 +150,31 @@
 			columns: [
 				{ text: 'No', align: 'center', width: '12%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;text-align:center' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'><br>"+dataRecord.urut+"<br></div>";
+					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
                  }
                 },				
                 { text: 'Nama', datafield: 'nama', align: 'center', width: '43%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
 				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.id_kunjungan+"|"+dataRecord.nama+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;' >"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
 		});
 
-	function aksi(id){
-		var id     = id;
-		var new_id = id.split("|");
-        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_id[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+new_id[0]+"\")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
-          $("#popup").jqxWindow({
-            theme: theme, resizable: false,
-            width: 250,
-            height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
-          });
-          $("#popup").jqxWindow('open');
-	}
+		$("#jqxgrid").on('rowselect', function (event) {
+			var args = event.args;
+			var rowData = args.row;
+
+        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$("#popup").jqxWindow('open');
+		});
+
 
 	function btn_edit(id){
       	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
@@ -179,6 +182,7 @@
 
 	function close_popup(){
         $("#popup").jqxWindow('close');
+        $("#jqxgrid").jqxGrid('clearselection');
     }
 
     $("#jenis_kelamin").change(function(){
