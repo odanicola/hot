@@ -8,6 +8,18 @@ class Morganisasi_model extends CI_Model {
         parent::__construct();
     }
 
+    function get_jml_pasien(){
+		$query = $this->db->query("SELECT COUNT(*) AS jml FROM app_users_profile JOIN app_users_list ON app_users_profile.username = app_users_list.username ");
+
+		return $query->result();
+	}
+
+	function get_jml_dokter(){
+		$query = $this->db->query("SELECT COUNT(`code`) AS jml FROM bpjs_data_obat");
+
+		return $query->result();
+	}
+
     function get_datawhere ($code,$condition,$table){
         $this->db->select("*");
         $this->db->like($condition,$code);
@@ -46,7 +58,8 @@ class Morganisasi_model extends CI_Model {
 
 		return count($data);
     }
-    
+
+
 	function get_profile($username=""){
 		$data = array();
 		if($username!=""){
@@ -128,26 +141,26 @@ class Morganisasi_model extends CI_Model {
 
 	function daftar(){
 
-        $data_list['username']           = $this->input->post('username');
-        $data_list['code']               = $this->input->post('code');
-        $data_list['level']				 = "pasien";
-        $data_list['password']			 = $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
-        $data_list['status_active']		 = 1;
-        $data_list['status_aproved']	 = 0;
-        $data_list['online']			 = 0;
-        $data_list['last_login']		 = 0;
-        $data_list['last_active']		 = 0;
-        $data_list['datereg']			 = time();	
+        $data_list['username']          = $this->input->post('username');
+        $data_list['code']              = $this->input->post('code');
+        $data_list['level']				= "pasien";
+        $data_list['password']			= $this->encrypt->sha1($this->input->post('pass').$this->config->item('encryption_key'));
+        $data_list['status_active']		= 1;
+        $data_list['status_aproved']	= 0;
+        $data_list['online']			= 0;
+        $data_list['last_login']		= 0;
+        $data_list['last_active']		= 0;
+        $data_list['datereg']			= time();	
 
-        $data_profile['username']        = $this->input->post('username');
-        $data_profile['nama']            = $this->input->post('nama');
-        $data_profile['code']            = $this->input->post('code');
-        $data_profile['phone_number'] 	 = $this->input->post('phone_number');
-        $data_profile['email']           = $this->input->post('email');
-        $data_profile['bpjs'] 			 = $this->input->post('bpjs');
-        $data_profile['jk'] 			 = $this->input->post('jk');
-        $data_profile['tgl_lahir'] 		 = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
-        $data_profile['alamat'] 		 = $this->input->post('alamat');
+        $data_profile['username']       = $this->input->post('username');
+        $data_profile['nama']           = $this->input->post('nama');
+        $data_profile['code']           = $this->input->post('code');
+        $data_profile['phone_number'] 	= $this->input->post('phone_number');
+        $data_profile['email']          = $this->input->post('email');
+        $data_profile['bpjs'] 			= $this->input->post('bpjs');
+        $data_profile['jk'] 			= $this->input->post('jk');
+        $data_profile['tgl_lahir'] 	    = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
+        $data_profile['alamat'] 		= $this->input->post('alamat');
 
         $this->db->where('username',$this->input->post('username'));
         $query = $this->db->get('app_users_list');

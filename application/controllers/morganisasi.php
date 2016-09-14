@@ -15,6 +15,9 @@ class Morganisasi extends CI_Controller {
 		$data = array();
 		$data['title_group'] 	= "Dashboard";
 		$data['title_form'] 	= "Home";
+		$data['j_pasien'] 		= $this->morganisasi_model->get_jml_pasien();
+		$data['j_dokter'] 		= $this->morganisasi_model->get_jml_dokter();
+
 
 		if($this->session->userdata('level')=="pasien"){
 			$v = "hot/show";
@@ -37,7 +40,7 @@ class Morganisasi extends CI_Controller {
 	function profile()
 	{
 		$this->authentication->verify('morganisasi','edit');		
-		$data = $this->morganisasi_model->get_profile(); 
+		$data 						= $this->morganisasi_model->get_profile(); 
 		$data['title_group']		="Dashboard";
 		$data['title_form']			="Profil Pengguna";
 
@@ -328,7 +331,6 @@ class Morganisasi extends CI_Controller {
         $this->form_validation->set_rules('username','Username', 'trim');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
         $this->form_validation->set_rules('pass','Password', 'trim');
-        // $this->form_validation->set_rules('pass2','Konfirmasi Password', 'trim|required|min_length[5]|matches[pass]|callback_check_pass2');
         $this->form_validation->set_rules('nama','Nama', 'trim');
         $this->form_validation->set_rules('jk','Jenis Kelamin', 'trim');
         $this->form_validation->set_rules('tgl_lahir','Tanggal Lahir', 'trim');
@@ -361,6 +363,8 @@ class Morganisasi extends CI_Controller {
 			die($this->parser->parse("sik/login",$data));
 		}elseif($res = $this->morganisasi_model->daftar()){
 			if ($res == 'false') {
+				
+				$data['alert_form'] = 'Save data failed...';
 				die("NOTOK");
 			}else{
 				die("OK");

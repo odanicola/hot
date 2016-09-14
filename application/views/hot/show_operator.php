@@ -14,7 +14,10 @@
       <span class="info-box-icon bg-yellow"><a href="<?php echo base_url()?>hot/pasien"><i class="fa fa-user"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>hot/pasien">Data Pasien</a></span>
-        <span class="info-box-number" style="font-size:14px;">212 Orang</span>
+        <span class="info-box-number" style="font-size:14px;"><?php foreach ($j_pasien as $row) { 
+        echo number_format($row->jml);  
+        }?> Orang</span>
+
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
@@ -23,7 +26,10 @@
       <span class="info-box-icon bg-purple"><a href="<?php echo base_url()?>hot/dokter"><i class="fa fa-user-md"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>hot/dokter">Data Dokter</a></span>
-        <span class="info-box-number" style="font-size:14px;">1 Orang</span>
+        <!-- <span class="info-box-number" style="font-size:14px;">1 Orang</span> -->
+        <span class="info-box-number" style="font-size:14px;"><?php foreach ($j_dokter as $row) { 
+        echo number_format($row->jml);  
+        }?> Orang</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
