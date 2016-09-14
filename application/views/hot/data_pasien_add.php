@@ -239,7 +239,7 @@
                         isModal: true, autoOpen: false, modalOpacity: 0.4
                       });
                   $("#popup").jqxWindow('open');
-                  window.location.href = "<?php echo base_url().'hot/pasien' ?>";
+                  window.location.href = "<?php echo base_url().'hot/pasien/add' ?>";
                 }
             }
         });
