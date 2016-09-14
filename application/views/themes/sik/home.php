@@ -103,7 +103,7 @@
               <li class="dropdown notifications-menu">
                 <a href="<?php echo base_url()."morganisasi/logout" ?>">
                   <i class="fa fa-sign-out"></i>
-                  <span>Keluar</span>
+                  <span>Logout</span>
                 </a>
               </li>
             </ul>
@@ -112,10 +112,9 @@
           <div class="hidden-md hidden-lg hidden-sm">
             <a href="<?php echo base_url()."morganisasi/logout" ?>" class="sidebar-link">
               <i class="fa fa-sign-out"></i>
-              <span>Keluar</span>
+              <span>Logout</span>
             </a>
             <a href="<?php echo base_url()."morganisasi/profile" ?>" class="sidebar-link">
-              <i class="fa fa-user"></i>
               <span><?php echo ucwords($this->session-> userdata('nama'));?></span>
             </a>
           </div>

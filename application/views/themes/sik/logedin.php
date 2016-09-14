@@ -13,6 +13,6 @@
     	<?php echo anchor(base_url()."morganisasi/"," <i class='fa fa-info-circle'></i> Panduan ","class='btn btn-warning btn-flat'")?>
     </div>
     <div class="pull-right">
-    	<?php echo anchor(base_url()."morganisasi/logout"," <i class='fa fa-sign-out'></i> Keluar ","class='btn btn-warning btn-flat'")?>
+    	<?php echo anchor(base_url()."morganisasi/logout"," <i class='fa fa-sign-out'></i> Logout","class='btn btn-warning btn-flat'")?>
     </div>
   </li>
