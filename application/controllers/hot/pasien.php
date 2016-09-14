@@ -207,14 +207,14 @@ class Pasien extends CI_Controller {
 
 			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
 		}elseif($this->hot_model->insert_pasien()=='true'){
-			$this->session->set_flashdata('alert_form', 'Save data successful...');
-			redirect(base_url()."hot/pasien");
+			// $this->session->set_flashdata('alert_form', 'Save data successful...');
+			// redirect(base_url()."hot/pasien");
 			die("OK");
 
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/pasien/add");
-			$data['alert_form'] = 'Save data failed...';
+			// redirect(base_url()."hot/pasien/add");
+			// $data['alert_form'] = 'Save data failed...';
 			die("NOTOK");
 		}
 		

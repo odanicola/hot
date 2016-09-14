@@ -29,7 +29,7 @@
         </div><!-- /.box-header -->
 
           <div class="box-footer pull-right">
-            <button type="submit"class="btn btn-primary">Simpan</button>
+            <button type="button"class="btn btn-primary" id="btn-simpan">Simpan</button>
             <button type="reset" class="btn btn-warning">Ulang</button>
             <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
@@ -168,7 +168,7 @@
             </div>            
             <div class="form-group">
               <label>Puskesmas</label>
-                <select  name="code" type="text" class="form-control">
+                <select name="code" type="text" class="form-control">
                     <?php foreach($datapuskesmas as $pus) : ?>
                       <?php $select = $pus->code == $code ? 'selected' : '' ?>
                       <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
@@ -185,11 +185,69 @@
 
 <script>
 
+  function close_popup(){
+    $("#popup").jqxWindow('close');
+  }
+
   $(function () { 
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
+
+    $("#btn-simpan").click(function(){
+        var data = new FormData();
+
+        data.append('username',     $("[name='username']").val());
+        data.append('bpjs',         $("[name='bpjs']:checked").val());
+        data.append('password',     $("[name='password']").val());
+        data.append('password2',    $("[name='password2']").val());
+        data.append('nama',         $("[name='nama']").val());
+        data.append('jk',           $("[name='jk']").val());
+        data.append('tb',           $("[name='tb']").val());
+        data.append('bb',           $("[name='bb']").val());
+        data.append('phone_number', $("[name='phone_number']").val());
+        data.append('tgl_lahir',    $("[name='tgl_lahir']").val());
+        data.append('email',        $("[name='email']").val());
+        data.append('alamat',       $("[name='alamat']").val());
+        data.append('code',         $("[name='code']").val());
+
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()."hot/pasien/add"   ?>',
+            data : data,
+            success : function(response){
+                if(response=="OK"){
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil disimpan.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                      $("#popup").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 120,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                  $("#popup").jqxWindow('open');
+                  window.location.href = "<?php echo base_url().'hot/pasien' ?>";
+                }else{
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data gagal disimpan<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                      $("#popup").jqxWindow({
+                        theme: theme, resizable: false,
+                        width: 250,
+                        height: 120,
+                        isModal: true, autoOpen: false, modalOpacity: 0.4
+                      });
+                  $("#popup").jqxWindow('open');
+                  window.location.href = "<?php echo base_url().'hot/pasien' ?>";
+                }
+            }
+        });
+
+        return false;
+    });
+
+
 
   });
 </script>

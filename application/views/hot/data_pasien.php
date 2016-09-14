@@ -181,7 +181,7 @@
 	}
 
 	function del_pasien(id){
-		$.post("<?php echo base_url().'hot/pasien/del' ?>/" + id,  function(){
+		$.post("<?php echo base_url().'hot/pasien/del' ?>/" +id,  function(){
 		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
           $("#popup_del1").jqxWindow({
             theme: theme, resizable: false,
