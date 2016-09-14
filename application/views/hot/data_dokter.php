@@ -97,7 +97,7 @@
 		});
      
 		$('#btn-refresh').click(function () {
-			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'filter');
+			$("#jqxgrid_dokter").jqxGrid('clearfilters');
 		});
 
 		$("#jqxgrid_dokter").jqxGrid(

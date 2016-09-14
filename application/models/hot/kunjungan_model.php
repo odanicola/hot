@@ -1,25 +1,15 @@
 <?php
 class Kunjungan_model extends CI_Model {
 
-    var $tabel_pasien = 'app_users_profile';
-    var $tabel_dokter = 'bpjs_data_dokter';
-    var $t_puskesmas  = 'cl_phc';
-
     function __construct() {
         parent::__construct();
     }
 
-    function get_data_dokter($options=array()){
-        $this->db->select("*");
-        $query = $this->db->get($this->tabel_dokter);
-        return $query->result();
-    }
-
-    function get_data_pasien($options=array()){
+    function get_data_pasien($start=0,$limit=999999,$options=array()){
         $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->order_by('id_kunjungan','asc');
-        $query = $this->db->get('kunjungan');
+        $query = $this->db->get('kunjungan',$limit,$start);
         return $query->result();
     }
 
