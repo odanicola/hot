@@ -6,6 +6,18 @@ class Dokter extends CI_Controller {
 		$this->load->model('hot_model');
 	}
 
+	function index(){
+		$this->authentication->verify('hot','edit');
+		$data['title_group'] 	= "Dashboard";
+		$data['title_form']  	= "Data Dokter";
+		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+		
+		$this->session->set_userdata('filter_puskesmas','');
+		$data['content'] 	 	= $this->parser->parse("hot/data_dokter",$data,true);
+
+		$this->template->show($data,"home");
+	}
+
 	function filter_puskesmas(){
 		if($_POST) {
 			if($this->input->post('puskesmas') != '') {
@@ -79,24 +91,6 @@ class Dokter extends CI_Controller {
 		);
 
 		echo json_encode(array($json));
-	}
-
-	function index(){
-		$this->authentication->verify('hot','edit');
-		$data['title_group'] 	= "Dashboard";
-		$data['title_form']  	= "Data Dokter";
-		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-		
-		$this->session->set_userdata('filter_puskesmas','');
-		$data['content'] 	 	= $this->parser->parse("hot/data_dokter",$data,true);
-
-		$this->template->show($data,"home");
-	}
-
-	function sync(){
-		$this->authentication->verify('hot','add');
-
-
 	}
 
 	function edit($code=0){
