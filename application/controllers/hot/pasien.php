@@ -3,6 +3,10 @@ class Pasien extends CI_Controller {
 
     public function __construct(){
 		parent::__construct();
+		$this->load->add_package_path(APPPATH.'third_party/tbs_plugin_opentbs_1.8.0/');
+		require_once(APPPATH.'third_party/tbs_plugin_opentbs_1.8.0/demo/tbs_class.php');
+		require_once(APPPATH.'third_party/tbs_plugin_opentbs_1.8.0/tbs_plugin_opentbs.php');
+		
 		$this->load->model('hot_model');
 	}
 
@@ -366,8 +370,121 @@ class Pasien extends CI_Controller {
  		 }
   	}
 
+  	function export(){
+		$this->authentication->verify('hot','show');
+		
+		$TBS = new clsTinyButStrong;		
+		$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN);
+
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tgl_lahir') {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
+
+		$rows_all = $this->hot_model->get_data_pasien();
+
+		if($_POST) {
+			$fil = $this->input->post('filterscount');
+			$ord = $this->input->post('sortdatafield');
+
+			for($i=0;$i<$fil;$i++) {
+				$field = $this->input->post('filterdatafield'.$i);
+				$value = $this->input->post('filtervalue'.$i);
+
+				if($field == 'tgl_pengadaan') {
+					$value = date("Y-m-d",strtotime($value));
+					$this->db->where($field,$value);
+				}elseif($field != 'year') {
+					$this->db->like($field,$value);
+				}
+
+			}
+
+			if(!empty($ord)) {
+				$this->db->order_by($ord, $this->input->post('sortorder'));
+			}
+		}
 
 
+		if($this->session->userdata('filter_jenis_bpjs')!=''){
+			if($this->session->userdata('filter_jenis_bpjs')==01){
+				$this->db->where('app_users_profile.bpjs IS NOT NULL');
+			}elseif($this->session->userdata('filter_jenis_bpjs')==02) {
+				$this->db->where('app_users_profile.bpjs IS NULL ');
+			}else{
+				$this->db->order_by('app_users_profile.nama','ASC');
+			}
+		}else{
 
+		}
+
+		if($this->session->userdata('filter_jenis_kelamin')!=''){
+			if($this->session->userdata('filter_jenis_kelamin')=='L'){
+				$this->db->where('app_users_profile.jk','L');
+			}elseif ($this->session->userdata('filter_jenis_kelamin')=='P') {
+				$this->db->where('app_users_profile.jk','P');
+			}else{
+				$this->db->order_by('app_users_profile.nama','ASC');
+			}
+		}else{
+
+		}
+
+		if($this->session->userdata('filter_urutan_usia')!=''){
+			if($this->session->userdata('filter_urutan_usia')==01){
+				$this->db->order_by("usia", "ASC");
+			}elseif($this->session->userdata('filter_urutan_usia')==02){
+				$this->db->order_by("usia", "DESC");
+			}else{
+				$this->db->order_by('app_users_profile.nama','ASC');
+			}
+		}else{
+
+		}
+	
+		$rows = $this->hot_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
+		$no=1;
+		foreach($rows as $act) {
+			$data[] = array(
+				'username'	    => $act->username,
+				'jk'			=> $act->jk,
+				'nama'   	    => $act->nama,
+				'usia'   	    => $act->usia,
+				'bpjs'   	    => $act->bpjs,
+				'phone_number'	=> $act->phone_number
+			);
+		}
+
+		$dir = getcwd().'/';
+		$template = $dir.'public/files/template/data_pasien.xlsx';		
+		$TBS->LoadTemplate($template, OPENTBS_ALREADY_UTF8);
+
+		// Merge data in the first sheet
+		$TBS->MergeBlock('a', $data);
+		
+		$code = date('Y-m-d-H-i-s');
+		$output_file_name = 'public/files/hasil/hasil_export_pasien_'.$code.'.xlsx';
+		$output = $dir.$output_file_name;
+		$TBS->Show(OPENTBS_FILE, $output); // Also merges all [onshow] automatic fields.
+		
+		echo base_url().$output_file_name ;
+	}
 
 }
