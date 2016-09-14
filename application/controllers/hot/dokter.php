@@ -34,7 +34,7 @@ class Dokter extends CI_Controller {
 		}
 
 		$kodepus=$this->session->userdata('filter_puskesmas');
-		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='all') {
+		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
 			$this->db->where('cl_phc',$kodepus);
 		}
 
@@ -57,7 +57,7 @@ class Dokter extends CI_Controller {
 		}
 
 		$kodepus=$this->session->userdata('filter_puskesmas');
-		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='all') {
+		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
 			$this->db->where('cl_phc',$kodepus);
 		}
 
