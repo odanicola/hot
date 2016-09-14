@@ -190,6 +190,8 @@ class Kunjungan extends CI_Controller {
 		$data['title_form']     = "Pengukuran";
 		$data['action']		    = "edit";
 		$data['id_kunjungan']	= $id_kunjungan;
+		$data['tgl']	= date("d M Y", strtotime($data['tgl']));
+		$data['waktu']	= date("H:i:s",time());
 
 		$data['content'] 		= $this->parser->parse("hot/kunjungan_edit",$data,true);
 

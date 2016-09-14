@@ -1,12 +1,47 @@
+<script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxslider.js"></script>
 <script>
     $(function () { 
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
       var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
       var btn_batal = "</br></br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='batal()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
 
-      $("#systolic").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#diastolic").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#pulse").jqxNumberInput({ width: '99%', height: 50, value: "100", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 70, max: 200, template: "danger", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      
+      $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#gdpp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#kolesterol").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+
+      $('#systolic').jqxSlider({ width: '100%',template: "warning", tooltip: true, mode: 'fixed', min: 100, max: 200, ticksFrequency: 10, value: 130, step: 1 });
+      $("#val_systolic").html($('#systolic').jqxSlider('value'));
+      $('#systolic').on('change', function (event) {
+          var val = $(this).jqxSlider('value');
+          if(val > 139){
+            val = "<span style='color:red'>"+val+"</span>";
+          }else{
+            val = "<span style='color:green'>"+val+"</span>";
+          }
+          $("#val_systolic").html(val);
+      });
+
+      $('#diastolic').jqxSlider({ width: '100%',template: "danger", tooltip: true, mode: 'fixed', min: 60, max: 140, ticksFrequency: 10, value: 80, step: 1 });
+      $("#val_diastolic").html($('#diastolic').jqxSlider('value'));
+      $('#diastolic').on('change', function (event) {
+          var val = $(this).jqxSlider('value');
+          if(val > 89){
+            val = "<span style='color:red'>"+val+"</span>";
+          }else{
+            val = "<span style='color:green'>"+val+"</span>";
+          }
+          $("#val_diastolic").html(val);
+      });
+
+      $('#pulse').jqxSlider({ width: '100%',template: "success", tooltip: true, mode: 'fixed', min: 60, max: 200, ticksFrequency: 20, value: 80, step: 1 });
+      $("#val_pulse").html($('#pulse').jqxSlider('value'));
+      $('#pulse').on('change', function (event) {
+          $("#val_pulse").html($(this).jqxSlider('value'));
+      });
 
 
       $("#popup").jqxWindow({
@@ -99,76 +134,86 @@
         <div>
           <div class="box-body">
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>Nama</b></div>
-              <div class="col-xs-8">{nama}</div>
+              <div class="col-xs-3"><b>Nama</b></div>
+              <div class="col-xs-9">{nama}</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>Usia</b></div>
-              <div class="col-xs-8">{jk} / {usia} Tahun</div>
+              <div class="col-xs-3"><b>Usia</b></div>
+              <div class="col-xs-9">{jk} / {usia} Tahun</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-12"><button type="button" name="" class="btn btn-warning">Data Kunjungan Sebelumnya</button></div>
+              <div class="col-xs-12 text-center"><button type="button" name="" class="btn btn-warning">Data Kunjungan Sebelumnya</button></div>
+            </div>
+            <div class="row" style="padding:4px;">
+              <div class="col-xs-12 text-center" style="background:#E3E3E3;padding:5px"><label>Kunjungan Baru :</label></div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-12"><b>Kunjungan Baru : </b></div>
+              <div class="col-xs-3 text-right"><b>Tanggal</b></div>
+              <div class="col-xs-9">{tgl}</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>Tanggal</b></div>
-              <div class="col-xs-8">{tgl}</div>
+              <div class="col-xs-3 text-right"><b>Jam</b></div>
+              <div class="col-xs-9">{waktu}</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>Jam</b></div>
-              <div class="col-xs-8">{waktu}</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>TB</b></div>
+              <div class="col-xs-6"><div id="tb"></div></div>
+              <div class="col-xs-3 text-left" style="padding-top:15px">cm</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>TB</b></div>
-              <div class="col-xs-6"><input type="number" class="form-control" name="tb" value="{tb}" placeholder="Tinggi Badan"></div>
-              <div class="col-xs-2 text-left">cm</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>BB</b></div>
+              <div class="col-xs-6"><div id="bb"></div></div>
+              <div class="col-xs-3 text-left" style="padding-top:15px">kg</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>BB</b></div>
-              <div class="col-xs-6"><input type="number" class="form-control" name="bb" value="{bb}" placeholder="Berat Badan"></div>
-              <div class="col-xs-2 text-left">kg</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
+              <div class="col-xs-4"><input style="height:50px" type="text" class="form-control" name="bmi" value="{bmi}" readonly placeholder="BMI"></div>
+              <div class="col-xs-5"><input style="height:50px" type="text" class="form-control" name="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
             </div>
-            <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>BMI</b></div>
-              <div class="col-xs-4"><input type="text" class="form-control" name="bmi" value="{bmi}" readonly placeholder="BMI"></div>
-              <div class="col-xs-4"><input type="text" class="form-control" name="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
+
+            <div style="padding-top:20px;padding-bottom:30px;">
+              <div class="row" style="padding:10px;">
+                <div class="col-xs-12 text-center"><b>Systolic <span id="val_systolic"></span></b></div>
+              </div>
+              <div class="row" style="padding:4px">
+                <div class="col-xs-12 text-center"><div id='systolic'></div></div>
+              </div>
+              <div class="row" style="padding:10px">
+                <div class="col-xs-12 text-center"><b>Diastolic <span id="val_diastolic"></span></b></div>
+              </div>
+              <div class="row" style="padding:4px">
+                <div class="col-xs-12 text-center"><div id='diastolic'></div></div>
+              </div>
+              <div class="row" style="padding:10px">
+                <div class="col-xs-12 text-center"><b>Pulse <span id="val_pulse"></span></b></div>
+              </div>
+              <div class="row" style="padding:4px">
+                <div class="col-xs-12 text-center"><div id='pulse'></div></div>
+              </div>
             </div>
 
             <div class="row" style="padding:4px">
-              <div class="col-xs-4 text-center"><b>Systolic</b></div>
-              <div class="col-xs-4 text-center"><b>Diastolic</b></div>
-              <div class="col-xs-4 text-center"><b>Pulse</b></div>
+              <div class="col-xs-12"><b>LAB :</b></div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4 text-center"><div id="systolic"></div></div>
-              <div class="col-xs-4 text-center"><div id="diastolic"></div></div>
-              <div class="col-xs-4 text-center"><div id="pulse"></div></div>
-            </div>
-
-            <div class="row" style="padding:4px">
-              <div class="col-xs-12"><b>Pemeriksaan Lab :</b></div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDS</b></div>
+              <div class="col-xs-6"><div id="gds"></div></div>
+              <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>GDS</b></div>
-              <div class="col-xs-5"><input type="number" class="form-control" name="gds" placeholder="mb/dl" value="{gds}"></div>
-              <div class="col-xs-3 text-center">mg/dl</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDP</b></div>
+              <div class="col-xs-6"><div id="gdp"></div></div>
+              <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>GDP</b></div>
-              <div class="col-xs-5"><input type="number" class="form-control" name="gdp" placeholder="mb/dl" value="gdp"></div>
-              <div class="col-xs-3 text-center">mg/dl</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDPP</b></div>
+              <div class="col-xs-6"><div id="gdpp"></div></div>
+              <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>GDPP</b></div>
-              <div class="col-xs-5"><input type="number" class="form-control" name="gdpp" placeholder="mb/dl" value="gdpp"></div>
-              <div class="col-xs-3 text-center">mg/dl</div>
-            </div>
-            <div class="row" style="padding:4px">
-              <div class="col-xs-4"><b>Kolesterol</b></div>
-              <div class="col-xs-5"><input type="number" class="form-control" name="kolesterol" placeholder="mb/dl" value="kolesterol"></div>
-              <div class="col-xs-3 text-center">mg/dl</div>
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>Kolesterol</b></div>
+              <div class="col-xs-6"><div id="kolesterol"></div></div>
+              <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
 
           </div>

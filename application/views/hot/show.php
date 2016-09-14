@@ -1,3 +1,4 @@
+<section class="content">
 <!-- Info boxes -->
 <div class="row">
   <div class="col-md-3 col-sm-6 col-xs-12">
@@ -48,7 +49,7 @@
     </div><!-- /.info-box -->
   </div><!-- /.col -->
 </div><!-- /.row -->
-
+</section>
 <script>
   $(function () { 
     $("#menu_dashboard").addClass("active");

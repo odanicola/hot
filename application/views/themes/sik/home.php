@@ -139,9 +139,7 @@
             <li class="active">{title_form}</li>
           </ol>
         </section>
-        <section class="content">
-          {content}
-        </section><!-- /.content -->
+        {content}
       </div><!-- /.content-wrapper -->
 
       <footer class="main-footer">

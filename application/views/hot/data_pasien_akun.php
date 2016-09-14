@@ -51,13 +51,7 @@
 
             <div class="form-group">
               <label>Password*</label>
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php 
-                if(set_value('password')=="" && isset($password)){
-                  // echo $password;
-                }else{
-                  // echo  set_value('password');
-                }
-                ?>">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password">
               <span id="confirmMessage1" class="confirmMessage"></span>
             </div>
 

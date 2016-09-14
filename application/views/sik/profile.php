@@ -64,7 +64,7 @@
         });
     });
 </script>
-
+<section class="content">
  <div id="notification">
 </div>
 <?php if($this->session->flashdata('alert')!=""){ ?>
@@ -265,7 +265,7 @@
     </div>
   </div><!-- /.form-box -->
 </div><!-- /.register-box -->
-
+</section>
 <script type="text/javascript">
 $(function(){
     $("#menu_dashboard").addClass("active");
