@@ -9,19 +9,19 @@ class Morganisasi_model extends CI_Model {
     }
 
     function get_jml_pasien(){
-		$query = $this->db->query("SELECT COUNT(*) AS jml FROM app_users_profile JOIN app_users_list ON app_users_profile.username = app_users_list.username ");
+		$query = $this->db->query("SELECT COUNT(*) AS jml FROM app_users_profile JOIN app_users_list ON app_users_profile.username = app_users_list.username AND app_users_profile.code = app_users_list.code AND app_users_list.code='".$this->session->userdata('puskesmas')."' ");
 
 		return $query->result();
 	}
 
 	function get_jml_dokter(){
-		$query = $this->db->query("SELECT COUNT(`code`) AS jml FROM bpjs_data_obat");
+		$query = $this->db->query("SELECT COUNT(`code`) AS jml FROM bpjs_data_dokter WHERE cl_phc='P".$this->session->userdata('puskesmas')."'");
 
 		return $query->result();
 	}
 
 	function get_jml_antrian(){
-		$query = $this->db->query("SELECT COUNT(`id_kunjungan`) AS jml FROM kunjungan WHERE status_antri = 'antri' ");
+		$query = $this->db->query("SELECT COUNT(`id_kunjungan`) AS jml FROM kunjungan WHERE status_antri = 'antri' AND tgl='".date("Y-m-d")."' AND code='".$this->session->userdata('puskesmas')."'");
 
 		return $query->result();
 	}
