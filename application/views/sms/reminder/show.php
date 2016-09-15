@@ -11,6 +11,53 @@
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
 	    </div>
+	    <div class="box-footer">
+	      	<a href="<?php echo base_url()?>hot/kunjungan/daftar">
+		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Pendaftaran</button>
+		 	</a>
+		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+			<div class="row" style="padding-top:15px">
+			  <div class="col-xs-2"></div>
+			  <div class="col-xs-4">
+	                <select name="tahun" id="tahun" class="form-control">
+                        <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
+                            <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
+                            <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
+                        <?php   } ;?>
+                    </select>
+			  </div>
+			  <div class="col-xs-6" style="padding-left:14px">
+	                <select name="bulan" id="bulan" class="form-control">
+                        <?php foreach ($bulan as $val=>$key ) { ;?>
+                        <?php $select = $val == date("m") ? 'selected=selected' : '' ?>
+                            <option value="<?php echo $val; ?>" <?php echo $select ?>><?php echo $key; ?></option>
+                        <?php   } ;?>
+                    </select>
+			  </div>
+			</div>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control" id="jenis_kelamin">
+			  			<option>-</option>
+			  			<option value="L" <?php echo ("L"==$filter_jenis_kelamin ? 'selected':'')?>>L</option>
+			  			<option value="P" <?php echo ("P"==$filter_jenis_kelamin ? 'selected':'')?>>P</option>
+			  		</select>
+			  </div>
+			</div>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control" id="status_antri">
+			  		<option>-</option>
+<!-- 			  			<option value="antri" <?php echo ("antri"==$filter_status_antri ? 'selected':'')?>>Antri</option>
+			  			<option value="periksa" <?php echo ("periksa"==$filter_status_antri ? 'selected':'')?>>Periksa</option>
+			  			<option value="selesai" <?php echo ("selesai"==$filter_status_antri ? 'selected':'')?>>Selesai</option>
+			  			<option value="batal" <?php echo ("batal"==$filter_status_antri ? 'selected':'')?>>Batal</option> -->
+			  		</select>
+			  </div>
+			</div>
+	    </div>
 	    <div class="box-footer"></div>
         <div class="box-body">
 		    <div class="div-grid">
@@ -42,7 +89,7 @@
 			{ name: 'urut', type: 'string'},
 			{ name: 'username', type: 'string'},
 			{ name: 'jk', type: 'string'},
-			{ name: 'tgl', type: 'string'},
+			{ name: 'kontrol_tgl', type: 'string'},
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
 			{ name: 'bpjs', type: 'string'},
@@ -104,9 +151,9 @@
 					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"</div>";
                  }
                 },
-				{ text: 'Tanggal', datafield: 'tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
+				{ text: 'Tanggal', datafield: 'kontrol_tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' >"+dataRecord.tgl+"</div>";
+					return "<div style='width:100%;padding:7px;' >"+dataRecord.kontrol_tgl+"</div>";
                  }
                 }            
             ]
@@ -130,5 +177,24 @@
         $("#popup").jqxWindow('close');
         $("#jqxgrid").jqxGrid('clearselection');
     }
+
+    $("#jenis_kelamin").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_jenis_kelamin' ?>", 'filter_jenis_kelamin='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#tahun").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_tahun' ?>", 'filter_tahun='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#bulan").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
 
 </script>

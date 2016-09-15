@@ -9,8 +9,15 @@ class Reminder extends CI_Controller {
 
 	function index(){
 		$this->authentication->verify('hot','edit');
-		$data['title_group'] 	= "SMS Gateway";
-		$data['title_form']  	= "Reminder";
+		$data['title_group'] 	      = "SMS Gateway";
+		$data['title_form']  		  = "Reminder";
+		$data['bulan']				  = array('01'=>'Januari', '02'=>'Februari', '03'=>'Maret', '04'=>'April', '05'=>'Mei', '06'=>'Juni', '07'=>'Juli', '08'=>'Agustus', '09'=>'September', '10'=>'Oktober', '11'=>'November', '12'=>'Desember');
+		$data['filter_jenis_kelamin'] = $this->session->userdata('filter_jenis_kelamin');
+		
+		$this->session->set_userdata('filter_bulan','');
+		$this->session->set_userdata('filter_tahun','');
+		$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
+
 		$data['content'] 	 	= $this->parser->parse("sms/reminder/show",$data,true);
 
 		$this->template->show($data,"home");
@@ -24,15 +31,61 @@ class Reminder extends CI_Controller {
 		}
 	}
 
+	function filter_jenis_kelamin(){
+		if($_POST) {
+			if($this->input->post('filter_jenis_kelamin') != '') {
+				$this->session->set_userdata('filter_jenis_kelamin',$this->input->post('filter_jenis_kelamin'));
+			}
+		}
+	}
+
+	function filter_tahun(){
+		if($_POST) {
+			if($this->input->post('filter_tahun') != '') {
+				$this->session->set_userdata('filter_tahun',$this->input->post('filter_tahun'));
+			}
+		}
+	}
+
+	function filter_bulan(){
+		if($_POST) {
+			if($this->input->post('filter_bulan') != '') {
+				$this->session->set_userdata('filter_bulan',$this->input->post('filter_bulan'));
+			}
+		}
+	}
+
 	function json(){
-		$tgl = $this->session->userdata('filter_tahun')."-".($this->session->userdata('filter_bulan')<10 ? "0":"").$this->session->userdata('filter_bulan')."-".($this->session->userdata('filter_tanggal')<10 ? "0":"").$this->session->userdata('filter_tanggal');
 
 		if($this->session->userdata('level')=="pasien"){
 			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
 		}else{
 			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
 		} 
-		// $this->db->where('kunjungan.tgl',$tgl);
+
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
+		}
+
+		if($this->session->userdata('filter_bulan')!=''){
+			if($this->session->userdata('filter_bulan')=="all"){
+
+			}else{
+				$this->db->where("MONTH(tgl)",$this->session->userdata('filter_bulan'));
+			}
+		}else{
+			$this->db->where("MONTH(tgl)",date("m"));
+		}
+
+		if($this->session->userdata('filter_tahun')!=''){
+			if($this->session->userdata('filter_tahun')=="all"){
+
+			}else{
+				$this->db->where("YEAR(tgl)",$this->session->userdata('filter_tahun'));
+			}
+		}else{
+			$this->db->where("YEAR(tgl)",date("Y"));
+		}
 		
 		$rows_all = $this->reminder_model->get_data_pasien();
 
@@ -41,7 +94,30 @@ class Reminder extends CI_Controller {
 		}else{
 			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
 		} 
-		// $this->db->where('kunjungan.tgl',$tgl);
+
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
+		}
+
+		if($this->session->userdata('filter_bulan')!=''){
+			if($this->session->userdata('filter_bulan')=="all"){
+
+			}else{
+				$this->db->where("MONTH(kontrol_tgl)",$this->session->userdata('filter_bulan'));
+			}
+		}else{
+			$this->db->where("MONTH(kontrol_tgl)",date("m"));
+		}
+
+		if($this->session->userdata('filter_tahun')!=''){
+			if($this->session->userdata('filter_tahun')=="all"){
+
+			}else{
+				$this->db->where("YEAR(kontrol_tgl)",$this->session->userdata('filter_tahun'));
+			}
+		}else{
+			$this->db->where("YEAR(kontrol_tgl)",date("Y"));
+		}
 
 		$rows = $this->reminder_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
@@ -50,7 +126,7 @@ class Reminder extends CI_Controller {
 				'id_kunjungan'	=> $act->id_kunjungan,
 				'urut'	    	=> substr($act->id_kunjungan,-3),
 				'username'	    => $act->username,
-				'tgl'			=> $act->tgl,
+				'kontrol_tgl'	=> $act->kontrol_tgl,
 				'jk'			=> $act->jk,
 				'nama'   	    => $act->nama,
 				'usia'   	    => $act->usia,
