@@ -2,7 +2,7 @@
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
 <section class="content">
-<form action="<?php echo base_url()?>hot/dokter/{action}/{code}" method="POST" name="">
+<form action="<?php echo base_url()?>hot/dokter/{action}/{code}/{cl_phc}" method="POST" name="">
   <div class="row">
     <div class="col-md-6">
       <div class="box box-primary">

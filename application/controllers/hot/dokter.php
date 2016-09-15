@@ -78,6 +78,7 @@ class Dokter extends CI_Controller {
 		foreach($rows as $act) {
 			$data[] = array(
 				'code'	    => $act->code,
+				'cl_phc'	=> $act->cl_phc,
 				'status'	=> $act->status,
 				'value'		=> $act->value,
 				'edit'		=> 1,
@@ -93,7 +94,7 @@ class Dokter extends CI_Controller {
 		echo json_encode(array($json));
 	}
 
-	function edit($code=0){
+	function edit($code="",$cl_phc=""){
 		$this->authentication->verify('hot','edit');
 
         $this->form_validation->set_rules('value','Nama', 'trim');
@@ -105,9 +106,10 @@ class Dokter extends CI_Controller {
 			$data['title_form']     = "Ubah Data Dokter";
 			$data['action']		    = "edit";
 			$data['code']			= $code;
+			$data['cl_phc']			= $cl_phc;
 			$data['content'] 		= $this->parser->parse("hot/data_dokter_add",$data,true);
 
-		}elseif($this->hot_model->update_dokter($code)==1){
+		}elseif($this->hot_model->update_dokter($code,$cl_phc)==1){
 				$this->session->set_flashdata('alert_form', 'Save data successful...');
 				redirect(base_url()."hot/dokter");
 				die("OK");

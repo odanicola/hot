@@ -197,12 +197,14 @@ class Hot_model extends CI_Model {
         }
     }
 
-    function update_dokter($code){
+    function update_dokter($code,$cl_phc){
 
         $data['value']            = $this->input->post('value');
         $data['status']           = $this->input->post('status');
         
         $this->db->where('code',$code);
+        $this->db->where('cl_phc',$cl_phc);
+
         if($this->db->update('bpjs_data_dokter',$data)){
             return true; 
         }else{

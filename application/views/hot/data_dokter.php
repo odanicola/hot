@@ -67,6 +67,7 @@
 			type	: "POST",
 			datafields: [
 			{ name: 'code', type: 'string'},
+			{ name: 'cl_phc', type: 'string'},
 			{ name: 'value', type: 'string'},
 			{ name: 'status', type: 'int'},
 			{ name: 'edit', type: 'number'},
@@ -123,16 +124,16 @@
 			var args = event.args;
 			var rowData = args.row;
 
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
+			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.code+"\",\""+rowData.cl_phc+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});
 
-	function btn_edit(code){
+	function btn_edit(code,cl_phc){
 		var code ="" +code;
 		var pad  = "000"
 		var new_code = pad.substring(0, pad.length - code.length) + code
-      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code;
+      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code+"/"+cl_phc;
 	}
 
 	function sync(){
