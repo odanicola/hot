@@ -40,6 +40,17 @@ class Hot_model extends CI_Model {
         return $data;
     }
 
+    function get_data_obat_where($code){
+        $this->db->select("*");
+        $this->db->where("code",$code);
+        $query = $this->db->get($this->tabel_obat);
+        if ($query->num_rows()>0) {
+            $data = $query->row_array();
+        }
+        $query->free_result();
+        return $data;
+    }
+
     function get_profil_pasien_where($username){
         $this->db->select("*");
         $this->db->where("username",$username);
@@ -193,6 +204,20 @@ class Hot_model extends CI_Model {
         
         $this->db->where('code',$code);
         if($this->db->update('bpjs_data_dokter',$data)){
+            return true; 
+        }else{
+            return mysql_error();
+        }
+    }
+
+    function update_obat($code){
+
+        $data['value']            = $this->input->post('value');
+        $data['status']           = $this->input->post('status');
+        $data['sediaan']          = $this->input->post('sediaan');
+        
+        $this->db->where('code',$code);
+        if($this->db->update('bpjs_data_obat',$data)){
             return true; 
         }else{
             return mysql_error();

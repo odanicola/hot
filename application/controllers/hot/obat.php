@@ -10,9 +10,6 @@ class Obat extends CI_Controller {
 		$this->authentication->verify('mst','edit');
 		$data['title_group'] 	= "Dashboard";
 		$data['title_form']  	= "Data Obat";
-		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
-		
-		$this->session->set_userdata('filter_puskesmas','');
 		$data['content'] 	 	= $this->parser->parse("hot/data_obat",$data,true);
 
 		$this->template->show($data,"home");
@@ -74,6 +71,34 @@ class Obat extends CI_Controller {
 		);
 
 		echo json_encode(array($json));
+	}
+
+	function edit($code=0){
+		$this->authentication->verify('hot','edit');
+
+        $this->form_validation->set_rules('value','Nama', 'trim');
+        $this->form_validation->set_rules('sediaan','Sediaan', 'trim');
+        $this->form_validation->set_rules('status','Status', 'trim');
+
+		if($this->form_validation->run()== FALSE){
+			$data 					= $this->hot_model->get_data_obat_where($code); 
+			$data['title_group']    = "Dashboard";
+			$data['title_form']     = "Ubah Data Obat";
+			$data['action']		    = "edit";
+			$data['code']			= $code;
+			$data['content'] 		= $this->parser->parse("hot/data_obat_form",$data,true);
+
+		}elseif($this->hot_model->update_obat($code)==1){
+				$this->session->set_flashdata('alert_form', 'Save data successful...');
+				redirect(base_url()."hot/obat");
+				die("OK");
+		}else{
+			$this->session->set_flashdata('alert_form', 'Save data failed...');
+			redirect(base_url()."hot/obat/edit");
+			$data['alert_form'] = 'Save data failed...';
+			die("NOTOK");
+		}
+		$this->template->show($data,"home");
 	}
 
 }

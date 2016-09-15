@@ -112,10 +112,7 @@
 		});
 
 	function btn_edit(code){
-		var code ="" +code;
-		var pad  = "000"
-		var new_code = pad.substring(0, pad.length - code.length) + code
-      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code;
+      	document.location.href="<?php echo base_url()?>hot/obat/edit/"+code;
 	}
 
 	function sync(){
