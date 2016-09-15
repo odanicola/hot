@@ -1,5 +1,38 @@
 <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxslider.js"></script>
 <script>
+    var imtval;
+    var pembagi;
+    var bb;
+    var tb;
+    function bmi(){
+      bb = $("#bb").val();
+      tb = $("#tb").val();
+      pembagi = tb/100;
+      imtval = bb / (pembagi*pembagi);
+      imtval = imtval.toFixed(2);
+
+      $("[name='bmi']").val(imtval);
+      if(imtval>=40){
+        imtval = 'OBESE CLASS III';
+      }
+      else if(imtval>=35){
+        imtval = 'OBESE CLASS II';
+      }
+      else if(imtval>=30){
+        imtval = 'OBESE CLASS I';
+      }
+      else if(imtval>=25){
+        imtval = 'GIZI LEBIH';
+      }
+      else if (imtval>=18.5){
+        imtval = 'GIZI BAIK';
+      }
+      else{
+        imtval = 'GIZI KURANG';
+      }
+      $("[name='kategori']").val(imtval);
+    }
+
     $(function () { 
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
       var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
@@ -8,6 +41,13 @@
       $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
       $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
       
+      $('#bb').on('change', function (event) {
+          bmi();
+      });
+      $('#tb').on('change', function (event) {
+          bmi();
+      });
+
       $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
       $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
       $("#gdpp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
