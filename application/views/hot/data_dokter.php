@@ -119,11 +119,12 @@
             ]
 		});
 
-		$("#jqxgrid_dokter").on('rowSelect', function (event) {
+		$("#jqxgrid_dokter").on('rowselect', function (event) {
 			var args = event.args;
 			var rowData = args.row;
 
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'></div></div>");
+			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});
 
@@ -144,6 +145,7 @@
 
     function close_popup(){
         $("#popup").jqxWindow('close');
+        $("#jqxgrid_dokter").jqxGrid('clearselection');
     }
 
 	$("#btn_syncronize").click(function(){

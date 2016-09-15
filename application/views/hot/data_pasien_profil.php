@@ -1,16 +1,3 @@
-  <?php// echo $alert_form?>
-  <div class="row" style="margin: 10px 285px -11px 2px">
-    <div class="col-sm-8">
-      <?php if(validation_errors()!=""){ ?>
-      <div class="alert alert-warning alert-dismissable">
-        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-        <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-        <?php echo validation_errors()?>
-      </div>
-      <?php } ?>
-    </div>
-  </div>
-  
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -173,6 +160,13 @@
   $(function () { 
     tabIndex = 1;
 
+    $("#popup").jqxWindow({
+      theme: theme, resizable: false,
+      width: 250,
+      height: 150,
+      isModal: true, autoOpen: false, modalOpacity: 0.4
+    });
+
     $("#btn_simpan").click(function(){
           var data = new FormData();
           $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
@@ -200,22 +194,10 @@
               success : function(response){
                 a = response.split("|");
                 if(a[0]=='OK'){
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil diubah.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-                      $("#popup").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 120,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil diubah.<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
                   $("#popup").jqxWindow('open');
                 }else{
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data gagal diubah.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-                      $("#popup").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 120,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data gagal diubah.<br><br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
                   $("#popup").jqxWindow('open');
                 }
               }

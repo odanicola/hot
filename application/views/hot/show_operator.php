@@ -47,7 +47,16 @@
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>sync"><i class="fa fa-refresh"></i></a></span>
+      <span class="info-box-icon bg-orange"><a href="<?php echo base_url()?>sms/reminder"><i class="fa fa-comments"></i></a></span>
+      <div class="info-box-content">
+        <span class="info-box-text"><a href="<?php echo base_url()?>sms/reminder">Reminder</a></span>
+        <span class="info-box-number" style="font-size:14px;">SMS</span>
+      </div><!-- /.info-box-content -->
+    </div><!-- /.info-box -->
+  </div><!-- /.col -->
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-blue"><a href="<?php echo base_url()?>hot/sync"><i class="fa fa-refresh"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>hot/sync">Sinkronisasi</a></span>
         <span class="info-box-number" style="font-size:14px;">PCare</span>
@@ -60,7 +69,7 @@
 
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-orange"><a href="<?php echo base_url()?>draft"><i class="fa fa-list-alt"></i></a></span>
+      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>draft"><i class="fa fa-list-alt"></i></a></span>
       <div class="info-box-content">
         <span class="info-box-text"><a href="<?php echo base_url()?>draft">Draft</a></span>
         <span class="info-box-number" style="font-size:14px;">Laporan</span>

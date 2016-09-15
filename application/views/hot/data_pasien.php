@@ -84,6 +84,12 @@
 	$(function () {	
 		$("#menu_hot_pasien").addClass("active");
 		$("#menu_dashboard").addClass("active");
+		$("#popup").jqxWindow({
+			theme: theme, resizable: false,
+			width: 250,
+			height: 190,
+			isModal: true, autoOpen: false, modalOpacity: 0.4
+		});
 	});
 
 	   var source = {
@@ -140,29 +146,25 @@
 			columns: [
 				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"|"+dataRecord.nama+"\");'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
 				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' onclick='aksi(\""+dataRecord.username+"|"+dataRecord.nama+"\");'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
 		});
 
-	function aksi(id){
-		var id     = id;
-		var new_id = id.split("|");
-        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+new_id[1]+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+new_id[0]+")'>&nbsp;&nbsp;<input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+new_id[0]+")'></div></div>");
-          $("#popup").jqxWindow({
-            theme: theme, resizable: false,
-            width: 250,
-            height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
-          });
-          $("#popup").jqxWindow('open');
-	}
+		$("#jqxgrid").on('rowselect', function (event) {
+			var args = event.args;
+			var rowData = args.row;
+
+	        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.username+")'> <input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del("+rowData.username+")'><br><br><input class='btn btn-warning' style='width:204px' type='button' value='Close' onClick='close_popup()'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$("#popup").jqxWindow('open');
+		});
 
 	function btn_edit(id){
       	document.location.href="<?php echo base_url()?>hot/pasien/edit/" + id;
@@ -170,11 +172,11 @@
 
 	function btn_del(id){
 		$("#popup").hide();
-		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='del_pasien("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Cancel' onClick='close_popup_del()'></div></div>");
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_pasien("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup_del()'></div></div>");
           $("#popup_del").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
-            height: 120,
+            height: 150,
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         $("#popup_del").jqxWindow('open');
@@ -182,31 +184,34 @@
 
 	function del_pasien(id){
 		$.post("<?php echo base_url().'hot/pasien/del' ?>/" +id,  function(){
-		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
+		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
           $("#popup_del1").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
-            height: 120,
+            height: 150,
             isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         
-        $("#popup_del1").jqxWindow('open');
-        	$("#popup").jqxWindow('close');
-        	$("#popup_del").jqxWindow('close');
+			$("#popup_del1").jqxWindow('open');
+			$("#popup").jqxWindow('close');
+			$("#popup_del").jqxWindow('close');
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
 	}
 
 	function close_popup(){
+        $("#jqxgrid").jqxGrid('clearselection');
         $("#popup").jqxWindow('close');
     }
 
     function close_popup_del(){
+        $("#jqxgrid").jqxGrid('clearselection');
         $("#popup").jqxWindow('close');
         $("#popup_del").jqxWindow('close');
     }
 
     function close_popup_del1(){
+        $("#jqxgrid").jqxGrid('clearselection');
         $("#popup").jqxWindow('close');
         $("#popup_del").jqxWindow('close');
         $("#popup_del1").jqxWindow('close');
