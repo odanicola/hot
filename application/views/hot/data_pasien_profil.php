@@ -136,9 +136,12 @@
             </div>            
             <div class="form-group">
               <label>Puskesmas</label>
-                <select  name="code" type="text" class="form-control">
+                <select name="code" type="text" class="form-control">
                     <?php foreach($datapuskesmas as $pus) : ?>
-                      <?php $select = $pus->code == $code ? 'selected' : '' ?>
+                      <?php 
+                      $puskode=substr($pus->code,1);
+                      $select = $puskode == $code ? 'selected' : '';;
+                       ?>
                       <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
                     <?php endforeach ?>
                 </select>
