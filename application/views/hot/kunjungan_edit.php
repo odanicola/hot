@@ -1,6 +1,6 @@
 <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxslider.js"></script>
 <script>
-    var imtval;
+    var bmival;
     var pembagi;
     var bb;
     var tb;
@@ -8,52 +8,41 @@
       bb = $("#bb").val();
       tb = $("#tb").val();
       pembagi = tb/100;
-      imtval = bb / (pembagi*pembagi);
-      imtval = imtval.toFixed(2);
+      bmival  = bb / (pembagi*pembagi);
+      bmival  = bmival.toFixed(2);
 
-      $("[name='bmi']").val(imtval);
-      if(imtval>=40){
-        imtval = 'OBESE CLASS III';
+      $("#bmi").val(bmival);
+      if(bmival>=40){
+        bmival = 'OBESE III';
+      } else if(bmival>=35){
+        bmival = 'OBESE II';
+      } else if(bmival>=30){
+        bmival = 'OBESE I';
+      } else if(bmival>=25){
+        bmival = 'GIZI LEBIH';
+      } else if (bmival>=18.5){
+        bmival = 'GIZI BAIK';
+      } else{
+        bmival = 'GIZI KURANG';
       }
-      else if(imtval>=35){
-        imtval = 'OBESE CLASS II';
-      }
-      else if(imtval>=30){
-        imtval = 'OBESE CLASS I';
-      }
-      else if(imtval>=25){
-        imtval = 'GIZI LEBIH';
-      }
-      else if (imtval>=18.5){
-        imtval = 'GIZI BAIK';
-      }
-      else{
-        imtval = 'GIZI KURANG';
-      }
-      $("[name='kategori']").val(imtval);
+      $("#kategori").val(bmival);
     }
 
     $(function () { 
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
-      var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
-      var btn_batal = "</br></br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='batal()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
 
-      $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{tb}' });
+      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
       
-      $('#bb').on('change', function (event) {
-          bmi();
-      });
-      $('#tb').on('change', function (event) {
-          bmi();
-      });
+      $('#tb').on('change', function (event) { bmi(); });
+      $('#bb').on('change', function (event) { bmi(); });
 
-      $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#gdpp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
-      $("#kolesterol").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0 });
+      $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gdp}' });
+      $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gds}' });
+      $("#gdpp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gdpp}' });
+      $("#kolesterol").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{kolesterol}' });
 
-      $('#systolic').jqxSlider({ width: '100%',template: "warning", tooltip: true, mode: 'fixed', min: 100, max: 200, ticksFrequency: 10, value: 130, step: 1 });
+      $('#systolic').jqxSlider({ width: '100%',template: "warning", tooltip: true, mode: 'fixed', min: 100, max: 200, ticksFrequency: 10, value: {systolic}, step: 1 });
       $("#val_systolic").html($('#systolic').jqxSlider('value'));
       $('#systolic').on('change', function (event) {
           var val = $(this).jqxSlider('value');
@@ -65,7 +54,7 @@
           $("#val_systolic").html(val);
       });
 
-      $('#diastolic').jqxSlider({ width: '100%',template: "danger", tooltip: true, mode: 'fixed', min: 60, max: 140, ticksFrequency: 10, value: 80, step: 1 });
+      $('#diastolic').jqxSlider({ width: '100%',template: "danger", tooltip: true, mode: 'fixed', min: 60, max: 140, ticksFrequency: 10, value: {diastolic}, step: 1 });
       $("#val_diastolic").html($('#diastolic').jqxSlider('value'));
       $('#diastolic').on('change', function (event) {
           var val = $(this).jqxSlider('value');
@@ -77,55 +66,54 @@
           $("#val_diastolic").html(val);
       });
 
-      $('#pulse').jqxSlider({ width: '100%',template: "success", tooltip: true, mode: 'fixed', min: 60, max: 200, ticksFrequency: 20, value: 80, step: 1 });
+      $('#pulse').jqxSlider({ width: '100%',template: "success", tooltip: true, mode: 'fixed', min: 60, max: 200, ticksFrequency: 20, value: {pulse}, step: 1 });
       $("#val_pulse").html($('#pulse').jqxSlider('value'));
       $('#pulse').on('change', function (event) {
           $("#val_pulse").html($(this).jqxSlider('value'));
       });
 
-
       $("#popup").jqxWindow({
         theme: theme, resizable: false,
         width: 320,
-        height: 180,
+        height: 160,
         isModal: true, autoOpen: false, modalOpacity: 0.4
       });
 
-      $("#btn-batal").click(function(){
-        $("#popup_content").html("<div style='text-align:center'><br><br>Batalkan pendaftaran anda? "+btn_batal+"</div>");
-        $("#popup").jqxWindow('open');
-      });
+      $("#btn-simpan").click(function(){
+        var data = new FormData();
+        data.append("waktu", $("#waktu").val());
+        data.append("tb", $("#tb").val());
+        data.append("bb", $("#bb").val());
+        data.append("bmi", $("#bmi").val());
+        data.append("kategori", $("#kategori").val());
+        data.append("systolic", $("#systolic").jqxSlider('value'));
+        data.append("diastolic", $("#diastolic").jqxSlider('value'));
+        data.append("pulse", $("#pulse").jqxSlider('value'));
+        data.append("gds", $("#gds").val());
+        data.append("gdp", $("#gdp").val());
+        data.append("gdpp", $("#gdpp").val());
+        data.append("kolesterol", $("#kolesterol").val());
+        data.append("status_antri", "periksa");
+        data.append("username_op", "{username}");
 
-      $("#btn-daftar").click(function(){
-        var tgl = $("#tgl").val();
-        if(tgl <= "<?php echo date("d-m-Y") ?>"){
-            $("#popup_content").html("<div style='text-align:center'><br><br>Pendaftaran berlaku setelah tanggal <br><?php echo date("d M Y") ?>."+btn+"</div>");
-            $("#popup").jqxWindow('open');
-        }else{  
-            var data = new FormData();
-            data.append('code', $('#puskesmas').val());
-            data.append('username', '{nik}');
-            data.append('tgl', tgl);
-
-            $.ajax({
-                cache : false,
-                contentType : false,
-                processData : false,
-                type : 'POST',
-                url : '<?php echo base_url()?>hot/kunjungan/daftar',
-                data : data,
-                success : function(response){
-                    if(response=="OK"){
-                      $("#popup_content").html("<div style='text-align:center'><br><br>Pendaftaran berhasil dilakukan. <br>"+btn_reload+"</div>");
-                        $("#popup").jqxWindow('open');
-                        $("#daftar").hide();
-                    }else{
-                      $("#popup_content").html("<div style='text-align:center'><br><br>Pendaftaran tidak dapat dilakukan. <br>"+btn+"</div>");
-                        $("#popup").jqxWindow('open');
-                    }
+        $.ajax({
+            cache : false,
+            contentType : false,
+            processData : false,
+            type : 'POST',
+            url : '<?php echo base_url()?>hot/kunjungan/simpan/{id_kunjungan}',
+            data : data,
+            success : function(response){
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                if(response=="OK"){
+                  $("#popup_content").html("<div style='text-align:center'><br><br>Data berhasil disimpan. "+btn+"</div>");
+                    $("#popup").jqxWindow('open');
+                }else{
+                  $("#popup_content").html("<div style='text-align:center'><br><br>Data tidak dapat disimpan. "+btn+"</div>");
+                    $("#popup").jqxWindow('open');
                 }
-            });
-        }
+            }
+        });
       });
     });
 
@@ -194,6 +182,7 @@
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right"><b>Jam</b></div>
               <div class="col-xs-9">{waktu}</div>
+              <input type="hidden" id="waktu" value="{waktu}">
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>TB</b></div>
@@ -207,8 +196,8 @@
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
-              <div class="col-xs-4"><input style="height:50px" type="text" class="form-control" name="bmi" value="{bmi}" readonly placeholder="BMI"></div>
-              <div class="col-xs-5"><input style="height:50px" type="text" class="form-control" name="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
+              <div class="col-xs-4"><input style="height:50px" type="text" class="form-control" id="bmi" value="{bmi}" readonly placeholder="BMI"></div>
+              <div class="col-xs-5"><input style="height:50px" type="text" class="form-control" id="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
             </div>
 
             <div style="padding-top:20px;padding-bottom:30px;">
@@ -255,10 +244,9 @@
               <div class="col-xs-6"><div id="kolesterol"></div></div>
               <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
-
           </div>
-          <div class="box-footer pull-right">
-            <button type="button" class="btn btn-primary" id="btn-daftar">Simpan</button>
+          <div class="box-footer text-center" style="padding:15px">
+            <button type="button" class="btn btn-primary" id="btn-simpan">Simpan</button>
             <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/kunjungan'">Kembali</button>
           </div>
           <div style="clear:both"></div>

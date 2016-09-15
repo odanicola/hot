@@ -1,6 +1,6 @@
 <script>
     $(function () { 
-      var date = new Date(<?php echo date("Y, ").(date("j")-1).", ".(date("n")+1) ?>);
+      var date = new Date(<?php echo date("Y").", ".(date("n")-1).", ".(date("j")+1) ?>);
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
       var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
       var btn_batal = "</br></br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='batal()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";

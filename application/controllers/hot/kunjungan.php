@@ -25,11 +25,10 @@ class Kunjungan extends CI_Controller {
 			$data['title_group'] = "Dashboard";
 			$data['title_form']  = "Pendaftaran Kunjungan Pasien";
 			$data['action']      = "add";
+			$data['code']  		 = $this->session->userdata('puskesmas');
 			$data['nik']  		 = $this->session->userdata('username');
 
 			$data['kunjungan']  = $this->kunjungan_model->get_kunjungan($data['nik']);
-
-			$data['code']  		 = $this->session->userdata('puskesmas');
 
 			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
 
@@ -190,12 +189,25 @@ class Kunjungan extends CI_Controller {
 		$data['title_form']     = "Pengukuran";
 		$data['action']		    = "edit";
 		$data['id_kunjungan']	= $id_kunjungan;
+		$data['systolic']		= $data['systolic']=="" ? 130 : $data['systolic'];
+		$data['diastolic']		= $data['diastolic']=="" ? 80 : $data['diastolic'];
+		$data['pulse']			= $data['pulse']=="" ? 80 : $data['pulse'];
 		$data['tgl']	= date("d M Y", strtotime($data['tgl']));
 		$data['waktu']	= date("H:i:s",time());
 
 		$data['content'] 		= $this->parser->parse("hot/kunjungan_edit",$data,true);
 
 		$this->template->show($data,"home");
+	}
+
+	function simpan($id_kunjungan=0){
+		$this->authentication->verify('hot','edit');
+
+		if($this->kunjungan_model->simpan($id_kunjungan)){
+			echo "OK";
+		}else{
+			echo "ERROR";
+		}
 	}
 
 	function del($username=0){

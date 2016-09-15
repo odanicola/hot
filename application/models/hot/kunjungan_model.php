@@ -68,6 +68,32 @@ class Kunjungan_model extends CI_Model {
         }
     }
 
+    function simpan($id_kunjungan){
+
+        $data['waktu']          = $this->input->post('waktu');
+        $data['tb']             = $this->input->post('tb');
+        $data['bb']             = $this->input->post('bb');
+        $data['bmi']            = $this->input->post('bmi');
+        $data['kategori']       = $this->input->post('kategori');
+        $data['systolic']       = $this->input->post('systolic');
+        $data['diastolic']      = $this->input->post('diastolic');
+        $data['pulse']          = $this->input->post('pulse');
+        $data['gds']            = $this->input->post('gds');
+        $data['gdp']            = $this->input->post('gdp');
+        $data['gdpp']           = $this->input->post('gdpp');
+        $data['kolesterol']     = $this->input->post('kolesterol');
+        $data['status_antri']   = $this->input->post('status_antri');
+        $data['username_op']    = $this->input->post('username_op');
+
+
+        $this->db->where('id_kunjungan',$id_kunjungan);
+        if ($this->db->update('kunjungan',$data)) {
+            return 'true';  
+        }else{
+            return 'false';
+        }
+    }
+
     function delete_pasien($username){
         $this->db->delete('app_users_list', array('username' => $username));
         $this->db->delete('app_users_profile', array('username' => $username));

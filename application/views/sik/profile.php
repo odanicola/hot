@@ -1,11 +1,3 @@
-<!-- JS & CSS for Galley Photo -->
-<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/fineuploader.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/photogallery.css" />
-<link type="text/css" rel="stylesheet" href="<?php echo base_url()?>plugins/js/image_crud/image_crud/css/colorbox.css" />
-<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery-ui-1.9.0.custom.min.js"></script>
-<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/fineuploader-3.2.min.js"></script>
-<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery.colorbox-min.js"></script>
-<script src="<?php echo base_url()?>plugins/js/image_crud/image_crud/js/jquery-migrate-1.2.1.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $('#btn_updatePassword').click(function(){
@@ -65,16 +57,8 @@
     });
 </script>
 <section class="content">
- <div id="notification">
-</div>
-<?php if($this->session->flashdata('alert')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert')?>
-</div>
-<?php } ?>
-<div class="row" style="background:#FAFAFA">
+<div class="row" style="background:#FAFAFA;margin:1px">
+  <div id="notification"></div>
   <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
       <li class="active"><a href="#tab_1" data-toggle="tab">Profil Pengguna</a></li>
@@ -247,21 +231,6 @@
         </div>
         </form>        
       </div>
-
-
-      <div class="tab-pane" id="tab_3">   
-        <!-- <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-          <p class="login-box-msg">Galeri Foto Penangkar Masih Kosong</p>
-            <div class="row">
-              <div class="col-xs-4 col-md-offset-4">
-                <button type="submit" class="btn btn-primary btn-block btn-flat">Upload Foto</button>
-                <br><br>
-              </div>
-            </div>
-        </div>
-        </div>
-      </div> -->
     </div>
   </div><!-- /.form-box -->
 </div><!-- /.register-box -->
@@ -269,6 +238,6 @@
 <script type="text/javascript">
 $(function(){
     $("#menu_dashboard").addClass("active");
-    $("#menu_dashboard_profile").addClass("active");
+    $("#menu_morganisasi_profile").addClass("active");
   });
 </script>
