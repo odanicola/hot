@@ -29,9 +29,10 @@ class Hot_model extends CI_Model {
         return $query->result();
     }
 
-    function get_data_dokter_where($code){
+    function get_data_dokter_where($code,$cl_phc){
         $this->db->select("*");
         $this->db->where("code",$code);
+        $this->db->where("cl_phc",$cl_phc);
         $query = $this->db->get($this->tabel_dokter);
         if ($query->num_rows()>0) {
             $data = $query->row_array();

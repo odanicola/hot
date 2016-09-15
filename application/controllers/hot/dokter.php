@@ -101,7 +101,7 @@ class Dokter extends CI_Controller {
         $this->form_validation->set_rules('status','Status', 'trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data 					= $this->hot_model->get_data_dokter_where($code); 
+			$data 					= $this->hot_model->get_data_dokter_where($code,$cl_phc); 
 			$data['title_group']    = "Dashboard";
 			$data['title_form']     = "Ubah Data Dokter";
 			$data['action']		    = "edit";
