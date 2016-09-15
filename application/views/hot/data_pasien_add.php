@@ -199,11 +199,11 @@
         var data = new FormData();
 
         data.append('username',     $("[name='username']").val());
-        data.append('bpjs',         $("[name='bpjs']:checked").val());
+        data.append('bpjs',         $("[name='bpjs']").val());
         data.append('password',     $("[name='password']").val());
         data.append('password2',    $("[name='password2']").val());
         data.append('nama',         $("[name='nama']").val());
-        data.append('jk',           $("[name='jk']").val());
+        data.append('jk',           $("[name='jk']:checked").val());
         data.append('tb',           $("[name='tb']").val());
         data.append('bb',           $("[name='bb']").val());
         data.append('phone_number', $("[name='phone_number']").val());

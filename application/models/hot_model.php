@@ -156,13 +156,17 @@ class Hot_model extends CI_Model {
         $data_profile['alamat']          = $this->input->post('alamat');
         $data_profile['tb']              = $this->input->post('tb');
         $data_profile['bb']              = $this->input->post('bb');
-        
+
+        $data_list['code']               = substr($this->input->post('code'),1,10);
+
+        $this->db->get('app_users_profile');
         $this->db->where('username',$username);
-        if($this->db->update('app_users_profile',$data_profile)){
-            return true; 
-        }else{
-            return mysql_error();
-        }
+        $this->db->update('app_users_profile',$data_profile);
+
+        $this->db->get('app_users_list');
+        $this->db->where('username',$username);
+        $this->db->update('app_users_list',$data_list);
+        return 'true';  
     }
 
     function update_pasien_akun($username){

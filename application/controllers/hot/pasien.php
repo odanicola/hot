@@ -245,7 +245,7 @@ class Pasien extends CI_Controller {
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_profil",$data));
-		}elseif($res=$this->hot_model->update_pasien_profil($username)=='true'){
+		}elseif($this->hot_model->update_pasien_profil($username)=='true'){
         	
         	$data 			 	   = $this->hot_model->get_profil_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
