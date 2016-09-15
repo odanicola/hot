@@ -12,9 +12,6 @@
           <h3 class="box-title">{title_form}</h3>
 	    </div>
 	    <div class="box-footer">
-	      	<a href="<?php echo base_url()?>hot/kunjungan/daftar">
-		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Pendaftaran</button>
-		 	</a>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 			<div class="row" style="padding-top:15px">
 			  <div class="col-xs-2"></div>
