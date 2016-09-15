@@ -82,6 +82,9 @@ class Kunjungan_model extends CI_Model {
         $data['gdp']            = $this->input->post('gdp');
         $data['gdpp']           = $this->input->post('gdpp');
         $data['kolesterol']     = $this->input->post('kolesterol');
+        $data['is_diabetic']    = $this->input->post('is_diabetic');
+        $data['is_ckd']         = $this->input->post('is_ckd');
+        $data['is_black']       = $this->input->post('is_black');
         $data['status_antri']   = $this->input->post('status_antri');
         $data['username_op']    = $this->input->post('username_op');
 

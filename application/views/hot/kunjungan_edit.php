@@ -93,6 +93,9 @@
         data.append("gdp", $("#gdp").val());
         data.append("gdpp", $("#gdpp").val());
         data.append("kolesterol", $("#kolesterol").val());
+        data.append("is_diabetic", $("#is_diabetic").is(':checked') ? 1:0);
+        data.append("is_ckd", $("#is_ckd").is(':checked') ? 1:0);
+        data.append("is_black", $("#is_black").is(':checked') ? 1:0);
         data.append("status_antri", "periksa");
         data.append("username_op", "{username}");
 
@@ -159,7 +162,7 @@
           <h3 class="box-title">{title_form}</h3>
         </div>
 
-        <div>
+        <div id="pengukuran">
           <div class="box-body">
             <div class="row" style="padding:4px">
               <div class="col-xs-3"><b>Nama</b></div>
@@ -198,6 +201,19 @@
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
               <div class="col-xs-4"><input style="height:50px" type="text" class="form-control" id="bmi" value="{bmi}" readonly placeholder="BMI"></div>
               <div class="col-xs-5"><input style="height:50px" type="text" class="form-control" id="kategori" value="{kategori}" readonly placeholder="Kategori"></div>
+            </div>
+
+            <div class="row" style="padding:10px 4px 4px 4px">
+              <div class="col-xs-3 text-right"><input type="checkbox" id="is_diabetic" value="1" <?php if($is_diabetic) echo "checked"; ?>></div>
+              <div class="col-xs-9"><b>Check if Diabetic</b></div>
+            </div>
+            <div class="row" style="padding:10px 4px 4px 4px">
+              <div class="col-xs-3 text-right"><input type="checkbox" id="is_ckd" value="1" <?php if($is_ckd) echo "checked"; ?>></div>
+              <div class="col-xs-9"><b>Check if CKD</b></div>
+            </div>
+            <div class="row" style="padding:10px 4px 4px 4px">
+              <div class="col-xs-3 text-right"><input type="checkbox" id="is_black" value="1" <?php if($is_black) echo "checked"; ?>></div>
+              <div class="col-xs-9"><b>Check if Black</b></div>
             </div>
 
             <div style="padding-top:20px;padding-bottom:30px;">
@@ -249,25 +265,14 @@
             <button type="button" class="btn btn-primary" id="btn-simpan">Simpan</button>
             <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/kunjungan'">Kembali</button>
           </div>
-          <div style="clear:both"></div>
         </div>
 
 
-        <div id="terdaftar" <?php if(!isset($kunjungan['id_kunjungan'])){ echo "style='display:none'"; } ?>>
-          <div class="box-footer pull-right">
-            <button type="button" class="btn btn-danger" id="btn-batal">Batalkan Pendaftaran</button>
-            <button type="button" class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/kunjungan'">Kembali</button>
-          </div>
+        <div id="hasil" <?php if(!isset($id_kunjungan)){ echo "style='display:none'"; } ?>>
           <div style="clear:both"></div>
           <div class="box-body">
-            <div class="form-group" style="padding:40px 0px 20px 0px ">
-            <center>
-              <label>Anda tendaftar untuk pemeriksaan <br>Pada tanggal 
-              <span style="color:red"><?php if(isset($kunjungan['tgl'])) echo date("d M Y",strtotime($kunjungan['tgl']));?></span>
-              <br>Nomor Pendaftaran : 
-              <span style="color:red"><?php if(isset($kunjungan['id_kunjungan'])) echo substr($kunjungan['id_kunjungan'],10);?></span>
-              </label>
-              </center>
+            <div class="row" style="padding:4px;">
+              <div class="col-xs-12 text-center" style="background:#E3E3E3;padding:5px"><label>Resume Pasien :</label></div>
             </div>
           </div>
         </div>
