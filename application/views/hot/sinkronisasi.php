@@ -19,24 +19,20 @@
 			<div class="row" style="padding-top:15px">
 			  <div class="col-xs-2"></div>
 			  <div class="col-xs-4">
-			  		<select class="form-control" id="tahun">
-			  			<?php
-			  			foreach($tahun_option as $x=>$y){
-			  				echo "<option value='".$x."' ".($x==$filter_tahun ? 'selected':'').">".$y."</option>";
-			  			}
-			  			?>
-			  		</select>
+	                <select name="tahun" id="tahun" class="form-control">
+                        <?php for ($i=date("Y");$i>=date("Y")-10;$i--) { ;?>
+                            <?php $select = $i == date("Y") ? 'selected=selected' : '' ?>
+                            <option value="<?php echo $i; ?>" <?php echo $select ?>><?php echo $i; ?></option>
+                        <?php   } ;?>
+                    </select>
 			  </div>
 			  <div class="col-xs-6" style="padding-left:14px">
-			  		<select class="form-control" id="bulan">
-			  			<?php
-			  			foreach($bulan_option as $x=>$y){
-			  				if($x>0) {
-			  					echo "<option value='".$x."'".($x==$filter_bulan ? 'selected':'').">".$y."</option>";
-			  				}
-			  			}
-			  			?>
-			  		</select>
+	                <select name="bulan" id="bulan" class="form-control">
+                        <?php foreach ($bulan as $val=>$key ) { ;?>
+                        <?php $select = $val == date("m") ? 'selected=selected' : '' ?>
+                            <option value="<?php echo $val; ?>" <?php echo $select ?>><?php echo $key; ?></option>
+                        <?php   } ;?>
+                    </select>
 			  </div>
 			</div>
 			<div class="row" style="padding-top:5px">
@@ -190,6 +186,12 @@
 
     $("#bulan").change(function(){
 		$.post("<?php echo base_url().'hot/kunjungan/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#tanggal").change(function(){
+		$.post("<?php echo base_url().'hot/kunjungan/filter_tanggal' ?>", 'filter_tanggal='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
