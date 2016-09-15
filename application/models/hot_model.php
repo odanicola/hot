@@ -4,6 +4,7 @@ class Hot_model extends CI_Model {
     var $tabel_pasien_profil = 'app_users_profile';
     var $tabel_pasien_akun   = 'app_users_list';
     var $tabel_dokter        = 'bpjs_data_dokter';
+    var $tabel_obat          = 'bpjs_data_obat';
     var $t_puskesmas         = 'cl_phc';
 
     function __construct() {
@@ -12,6 +13,11 @@ class Hot_model extends CI_Model {
 
     function get_data_dokter($start=0,$limit=999999,$options=array()){
         $query = $this->db->get($this->tabel_dokter,$limit,$start);
+        return $query->result();
+    }
+
+    function get_data_obat($start=0,$limit=999999,$options=array()){
+        $query = $this->db->get($this->tabel_obat,$limit,$start);
         return $query->result();
     }
 
