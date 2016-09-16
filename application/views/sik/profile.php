@@ -220,7 +220,33 @@
                     <option value="P" <?php echo  ('P' == $jk) ? 'selected' : '' ?> >Perempuan</option>
                 </select>
             </div>
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-child" style="width:20px"></i>
+              </span>
+              <input type="number" class="form-control" placeholder="Tinggi Badan" name="tb" value="<?php 
+                      if(set_value('tb')=="" && isset($tb)){
+                        echo $tb;
+                      }else{
+                        echo  set_value('tb');
+                      }
+                      ?>"/>
+            </div>
 
+            <br>
+            <div class="input-group">
+              <span class="input-group-addon">
+                <i class="fa fa-plus-square" style="width:20px"></i>
+              </span>
+              <input type="number" class="form-control" placeholder="Berat Badan" name="bb" value="<?php 
+                      if(set_value('bb')=="" && isset($bb)){
+                        echo $bb;
+                      }else{
+                        echo  set_value('bb');
+                      }
+                      ?>"/>
+            </div>
             <br>
             <div class="row">
               <div class="col-xs-4">
