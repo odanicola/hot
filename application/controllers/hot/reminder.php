@@ -3,7 +3,7 @@ class Reminder extends CI_Controller {
 
     public function __construct(){
 		parent::__construct();
-		$this->load->model('sms/reminder_model');
+		$this->load->model('hot/reminder_model');
 
 	}
 
@@ -17,8 +17,13 @@ class Reminder extends CI_Controller {
 		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
 		$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
-
-		$data['content'] 	 	= $this->parser->parse("sms/reminder/show",$data,true);
+		
+		if($this->session->userdata('level')=="pasien"){
+			$v = "hot/reminder_pasien";
+		}else{
+			$v = "hot/reminder_petugas";
+		}
+		$data['content']= $this->parser->parse($v,$data,true);
 
 		$this->template->show($data,"home");
 	}
@@ -55,7 +60,7 @@ class Reminder extends CI_Controller {
 		}
 	}
 
-	function json(){
+	function json_petugas(){
 
 		if($this->session->userdata('level')=="pasien"){
 			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
@@ -87,7 +92,7 @@ class Reminder extends CI_Controller {
 			$this->db->where("YEAR(tgl)",date("Y"));
 		}
 		
-		$rows_all = $this->reminder_model->get_data_pasien();
+		$rows_all = $this->reminder_model->get_data_petugas();
 
 		if($this->session->userdata('level')=="pasien"){
 			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
@@ -119,7 +124,7 @@ class Reminder extends CI_Controller {
 			$this->db->where("YEAR(kontrol_tgl)",date("Y"));
 		}
 
-		$rows = $this->reminder_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$rows = $this->reminder_model->get_data_petugas($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
@@ -132,6 +137,46 @@ class Reminder extends CI_Controller {
 				'usia'   	    => $act->usia,
 				'bpjs'   	    => $act->bpjs,
 				'phone_number'	=> $act->phone_number,
+				'edit'		    => 1,
+				'delete'	    => 1
+			);
+		}
+
+		$size = sizeof($rows_all);
+		$json = array(
+			'TotalRows' => (int) $size,
+			'Rows'      => $data
+		);
+
+		echo json_encode(array($json));
+	}
+
+	function json_pasien(){
+
+		if($this->session->userdata('level')=="pasien"){
+			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
+		}else{
+			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
+		} 
+
+		$rows_all = $this->reminder_model->get_data_pasien();
+
+		if($this->session->userdata('level')=="pasien"){
+			$this->db->where('kunjungan.username',$this->session->userdata('username'));	
+		}else{
+			$this->db->where('kunjungan.code',$this->session->userdata('puskesmas'));	
+		} 
+
+		$rows = $this->reminder_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
+		foreach($rows as $act) {
+			$data[] = array(
+				'id_kunjungan'	=> $act->id_kunjungan,
+				'urut'	    	=> substr($act->id_kunjungan,-3),
+				'username'	    => $act->username,
+				'nama'	    	=> $act->nama,
+				'kontrol_tgl'	=> $act->kontrol_tgl,
+				'anjuran_dokter'=> $act->anjuran_dokter,
 				'edit'		    => 1,
 				'delete'	    => 1
 			);

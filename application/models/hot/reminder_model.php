@@ -9,12 +9,19 @@ class Reminder_model extends CI_Model {
 		$this->lang	  = $this->config->item('language');
     }
 
-    function get_data_pasien($start=0,$limit=999999,$options=array()){
+    function get_data_petugas($start=0,$limit=999999,$options=array()){
         $this->db->select("kunjungan.id_kunjungan,kunjungan.username,kunjungan_resume.kontrol_tgl,app_users_profile.phone_number,app_users_profile.bpjs,app_users_profile.nama,app_users_profile.jk, DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(), tgl_lahir)), '%Y')+0 AS usia ",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->join('kunjungan_resume','kunjungan.id_kunjungan = kunjungan_resume.id_kunjungan');
-        $this->db->where('status_antri','antri');
-        $this->db->where('tgl','CURDATE()',false);
+        $this->db->order_by('id_kunjungan','asc');
+        $query = $this->db->get('kunjungan',$limit,$start);
+        return $query->result();
+    }
+
+    function get_data_pasien($start=0,$limit=999999,$options=array()){
+        $this->db->select("kunjungan.id_kunjungan,kunjungan.username,kunjungan_resume.anjuran_dokter,kunjungan_resume.kontrol_tgl,app_users_profile.nama",false);
+        $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
+        $this->db->join('kunjungan_resume','kunjungan.id_kunjungan = kunjungan_resume.id_kunjungan');
         $this->db->order_by('id_kunjungan','asc');
         $query = $this->db->get('kunjungan',$limit,$start);
         return $query->result();

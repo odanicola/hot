@@ -69,8 +69,9 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_sms_reminder").addClass("active");
-		$("#menu_sms_gateway").addClass("active");
+		$("#menu_hot_reminder").addClass("active");
+		$("#menu_dashboard").addClass("active");
+
 		$("#popup").jqxWindow({
 			theme: theme, resizable: false,
 			width: 250,
@@ -94,7 +95,7 @@
 			{ name: 'edit', type: 'number'},
 			{ name: 'delete', type: 'number'}
         ],
-		url: "<?php echo site_url('sms/reminder/json'); ?>",
+		url: "<?php echo site_url('hot/reminder/json_petugas'); ?>",
 		cache: false,
 		updaterow: function (rowid, rowdata, commit) {
 			},
