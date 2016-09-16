@@ -54,7 +54,7 @@
 				position:absolute; 
 				top:0;
 				right:0;
-				background:url(http://localhost/infokes/hot/public/themes/sik/dist/img/icon.png);
+				background:url("<?=base_url('public/themes/sik/dist/img/icon.png')?>");
 			}
 
 			.zoom img {
@@ -70,7 +70,7 @@
 			</style>
 
 			<span class='zoom' id='ex1'>
-				<img src="http://localhost/infokes/hot/public/themes/sik/dist/img/guideline.png" width='555' height='320'/>
+				<img src = "<?=base_url('public/themes/sik/dist/img/guideline.png')?>"  width='555' height='320'/>
 			</span>     
 
 	    </div>
@@ -85,8 +85,9 @@
 </form>
 </section>
 
-<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-<script src="<?php echo base_url(); ?>plugins/js/jquery.imgzoom/scripts/jquery.zoom.js"></script>
+<!-- <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script> -->
+<script src="<?php echo base_url(); ?>plugins/js/jquery.zoom/jquery.zoom.js"></script>
+<!--<script src="<?php echo base_url(); ?>plugins/js/jquery.zoom/jquery.min.js"></script> -->
 
 <script type="text/javascript">   
 	$(document).ready(function(){
