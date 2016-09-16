@@ -86,7 +86,7 @@
 </section>
 
 <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-<script src="http://localhost/infokes/hot/plugins/js/jquery.imgzoom/scripts/jquery.zoom.js"></script>
+<script src="<?php echo base_url(); ?>plugins/js/jquery.imgzoom/scripts/jquery.zoom.js"></script>
 
 <script type="text/javascript">   
 	$(document).ready(function(){
