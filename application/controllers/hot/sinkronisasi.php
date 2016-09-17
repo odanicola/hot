@@ -189,6 +189,8 @@ class Sinkronisasi extends CI_Controller {
 			$data[] = array(
 				'id_kunjungan'	=> $act->id_kunjungan,
 				'urut'	    	=> substr($act->id_kunjungan,-3),
+				'tgl'	    	=> date("d-m-Y",strtotime($act->tgl)),
+				'waktu'	    => $act->waktu,
 				'username'	    => $act->username,
 				'jk'			=> $act->jk,
 				'nama'   	    => $act->nama,

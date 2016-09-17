@@ -6,10 +6,26 @@ class Kunjungan_model extends CI_Model {
     }
 
     function get_data_pasien($start=0,$limit=999999,$options=array()){
-        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
-        $this->db->order_by('id_kunjungan','asc');
+        if($this->session->userdata('level')!='pasien'){
+            $this->db->order_by('id_kunjungan','asc');
+        }else{
+            $this->db->order_by('id_kunjungan','desc');
+        }
         $query = $this->db->get('kunjungan',$limit,$start);
+        return $query->result();
+    }
+
+    function get_filter_pasien(){
+        $filter = $this->input->post('nama');
+
+        $this->db->where("level","pasien");
+        $this->db->where("(nama LIKE '%".$filter."%' OR bpjs LIKE '%".$filter."%' OR app_users_profile.username LIKE '%".$filter."%')");
+
+        $this->db->select("CONCAT(app_users_profile.nama,', ',app_users_profile.jk,' / ',DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),app_users_profile.tgl_lahir)), '%Y')+0,' Tahun <br>',app_users_profile.username,'<br>',bpjs) as nama,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia, app_users_profile.nama as name, app_users_profile.username, app_users_profile.jk,app_users_profile.bpjs",false);
+        $this->db->join('app_users_list','app_users_profile.username = app_users_list.username','left');
+        $query = $this->db->get("app_users_profile",10,0);
         return $query->result();
     }
 
@@ -37,7 +53,19 @@ class Kunjungan_model extends CI_Model {
 
     function insert(){
 
-        $data['id_kunjungan']    = $this->input->post('code').date("Ymd",strtotime($this->input->post('tgl')))."001";
+        $this->db->select('MAX(id_kunjungan) as id');
+        $this->db->where('code',$this->input->post('code'));
+        $this->db->where('tgl',date("Y-m-d",strtotime($this->input->post('tgl'))));
+        $id = $this->db->get('kunjungan')->row();
+        if(!empty($id->id)){
+            $tmp = intval(substr($id->id, -3))+1;
+
+            $number = str_repeat("0",3-strlen($tmp)).$tmp;
+        }else{
+            $number="001";
+        }
+
+        $data['id_kunjungan']    = $this->input->post('code').date("Ymd",strtotime($this->input->post('tgl'))).$number;
         $data['username']        = $this->input->post('username');
         $data['code']            = $this->input->post('code');
         $data['status_antri']    = "antri";
@@ -97,9 +125,8 @@ class Kunjungan_model extends CI_Model {
         }
     }
 
-    function delete_pasien($username){
-        $this->db->delete('app_users_list', array('username' => $username));
-        $this->db->delete('app_users_profile', array('username' => $username));
+    function delete($id_kunjungan){
+        return $this->db->delete('kunjungan', array('id_kunjungan' => $id_kunjungan));
     } 
 }
 

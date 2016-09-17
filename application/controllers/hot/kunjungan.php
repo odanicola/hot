@@ -30,7 +30,12 @@ class Kunjungan extends CI_Controller {
 
 			$data['kunjungan']  = $this->kunjungan_model->get_kunjungan($data['nik']);
 
-			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+			if($this->session->userdata('level')=='administrator'){
+				$code = "317204";
+			}else{
+				$code = $this->session->userdata('puskesmas');
+			}
+			$data['datapuskesmas']  = $this->hot_model->get_pus($code,"code","cl_phc");
 
 			$data['content'] = $this->parser->parse("hot/kunjungan_daftar_add",$data,true);
 			$this->template->show($data,"home");
@@ -59,8 +64,6 @@ class Kunjungan extends CI_Controller {
 		$this->session->userdata('filter_tahun')		=="" ? $this->session->set_userdata('filter_tahun',date('Y')): '';
 		$this->session->userdata('filter_bulan')		=="" ? $this->session->set_userdata('filter_bulan',date('n')): '';
 		$this->session->userdata('filter_tanggal')		=="" ? $this->session->set_userdata('filter_tanggal',date('d')): '';
-		$this->session->userdata('filter_status_antri')	=="" ? $this->session->set_userdata('filter_status_antri','antri'): '';
-		$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
 
 		$data['filter_tahun'] 			= $this->session->userdata('filter_tahun');
 		$data['filter_bulan'] 			= $this->session->userdata('filter_bulan');
@@ -94,6 +97,7 @@ class Kunjungan extends CI_Controller {
 
 	function filter_status_antri(){
 		if($_POST) {
+			$this->session->set_userdata('filter_status_antri','');
 			if($this->input->post('filter_status_antri') != '') {
 				$this->session->set_userdata('filter_status_antri',$this->input->post('filter_status_antri'));
 			}
@@ -138,8 +142,12 @@ class Kunjungan extends CI_Controller {
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		$this->db->where('kunjungan.tgl',$tgl);
-		$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
+		if($this->session->userdata('level')!='pasien'){
+			$this->db->where('kunjungan.tgl',$tgl);
+		}
+		if($this->session->userdata('filter_status_antri')!=''){
+			$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
+		}
 		$rows_all = $this->kunjungan_model->get_data_pasien();
 
 
@@ -153,20 +161,27 @@ class Kunjungan extends CI_Controller {
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		$this->db->where('kunjungan.tgl',$tgl);
-		$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
+		if($this->session->userdata('level')!='pasien'){
+			$this->db->where('kunjungan.tgl',$tgl);
+		}
+		if($this->session->userdata('filter_status_antri')!=''){
+			$this->db->where('kunjungan.status_antri', $this->session->userdata('filter_status_antri'));
+		}
 		$rows = $this->kunjungan_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
 				'id_kunjungan'	=> $act->id_kunjungan,
 				'urut'	    	=> substr($act->id_kunjungan,-3),
+				'tgl'	    	=> date("d-m-Y",strtotime($act->tgl)),
+				'waktu'	    	=> $act->waktu,
 				'username'	    => $act->username,
 				'jk'			=> $act->jk,
 				'nama'   	    => $act->nama,
 				'usia'   	    => $act->usia,
 				'bpjs'   	    => $act->bpjs,
 				'phone_number'	=> $act->phone_number,
+				'status_antri'	=> ucwords($act->status_antri),
 				'edit'		    => 1,
 				'delete'	    => 1
 			);
@@ -180,6 +195,23 @@ class Kunjungan extends CI_Controller {
 
 		echo json_encode(array($json));
 	}
+
+	function json_autocomplete(){
+		$rows_all = $this->kunjungan_model->get_filter_pasien();
+		$data = array();
+		foreach($rows_all as $act) {
+			$data[] = array(
+				'username'	    => $act->username,
+				'jk'			=> $act->jk,
+				'nama'   	    => $act->nama,
+				'usia'   	    => $act->usia,
+				'bpjs'   	    => $act->bpjs
+			);
+		}
+
+		echo json_encode($data);
+	}
+
 
 	function edit($id_kunjungan=0){
 		$this->authentication->verify('hot','edit');
@@ -210,16 +242,14 @@ class Kunjungan extends CI_Controller {
 		}
 	}
 
-	function del($username=0){
+	function del($id_kunjungan=0){
 		$this->authentication->verify('hot','del');
 
-		$data['username']		= $username;
-		if($this->kunjungan_model->delete_pasien($username)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
-			redirect(base_url()."hot/pasien");
+		$id_kunjungan = $this->input->post('id_kunjungan');
+		if($this->kunjungan_model->delete($id_kunjungan)){
+			echo "OK";
 		}else{
-			$this->session->set_flashdata('alert', 'Delete data error');
-			redirect(base_url()."hot/pasien");
+			echo "ERROR";
 		}
 	}
 

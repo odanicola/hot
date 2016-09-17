@@ -24,7 +24,6 @@
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxtooltip.js"></script>
 	
 	  <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxdatatable.js"></script>
-	  <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxtreegrid.js"></script>
 	
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxscrollbar.js"></script>
     <script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/js/jqwidgets/jqxlistbox.js"></script>
@@ -144,8 +143,8 @@
       <footer class="main-footer">
         <div class="row">
           <div class="hidden-xs col-md-6">
-            Copyright PT.Infokes Indonesia © 2006-2016 - All Right Reserved<br>
-            InfoKes Manajemen Organisasi - ePuskesmas
+            Copyright PT.Infokes Indonesia © 2016 - All Right Reserved<br>
+            Hypertension Online Treatment - ePuskesmas
           </div>
           <div class="hidden-xs col-md-6 pull-right" style="text-align:right">
             <img height="30" src="<?php echo base_url()?>public/themes/sik/dist/img/logo.png">
@@ -157,13 +156,8 @@
     <script src="<?php echo base_url()?>public/themes/sik/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url()?>public/themes/sik/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
     <script src="<?php echo base_url()?>public/themes/sik/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-    <script src='<?php echo base_url()?>public/themes/sik/plugins/fastclick/fastclick.min.js'></script>
     <script src="<?php echo base_url()?>public/themes/sik/dist/js/app.min.js" type="text/javascript"></script>
-    <script src="<?php echo base_url()?>public/themes/sik/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url()?>public/themes/sik/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
     <script src="<?php echo base_url()?>public/themes/sik/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>
-    <script src="<?php echo base_url()?>public/themes/sik/plugins/slimScroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-    <script src="<?php echo base_url()?>public/themes/sik/plugins/chartjs/Chart.min.js" type="text/javascript"></script>
-
   </body>
 </html>

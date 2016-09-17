@@ -46,11 +46,9 @@
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
 			  <div class="col-xs-6">
 			  		<select class="form-control" id="status_antri">
-			  		<option>-</option>
-<!-- 			  			<option value="antri" <?php echo ("antri"==$filter_status_antri ? 'selected':'')?>>Antri</option>
-			  			<option value="periksa" <?php echo ("periksa"==$filter_status_antri ? 'selected':'')?>>Periksa</option>
-			  			<option value="selesai" <?php echo ("selesai"==$filter_status_antri ? 'selected':'')?>>Selesai</option>
-			  			<option value="batal" <?php echo ("batal"==$filter_status_antri ? 'selected':'')?>>Batal</option> -->
+			  			<option>-</option>
+			  			<option>Dikirim</option>
+			  			<option>Belum</option>
 			  		</select>
 			  </div>
 			</div>
@@ -88,6 +86,7 @@
 			{ name: 'username', type: 'string'},
 			{ name: 'jk', type: 'string'},
 			{ name: 'kontrol_tgl', type: 'string'},
+			{ name: 'kontrol_jam', type: 'string'},
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
 			{ name: 'bpjs', type: 'string'},
@@ -139,19 +138,14 @@
 					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
                  }
                 },				
-                { text: 'No Anggota', datafield: 'bpjs', align: 'center', width: '30%', cellsrenderer: function (row) {
+                { text: 'Nama', datafield: 'nama', align: 'center', width: '60%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+" / "+dataRecord.usia+" Tahun<br>"+dataRecord.phone_number+"</div>";
                  }
                 },
-                { text: 'Nama', datafield: 'nama', align: 'center', width: '30%', cellsrenderer: function (row) {
+				{ text: 'Jadwal', datafield: 'kontrol_tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"</div>";
-                 }
-                },
-				{ text: 'Tanggal', datafield: 'kontrol_tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' >"+dataRecord.kontrol_tgl+"</div>";
+					return "<div style='width:100%;padding:14px;text-align:center'>"+dataRecord.kontrol_tgl+"<br>"+dataRecord.kontrol_jam+"</div>";
                  }
                 }            
             ]

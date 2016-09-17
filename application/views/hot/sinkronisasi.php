@@ -12,9 +12,6 @@
           <h3 class="box-title">{title_form}</h3>
 	    </div>
 	      <div class="box-footer">
-	      	<a href="<?php echo base_url()?>hot/kunjungan/daftar">
-		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Pendaftaran</button>
-		 	</a>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
 			<div class="row" style="padding-top:15px">
 			  <div class="col-xs-2"></div>
@@ -49,11 +46,9 @@
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
 			  <div class="col-xs-6">
 			  		<select class="form-control" id="status_antri">
-			  		<option>-</option>
-<!-- 			  			<option value="antri" <?php echo ("antri"==$filter_status_antri ? 'selected':'')?>>Antri</option>
-			  			<option value="periksa" <?php echo ("periksa"==$filter_status_antri ? 'selected':'')?>>Periksa</option>
-			  			<option value="selesai" <?php echo ("selesai"==$filter_status_antri ? 'selected':'')?>>Selesai</option>
-			  			<option value="batal" <?php echo ("batal"==$filter_status_antri ? 'selected':'')?>>Batal</option> -->
+			  			<option>-</option>
+			  			<option>Syncronized</option>
+			  			<option>Not Sync</option>
 			  		</select>
 			  </div>
 			</div>
@@ -88,6 +83,8 @@
 			{ name: 'id_kunjungan', type: 'string'},
 			{ name: 'urut', type: 'string'},
 			{ name: 'username', type: 'string'},
+			{ name: 'tgl', type: 'string'},
+			{ name: 'waktu', type: 'string'},
 			{ name: 'jk', type: 'string'},
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
@@ -142,12 +139,12 @@
                 },				
                 { text: 'Nama', datafield: 'nama', align: 'center', width: '43%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+" / "+dataRecord.usia+" Tahun<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 },
-				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
+				{ text: 'Kunjungan', datafield: 'tgl', align: 'center', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' >"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding-top:14px;text-align:center'>"+dataRecord.tgl+"<br>"+dataRecord.waktu+"</div>";
                  }
                 }            
             ]
@@ -157,14 +154,15 @@
 			var args = event.args;
 			var rowData = args.row;
 
-        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Kirim' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});
 
 
 	function btn_edit(id){
-      	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
+        $("#popup").jqxWindow('close');
+        $("#jqxgrid").jqxGrid('clearselection');
 	}
 
 	function close_popup(){

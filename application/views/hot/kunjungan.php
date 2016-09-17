@@ -16,6 +16,7 @@
 		 		<button type="button" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Pendaftaran</button>
 		 	</a>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+		 	<?php if($this->session->userdata('level')!="pasien"){ ?>
 			<div class="row" style="padding-top:15px">
 			  <div class="col-xs-4">
 			  		<select class="form-control" id="tahun">
@@ -59,10 +60,12 @@
 			  		</select>
 			  </div>
 			</div>
+			<?php } ?>
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
 			  <div class="col-xs-6">
 			  		<select class="form-control" id="status_antri">
+			  			<option value="">-</option>
 			  			<option value="antri" <?php echo ("antri"==$filter_status_antri ? 'selected':'')?>>Antri</option>
 			  			<option value="periksa" <?php echo ("periksa"==$filter_status_antri ? 'selected':'')?>>Periksa</option>
 			  			<option value="selesai" <?php echo ("selesai"==$filter_status_antri ? 'selected':'')?>>Selesai</option>
@@ -100,12 +103,15 @@
 			datafields: [
 			{ name: 'id_kunjungan', type: 'string'},
 			{ name: 'urut', type: 'string'},
+			{ name: 'tgl', type: 'string'},
+			{ name: 'waktu', type: 'string'},
 			{ name: 'username', type: 'string'},
 			{ name: 'jk', type: 'string'},
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
 			{ name: 'bpjs', type: 'string'},
 			{ name: 'phone_number', type: 'string'},
+			{ name: 'status_antri', type: 'string'},
 			{ name: 'edit', type: 'number'},
 			{ name: 'delete', type: 'number'}
         ],
@@ -153,14 +159,27 @@
 					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
                  }
                 },				
+		 	<?php if($this->session->userdata('level')!="pasien"){ ?>
                 { text: 'Nama', datafield: 'nama', align: 'center', width: '43%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
-				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
+		 	<?php }else{ ?>
+                { text: 'Tanggal', datafield: 'tgl', align: 'center', width: '43%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' >"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+				    if(dataRecord.waktu != null){
+						return "<div style='width:100%;padding:14px;text-align:center;'>"+dataRecord.tgl+"<br>"+dataRecord.waktu+"</div>";
+				    }else{
+						return "<div style='width:100%;padding:14px;text-align:center;'>"+dataRecord.tgl+"</div>";
+				    }
+                 }
+                },
+		 	<?php } ?>
+
+				{ text: 'Status', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
+					return "<div style='width:100%;padding-top:14px;text-align:center' >"+dataRecord.status_antri+"<br>BJPS: "+dataRecord.bpjs+"</div>";
                  }
                 }            
             ]
@@ -170,7 +189,11 @@
 			var args = event.args;
 			var rowData = args.row;
 
-        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+			if(rowData.status_antri != "Batal"){
+        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+			}else{
+        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_delete(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+			}
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});
@@ -178,6 +201,17 @@
 
 	function btn_edit(id){
       	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
+	}
+
+	function btn_delete(id){
+		$("#popup_content").html("<div style='padding:5px' align='center'><br>Hapus Pendaftaran?</br><br><div style='text-align:center'><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='del(\""+id+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Tidak' onClick='close_popup();'></div></div>");
+	}
+
+	function del(id){
+		$.post("<?php echo base_url().'hot/kunjungan/del/' ?>", 'id_kunjungan='+id,  function(res){
+			$("#popup_content").html("<div style='padding:5px' align='center'><br>Hapus Data "+res+"</br><br><div style='text-align:center'><input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
 	}
 
 	function close_popup(){

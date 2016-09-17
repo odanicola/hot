@@ -2,7 +2,7 @@
     $(function () { 
       var date = new Date(<?php echo date("Y").", ".(date("n")-1).", ".(date("j")+1) ?>);
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
-      var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup();window.location.reload()'>";
+      var btn_reload = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_reload();'>";
       var btn_batal = "</br></br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='batal()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
 
       $("#tgl").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height: '30px'});
@@ -20,15 +20,75 @@
         $("#popup").jqxWindow('open');
       });
 
+
+      <?php if($this->session->userdata('level')!="pasien"){ ?>
+      var csource = function (query, response) {
+        var dataAdapter = new $.jqx.dataAdapter
+          (
+            { 
+              datatype: "json",
+              datafields: [
+                  { name: 'username', type: 'string'},
+                  { name: 'nama', type: 'string'},
+                  { name: 'bpjs', type: 'string'}
+              ],
+              username: 'username',
+              url: "<?php echo site_url('hot/kunjungan/json_autocomplete'); ?>",
+              type: "post"
+            },
+            {
+                autoBind: true,
+                formatData: function (data) {
+                  data.nama = query;
+                  return data;
+                },
+                loadComplete: function (data) {
+                  if (data.length>0){
+                    response($.map(data, function (item) {
+                        return {
+                          label: item.nama,
+                          name: item.name,
+                          value: item.username
+                        }
+                    }));                                
+            }
+              }
+             }
+        );
+      }
+      $("#username").jqxInput({ source: csource, width: '99%' });
+      $("#username").focus(function() {
+        $(this).select();
+      });
+      $("#username").on('select', function (event) {
+          if (event.args) {
+              var item = event.args.item;
+              if (item) {
+                var label = item.label.split("<br>");
+                  $("#username").val(label[0]);
+                  $("#nik").val(item.value);
+              }
+          }
+      });
+    <?php } ?>
+
       $("#btn-daftar").click(function(){
         var tgl = $("#tgl").val();
-        if(tgl <= "<?php echo date("d-m-Y") ?>"){
+       <?php if($this->session->userdata('level')!="pasien"){ ?> if($('#nik').val()==""){
+            $("#popup_content").html("<div style='text-align:center'><br><br>Tentukan pasien terlebih dahulu."+btn+"</div>");
+            $("#popup").jqxWindow('open');
+        }
+        else <?php } ?>if(tgl <= "<?php echo date("d-m-Y") ?>"){
             $("#popup_content").html("<div style='text-align:center'><br><br>Pendaftaran berlaku setelah tanggal <br><?php echo date("d M Y") ?>."+btn+"</div>");
             $("#popup").jqxWindow('open');
         }else{  
             var data = new FormData();
             data.append('code', $('#puskesmas').val());
+           <?php if($this->session->userdata('level')!="pasien"){ ?>
+            data.append('username', $('#nik').val());
+           <?php }else{ ?>
             data.append('username', '{nik}');
+          <?php } ?>
             data.append('tgl', tgl);
 
             $.ajax({
@@ -55,6 +115,11 @@
 
     function close_popup(){
         $("#popup").jqxWindow('close');
+    }
+
+    function close_popup_reload(){
+        $("#popup").jqxWindow('close');
+        window.location.href = "<?php echo base_url()?>hot/kunjungan/daftar";
     }
 
     function batal(){
@@ -103,6 +168,15 @@
           </div>
           <div style="clear:both"></div>
           <div class="box-body">
+
+            <?php if($this->session->userdata('level')!="pasien"){ ?>
+              <div class="form-group">
+                <label>Tentukan Pasien *</label>
+                <input type="text" id="username" class="form-control" autocomplete="off">
+                <input type="hidden" id="nik">
+              </div>
+            <?php } ?>
+
             <div class="form-group">
               <label>Tentukan Tanggal *</label>
                <div id='tgl' name="tgl" ></div>
