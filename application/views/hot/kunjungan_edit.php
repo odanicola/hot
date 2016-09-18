@@ -97,7 +97,7 @@
         data.append("is_ckd", $("#is_ckd").is(':checked') ? 1:0);
         data.append("is_black", $("#is_black").is(':checked') ? 1:0);
         data.append("status_antri", "periksa");
-        data.append("username_op", "{username}");
+        data.append("username_op", "<?php echo $this->session->userdata('username')?>");
 
         $.ajax({
             cache : false,
@@ -110,7 +110,9 @@
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 if(response=="OK"){
                   $("#popup_content").html("<div style='text-align:center'><br><br>Data berhasil disimpan. "+btn+"</div>");
-                    $("#popup").jqxWindow('open');
+                  $("#hasil").show("fade");
+                  $("#hasil").animate({ scrollBottom: 0 }, "slow");
+                  $("#popup").jqxWindow('open');
                 }else{
                   $("#popup_content").html("<div style='text-align:center'><br><br>Data tidak dapat disimpan. "+btn+"</div>");
                     $("#popup").jqxWindow('open');
@@ -268,15 +270,31 @@
         </div>
 
 
-        <div id="hasil" <?php if(!isset($id_kunjungan)){ echo "style='display:none'"; } ?>>
+        <div id="hasil" <?php if(!isset($username_op)){ echo "style='display:none'"; } ?>>
           <div style="clear:both"></div>
           <div class="box-body">
             <div class="row" style="padding:4px;">
               <div class="col-xs-12 text-center" style="background:#E3E3E3;padding:5px"><label>Resume Pasien :</label></div>
             </div>
           </div>
+
+          <div class="row" style="padding:4px">
+            <div class="col-xs-4 text-right" style="padding-top:15px"><b>Hasil Pengukuran</b></div>
+            <div class="col-xs-8"><div id="gds"></div></div>
+          </div>
+          <div class="row" style="padding:4px">
+            <div class="col-xs-4 text-right" style="padding-top:15px"><b>Dengan</b></div>
+            <div class="col-xs-8"><div id="gdp"></div></div>
+          </div>
+          <div class="row" style="padding:4px">
+            <div class="col-xs-4 text-right" style="padding-top:15px"><b>Saran Pengobatan</b></div>
+            <div class="col-xs-8"><div id="gdpp"></div></div>
+          </div>
+          <div class="row" style="padding:4px">
+            <div class="col-xs-12"><b>OBAT :</b></div>
+          </div>
         </div>
-        </div>
+
       </div>
   	</div>
   </div>

@@ -138,12 +138,12 @@
 					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
                  }
                 },				
-                { text: 'Nama', datafield: 'nama', align: 'center', width: '60%', cellsrenderer: function (row) {
+                { text: 'Nama', datafield: 'nama', align: 'center', width: '55%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+" / "+dataRecord.usia+" Tahun<br>"+dataRecord.phone_number+"</div>";
                  }
                 },
-				{ text: 'Jadwal', datafield: 'kontrol_tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
+				{ text: 'Jadwal', datafield: 'kontrol_tgl', align: 'center', width: '35%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					return "<div style='width:100%;padding:14px;text-align:center'>"+dataRecord.kontrol_tgl+"<br>"+dataRecord.kontrol_jam+"</div>";
                  }

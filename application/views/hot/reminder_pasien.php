@@ -92,21 +92,16 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'No', align: 'center', width: '10%', cellsrenderer: function (row) {
+				{ text: 'Jadwal', datafield: 'kontrol_tgl', align: 'center', width: '30%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
+					return "<div style='width:100%;padding:14px;text-align:center' >"+dataRecord.kontrol_tgl+"</div>";
                  }
                 },				
-                { text: 'Anjuran Dokter', datafield: 'anjuran_dokter', align: 'center', width: '45%', cellsrenderer: function (row) {
+                { text: 'Anjuran Dokter', datafield: 'anjuran_dokter', align: 'center', width: '70%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					return "<div style='width:100%;padding:7px;'>"+dataRecord.anjuran_dokter+"</div>";
                  }
-                },
-				{ text: 'Tanggal', datafield: 'kontrol_tgl', align: 'center', width: '45%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;' >"+dataRecord.kontrol_tgl+"</div>";
-                 }
-                }            
+                }
             ]
 		});
 
@@ -114,7 +109,7 @@
 			var args = event.args;
 			var rowData = args.row;
 
-        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Kirim' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+        	$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Detail' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});

@@ -176,7 +176,7 @@ class Reminder extends CI_Controller {
 				'urut'	    	=> substr($act->id_kunjungan,-3),
 				'username'	    => $act->username,
 				'nama'	    	=> $act->nama,
-				'kontrol_tgl'	=> $act->kontrol_tgl,
+				'kontrol_tgl'	=> date("d-m-Y",strtotime($act->kontrol_tgl)),
 				'anjuran_dokter'=> $act->anjuran_dokter,
 				'edit'		    => 1,
 				'delete'	    => 1
