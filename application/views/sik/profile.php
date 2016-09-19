@@ -191,18 +191,21 @@
                       ?>"/>
             </div>
             <br>
-            <div class="input-group">
+              <div class="input-group">
               <span class="input-group-addon">
                 <i class="fa fa-calendar" style="width:20px"></i>
               </span>
-              <input type="text" class="form-control" placeholder="Tanggal Lahir" name="tgl_lahir" value="<?php 
-                      if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
-                        echo $tgl_lahir;
-                      }else{
-                        echo  set_value('tgl_lahir');
-                      }
-                      ?>"/>
-            </div>
+                <div id='tgl_lahir' name="tgl_lahir" value="<?php
+                  if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
+                    $tgl_lahir = strtotime($tgl_lahir);
+                  }else{
+                    $tgl_lahir = strtotime(set_value('tgl_lahir'));
+                  }
+                  if($tgl_lahir=="") $tgl_lahir = time();
+                  echo date("Y-m-d",$tgl_lahir);
+                ?>" >
+                </div>
+             </div>
             <br>
             <div class="input-group">
               <span class="input-group-addon">
@@ -237,7 +240,7 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-plus-square" style="width:20px"></i>
+                <i class="fa fa-street-view" style="width:20px"></i>
               </span>
               <input type="number" class="form-control" placeholder="Berat Badan" name="bb" value="<?php 
                       if(set_value('bb')=="" && isset($bb)){
@@ -265,5 +268,7 @@
 $(function(){
     $("#menu_dashboard").addClass("active");
     $("#menu_morganisasi_profile").addClass("active");
+    $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
+
   });
 </script>
