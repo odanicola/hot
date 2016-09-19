@@ -3,14 +3,15 @@ class Dokter extends CI_Controller {
 
     public function __construct(){
 		parent::__construct();
-		$this->load->model('hot_model');
+		$this->load->model('hot/dokter_model');
+
 	}
 
 	function index(){
 		$this->authentication->verify('hot','edit');
 		$data['title_group'] 	= "Dashboard";
 		$data['title_form']  	= "Data Dokter";
-		$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+		$data['datapuskesmas']  = $this->dokter_model->get_pus("317204","code","cl_phc");
 		
 		$this->session->set_userdata('filter_puskesmas','');
 		$data['content'] 	 	= $this->parser->parse("hot/data_dokter",$data,true);
@@ -50,7 +51,7 @@ class Dokter extends CI_Controller {
 			$this->db->where('cl_phc',$kodepus);
 		}
 
-		$rows_all = $this->hot_model->get_data_dokter();
+		$rows_all = $this->dokter_model->get_data_dokter();
 
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -73,7 +74,7 @@ class Dokter extends CI_Controller {
 			$this->db->where('cl_phc',$kodepus);
 		}
 
-		$rows = $this->hot_model->get_data_dokter($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$rows = $this->dokter_model->get_data_dokter($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
@@ -101,7 +102,7 @@ class Dokter extends CI_Controller {
         $this->form_validation->set_rules('status','Status', 'trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data 					= $this->hot_model->get_data_dokter_where($code,$cl_phc); 
+			$data 					= $this->dokter_model->get_data_dokter_where($code,$cl_phc); 
 			$data['title_group']    = "Dashboard";
 			$data['title_form']     = "Ubah Data Dokter";
 			$data['action']		    = "edit";
@@ -109,7 +110,7 @@ class Dokter extends CI_Controller {
 			$data['cl_phc']			= $cl_phc;
 			$data['content'] 		= $this->parser->parse("hot/data_dokter_add",$data,true);
 
-		}elseif($this->hot_model->update_dokter($code,$cl_phc)==1){
+		}elseif($this->dokter_model->update_dokter($code,$cl_phc)==1){
 				$this->session->set_flashdata('alert_form', 'Save data successful...');
 				redirect(base_url()."hot/dokter");
 				die("OK");

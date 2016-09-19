@@ -7,7 +7,8 @@ class Pasien extends CI_Controller {
 		require_once(APPPATH.'third_party/tbs_plugin_opentbs_1.8.0/demo/tbs_class.php');
 		require_once(APPPATH.'third_party/tbs_plugin_opentbs_1.8.0/tbs_plugin_opentbs.php');
 		
-		$this->load->model('hot_model');
+		$this->load->model('hot/pasien_model');
+
 	}
 
 	function filter_jenis_bpjs(){
@@ -88,7 +89,7 @@ class Pasien extends CI_Controller {
 
 		}
 
-		$rows_all = $this->hot_model->get_data_pasien();
+		$rows_all = $this->pasien_model->get_data_pasien();
 
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -142,7 +143,7 @@ class Pasien extends CI_Controller {
 
 		}
 
-		$rows = $this->hot_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$rows = $this->pasien_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
@@ -203,10 +204,10 @@ class Pasien extends CI_Controller {
 			$data['action']      = "add";
 			$data['alert_form']  = '';
 
-			$data['datapuskesmas']  = $this->hot_model->get_pus("317204","code","cl_phc");
+			$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
 
 			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
-		}elseif($this->hot_model->insert_pasien()=='true'){
+		}elseif($this->pasien_model->insert_pasien()=='true'){
 			// $this->session->set_flashdata('alert_form', 'Save data successful...');
 			// redirect(base_url()."hot/pasien");
 			die("OK");
@@ -235,24 +236,24 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('tb','Tinggi Badan','trim');
         $this->form_validation->set_rules('bb','Berat Badan','trim');
         
-        $data 				   = $this->hot_model->get_profil_pasien_where($username); 
+        $data 				   = $this->pasien_model->get_profil_pasien_where($username); 
         $data['title_group']   = "Dashboard";
 		$data['title_form']    = "Profil Pasien";
 		$data['action']		   = 'edit';
 		$data['username']	   = $username;
-		$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
+		$data['datapuskesmas'] = $this->pasien_model->get_pus("317204","code","cl_phc");
 		$data['alert_form']    = '';
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_profil",$data));
-		}elseif($this->hot_model->update_pasien_profil($username)=='true'){
+		}elseif($this->pasien_model->update_pasien_profil($username)=='true'){
         	
-        	$data 			 	   = $this->hot_model->get_profil_pasien_where($username); 
+        	$data 			 	   = $this->pasien_model->get_profil_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
 			$data['title_form']    = "Profil Pasien";
 			$data['username']	   = $username;
 			$data['action']  	   = 'edit';
-			$data['datapuskesmas'] = $this->hot_model->get_pus("317204","code","cl_phc");
+			$data['datapuskesmas'] = $this->pasien_model->get_pus("317204","code","cl_phc");
 			echo "OK|";
 		}else{
 			echo "NOTOK|";
@@ -263,7 +264,7 @@ class Pasien extends CI_Controller {
 	function akun_pasien_edit($username){
         $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
 
-	        $data 				   = $this->hot_model->get_akun_pasien_where($username); 
+	        $data 				   = $this->pasien_model->get_akun_pasien_where($username); 
 	        $data['title_group']   = "Dashboard";
 			$data['title_form']    = "Akun Pasien";
 			$data['action']		   = 'edit';
@@ -272,8 +273,8 @@ class Pasien extends CI_Controller {
 
 		if($this->form_validation->run() == FALSE){
 			die($this->parser->parse("hot/data_pasien_akun",$data));
-		}elseif($this->hot_model->update_pasien_akun($username)){
-        	$data 			 	   = $this->hot_model->get_akun_pasien_where($username); 
+		}elseif($this->pasien_model->update_pasien_akun($username)){
+        	$data 			 	   = $this->pasien_model->get_akun_pasien_where($username); 
         	$data['title_group']   = "Dashboard";
 			$data['title_form']    = "Akun Pasien";
 			$data['username']	   = $username;
@@ -291,7 +292,7 @@ class Pasien extends CI_Controller {
 		$this->authentication->verify('hot','add');
         $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
 
-        $data 				 = $this->hot_model->get_pasien_where($username); 
+        $data 				 = $this->pasien_model->get_pasien_where($username); 
 		$data['username']	 = $username;
 		$data['title_group'] = "Dashboard";
 		$data['title_form']  = "Data Pasien";
@@ -304,7 +305,7 @@ class Pasien extends CI_Controller {
 		$this->authentication->verify('hot','del');
 
 		$data['username']		= $username;
-		if($this->hot_model->delete_pasien($username)){
+		if($this->pasien_model->delete_pasien($username)){
 			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
 			redirect(base_url()."hot/pasien");
 		}else{
@@ -333,7 +334,7 @@ class Pasien extends CI_Controller {
 	}
 
 	function check_email2($str){
-			$check = $this->hot_model->check_email($str);
+			$check = $this->pasien_model->check_email($str);
 			
 			if($check>0){
 				$this->form_validation->set_message('check_email2', 'Email tidak dapat digunakan');
@@ -397,7 +398,7 @@ class Pasien extends CI_Controller {
 			}
 		}
 
-		$rows_all = $this->hot_model->get_data_pasien();
+		$rows_all = $this->pasien_model->get_data_pasien();
 
 		if($_POST) {
 			$fil = $this->input->post('filterscount');
@@ -458,7 +459,7 @@ class Pasien extends CI_Controller {
 
 		}
 	
-		$rows = $this->hot_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$rows = $this->pasien_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		$no=1;
 		foreach($rows as $act) {
