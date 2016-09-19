@@ -6,6 +6,15 @@
 </div>
 <?php } ?>
 
+<div id="popup" style="display:none;">
+  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
+</div>
+
+<div id="popup1" style="display:none;">
+  <div id="popup_title1">Hypertension Online Treatment</div><div id="popup_content1">{popup}</div>
+</div>
+
+
 <section class="content">
   <div class="row">
     <!-- left column -->
@@ -30,19 +39,21 @@
 	</div>
   </div>
 </section>
-<div id="popup" style="display:none">
-	<div id="popup_title">SMS</div>
-	<div id="popup_content">&nbsp;</div>
-</div>
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_esms").addClass("active");
+		$("#menu_sms_gateway").addClass("active");
 		$("#menu_sms_sentitems").addClass("active");
 	});
 
 	function close_popup(){
 		$("#popup").jqxWindow('close');
+		$("#popup1").jqxWindow('close');
+		
+	}
+
+	function close_popup1(){
+		$("#popup1").jqxWindow('close');
 	}
 
 	function del(id){
@@ -69,6 +80,13 @@
 		});
 		$("#popup").jqxWindow('open');
 	}
+
+		$("#popup1").jqxWindow({
+			theme: theme, resizable: false,
+			width: 250,
+			height: 180,
+			isModal: true, autoOpen: false, modalOpacity: 0.4
+		});
 
 	   var source = {
 			datatype: "json",
@@ -121,28 +139,19 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.ID+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.delete==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.ID+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
 				{ text: 'Nomor Tujuan', align: 'center', cellsalign: 'center', datafield: 'DestinationNumber', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
 				{ text: 'Isi Pesan', datafield: 'TextDecoded', columntype: 'textbox', filtertype: 'textbox', width: '45%' },
-				{ text: 'Status', datafield: 'Status', align: 'center', cellsalign: 'center', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
+				{ text: 'Status', datafield: 'Status', align: 'center', cellsalign: 'center', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
 				{ text: 'Waktu Pengiriman', align: 'center', cellsalign: 'center', datafield: 'SendingDateTime', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy HH:mm:ss', width: '20%' }
             ]
+		});
+
+		$("#jqxgrid").on('rowselect', function (event) {
+			var args = event.args;
+			var rowData = args.row;
+
+	        $("#popup_content1").html("<div style='padding:5px' align='center'><br>"+rowData.DestinationNumber+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Detail' onClick='detail(\""+rowData.ID+"\")'> <input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del(\""+rowData.ID+"\")'><br><br><input class='btn btn-warning' style='width:204px' type='button' value='Close' onClick='close_popup1()'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$("#popup1").jqxWindow('open');
 		});
 </script>
