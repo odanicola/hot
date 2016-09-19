@@ -46,7 +46,7 @@ class Pbk extends CI_Controller {
 		}
 
 		if($this->session->userdata('filter_id_sms_grup') != '') {
-			$this->db->where('app_users_profile.id_sms_group',$this->session->userdata('filter_id_sms_grup'));
+			$this->db->where('app_users_profile.id_grup',$this->session->userdata('filter_id_sms_grup'));
 		}
 
 		$rows_all = $this->pbk_model->get_data();
@@ -67,7 +67,7 @@ class Pbk extends CI_Controller {
 		}
 
 		if($this->session->userdata('filter_id_sms_grup') != '') {
-			$this->db->where('app_users_profile.id_sms_group',$this->session->userdata('filter_id_sms_grup'));
+			$this->db->where('app_users_profile.id_grup',$this->session->userdata('filter_id_sms_grup'));
 		}
 
 		$rows = $this->pbk_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
