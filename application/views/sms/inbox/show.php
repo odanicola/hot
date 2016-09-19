@@ -6,6 +6,10 @@
 </div>
 <?php } ?>
 
+<div id="popup1" style="display:none;">
+  <div id="popup_title1">Hypertension Online Treatment</div><div id="popup_content1">{popup}</div>
+</div>
+
 <section class="content">
   <div class="row">
     <!-- left column -->
@@ -37,12 +41,13 @@
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_esms").addClass("active");
+		$("#menu_sms_gateway").addClass("active");
 		$("#menu_sms_inbox").addClass("active");
 	});
 
 	function close_popup(){
 		$("#popup").jqxWindow('close');
+		$("#popup1").jqxWindow('close');
 	}
 
 	function move(id){
@@ -97,6 +102,18 @@
 			});
 		}
 	}
+
+	function close_popup1(){
+		$("#popup1").jqxWindow('close');
+	}
+
+
+	$("#popup1").jqxWindow({
+		theme: theme, resizable: false,
+		width: 250,
+		height: 180,
+		isModal: true, autoOpen: false, modalOpacity: 0.4
+	});
 
 	   var source = {
 			datatype: "json",
@@ -181,6 +198,15 @@
 				{ text: 'Diproses', datafield: 'Processed', align: 'center', cellsalign: 'center', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
 				{ text: 'Waktu Diterima', align: 'center', cellsalign: 'center', datafield: 'ReceivingDateTime', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy HH:mm:ss', width: '15%' }
             ]
+		});
+
+		$("#jqxgrid").on('rowselect', function (event) {
+			var args = event.args;
+			var rowData = args.row;
+
+	        $("#popup_content1").html("<div style='padding:5px' align='center'><br>"+rowData.SenderNumber+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Reply' onClick='reply(\""+rowData.ID+"\")'> <input class='btn btn-success' style='width:100px' type='button' value='Detail' onClick='detail(\""+rowData.ID+"\")'><br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del(\""+rowData.ID+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup1()'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$("#popup1").jqxWindow('open');
 		});
 
 
