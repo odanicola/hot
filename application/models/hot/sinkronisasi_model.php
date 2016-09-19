@@ -6,9 +6,9 @@ class Sinkronisasi_model extends CI_Model {
     }
 
     function get_data_pasien($start=0,$limit=999999,$options=array()){
-        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.tgl,kunjungan.waktu",false);
+        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.tgl,kunjungan.waktu,kunjungan.status_pcare",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
-        $this->db->where('status_antri','selesai');
+        // $this->db->where('status_antri','selesai');
         $this->db->order_by('id_kunjungan','asc');
         $query = $this->db->get('kunjungan',$limit,$start);
         return $query->result();

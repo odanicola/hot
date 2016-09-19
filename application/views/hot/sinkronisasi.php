@@ -45,10 +45,10 @@
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Status</div>
 			  <div class="col-xs-6">
-			  		<select class="form-control" id="status_antri">
+			  		<select class="form-control" id="status_sync">
 			  			<option>-</option>
-			  			<option>Syncronized</option>
-			  			<option>Not Sync</option>
+			  			<option value=1 <?php echo (1==$filter_status_sync ? 'selected':'')?>>Syncronized</option>
+			  			<option value=0 <?php echo (0==$filter_status_sync ? 'selected':'')?>>Not Sync</option>
 			  		</select>
 			  </div>
 			</div>
@@ -171,31 +171,25 @@
     }
 
     $("#jenis_kelamin").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_jenis_kelamin' ?>", 'filter_jenis_kelamin='+$(this).val(),  function(){
+		$.post("<?php echo base_url().'hot/sinkronisasi/filter_jenis_kelamin' ?>", 'filter_jenis_kelamin='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#status_sync").change(function(){
+		$.post("<?php echo base_url().'hot/sinkronisasi/filter_status_sync' ?>", 'filter_status_sync='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
 
     $("#tahun").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_tahun' ?>", 'filter_tahun='+$(this).val(),  function(){
+		$.post("<?php echo base_url().'hot/sinkronisasi/filter_tahun' ?>", 'filter_tahun='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });
 
     $("#bulan").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#tanggal").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_tanggal' ?>", 'filter_tanggal='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#status_antri").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_status_antri' ?>", 'filter_status_antri='+$(this).val(),  function(){
+		$.post("<?php echo base_url().'hot/sinkronisasi/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });

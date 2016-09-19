@@ -52,41 +52,25 @@ class Sinkronisasi extends CI_Controller {
 		}
 	}
 
-	// function index(){
-	// 	$this->authentication->verify('hot','show');
-	// 	$data['title_group'] = "Sinkronisasi";
-	// 	$data['title_form']  = "Data Sinkronisasi";
-
-	// 	$this->session->userdata('filter_tahun')		=="" ? $this->session->set_userdata('filter_tahun',date('Y')): '';
-	// 	$this->session->userdata('filter_bulan')		=="" ? $this->session->set_userdata('filter_bulan',date('n')): '';
-	// 	// $this->session->userdata('filter_status_antri')	=="" ? $this->session->set_userdata('filter_status_antri','selesai'): '';
-	// 	$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
-
-	// 	$data['filter_tahun'] 			= $this->session->userdata('filter_tahun');
-	// 	$data['filter_bulan'] 			= $this->session->userdata('filter_bulan');
-	// 	// $data['filter_status_antri'] 	= $this->session->userdata('filter_status_antri');
-	// 	$data['filter_jenis_kelamin'] 	= $this->session->userdata('filter_jenis_kelamin');
-
-	// 	$data['bulan_option'] = array("0","Januari","Februari","Maret","April","Mei","Juni","July","Agustus","September","Oktober","November","Desember");
-	// 	$data['tahun_option'] = array();
-	// 	for($i=date("Y");$i>=(date("Y"))-5;$i--){
-	// 		$data['tahun_option'][] = $i;
-	// 	}
-
-	// 	$data['content'] = $this->parser->parse("hot/sinkronisasi",$data,true);
-
-	// 	$this->template->show($data,"home");
-	// }
-
 	function index(){
 		$this->authentication->verify('hot','show');
 		$data['title_group'] = "Sinkronisasi";
 		$data['title_form']  = "Data Sinkronisasi";
 
-		$this->session->userdata('filter_jenis_kelamin')=="" ? $this->session->set_userdata('filter_jenis_kelamin','L'): '';
+		$this->session->userdata('filter_tahun')		=="" ? $this->session->set_userdata('filter_tahun',date('Y')): '';
+		$this->session->userdata('filter_bulan')		=="" ? $this->session->set_userdata('filter_bulan',date('n')): '';
+
+		$data['filter_tahun'] 			= $this->session->userdata('filter_tahun');
+		$data['filter_bulan'] 			= $this->session->userdata('filter_bulan');
+		$data['filter_status_sync'] 	= $this->session->userdata('filter_status_sync');
 		$data['filter_jenis_kelamin'] 	= $this->session->userdata('filter_jenis_kelamin');
+
+		$data['tahun_option'] = array();
+		for($i=date("Y");$i>=(date("Y"))-5;$i--){
+			$data['tahun_option'][] = $i;
+		}
+
 		
-		$this->session->set_userdata('filter_bulan','');
 		$this->session->set_userdata('filter_tahun','');
 		$data['bulan']			= array('01'=>'Januari', '02'=>'Februari', '03'=>'Maret', '04'=>'April', '05'=>'Mei', '06'=>'Juni', '07'=>'Juli', '08'=>'Agustus', '09'=>'September', '10'=>'Oktober', '11'=>'November', '12'=>'Desember');
 		$data['content'] = $this->parser->parse("hot/sinkronisasi",$data,true);
@@ -98,6 +82,14 @@ class Sinkronisasi extends CI_Controller {
 		if($_POST) {
 			if($this->input->post('filter_jenis_kelamin') != '') {
 				$this->session->set_userdata('filter_jenis_kelamin',$this->input->post('filter_jenis_kelamin'));
+			}
+		}
+	}
+
+	function filter_status_sync(){
+		if($_POST) {
+			if($this->input->post('filter_status_sync') != '') {
+				$this->session->set_userdata('filter_status_sync',$this->input->post('filter_status_sync'));
 			}
 		}
 	}
@@ -129,6 +121,10 @@ class Sinkronisasi extends CI_Controller {
 
 		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
+		}
+
+		if($this->session->userdata('filter_status_sync')!='' && $this->session->userdata('filter_status_sync')!='-'){
+			$this->db->where('kunjungan.status_pcare',$this->session->userdata('filter_status_sync'));
 		}
 
 		if($this->session->userdata('filter_bulan')!=''){
@@ -183,6 +179,10 @@ class Sinkronisasi extends CI_Controller {
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
+		if($this->session->userdata('filter_status_sync')!='' && $this->session->userdata('filter_status_sync')!='-'){
+			$this->db->where('kunjungan.status_pcare',$this->session->userdata('filter_status_sync'));
+		}
+
 		$rows = $this->sinkronisasi_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
@@ -190,7 +190,7 @@ class Sinkronisasi extends CI_Controller {
 				'id_kunjungan'	=> $act->id_kunjungan,
 				'urut'	    	=> substr($act->id_kunjungan,-3),
 				'tgl'	    	=> date("d-m-Y",strtotime($act->tgl)),
-				'waktu'	    => $act->waktu,
+				'waktu'	    	=> $act->waktu,
 				'username'	    => $act->username,
 				'jk'			=> $act->jk,
 				'nama'   	    => $act->nama,
