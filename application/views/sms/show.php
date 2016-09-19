@@ -2,18 +2,18 @@
 <div class="row">
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-aqua"><i class="glyphicon glyphicon-phone-alt"></i></span>
+      <span class="info-box-icon bg-aqua"><a href="<?php echo base_url()?>sms/pbk"><i class="glyphicon glyphicon-phone-alt"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text">Buku Telepon</span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>sms/pbk">Buku Telepon</a></span>
         <span class="info-box-number">{pbk}</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-red"><i class="glyphicon glyphicon-envelope"></i></span>
+      <span class="info-box-icon bg-red"><a href="<?php echo base_url()?>sms/inbox"><i class="glyphicon glyphicon-envelope"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text">Inbox</span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>sms/inbox">Inbox</a></span>
         <span class="info-box-number">{inbox}</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
@@ -24,24 +24,22 @@
 
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-green"><i class="ion ion-ios-people-outline"></i></span>
+      <span class="info-box-icon bg-green"><a href="<?php echo base_url()?>sms/group"><i class="ion ion-ios-people-outline"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text">Grup</span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>sms/group">Grup</a></span>
         <span class="info-box-number">{grup}</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
   <div class="col-md-3 col-sm-6 col-xs-12">
     <div class="info-box">
-      <span class="info-box-icon bg-yellow"><i class="glyphicon glyphicon-random"></i></span>
+      <span class="info-box-icon bg-yellow"><a href="<?php echo base_url()?>sms/sentitems"><i class="glyphicon glyphicon-random"></i></a></span>
       <div class="info-box-content">
-        <span class="info-box-text">Terkirim</span>
+        <span class="info-box-text"><a href="<?php echo base_url()?>sms/sentitems">Terkirim</a></span>
         <span class="info-box-number">{sentitems}</span>
       </div><!-- /.info-box-content -->
     </div><!-- /.info-box -->
   </div><!-- /.col -->
-</div><!-- /.row -->
-
 <div class="row">
   <div class="col-md-8">
     <div class="box">
@@ -91,7 +89,7 @@
 <!-- Main row -->
 <script>
   $(function () { 
-    $("#menu_esms").addClass("active");
+    $("#menu_sms_gateway").addClass("active");
     $("#menu_sms_sms").addClass("active");
 
 

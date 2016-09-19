@@ -85,9 +85,7 @@
 </form>
 </section>
 
-<!-- <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script> -->
 <script src="<?php echo base_url(); ?>plugins/js/jquery.zoom/jquery.zoom.js"></script>
-<!--<script src="<?php echo base_url(); ?>plugins/js/jquery.zoom/jquery.min.js"></script> -->
 
 <script type="text/javascript">   
 	$(document).ready(function(){

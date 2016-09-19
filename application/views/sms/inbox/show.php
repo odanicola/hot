@@ -166,37 +166,10 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Reply', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_add.gif' onclick='reply(\""+dataRecord.ID+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'Detail', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_view.gif' onclick='detail(\""+dataRecord.ID+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.delete==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.ID+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
 				{ text: 'Nomor Pengirim', align: 'center', cellsalign: 'center', datafield: 'SenderNumber', columntype: 'textbox', filtertype: 'textbox', width: '15%' },
-				{ text: 'Isi Pesan', datafield: 'TextDecoded', columntype: 'textbox', filtertype: 'textbox', width: '45%' },
+				{ text: 'Isi Pesan', datafield: 'TextDecoded', columntype: 'textbox', filtertype: 'textbox', width: '55%' },
 				{ text: 'Diproses', datafield: 'Processed', align: 'center', cellsalign: 'center', columntype: 'textbox', filtertype: 'textbox', width: '10%' },
-				{ text: 'Waktu Diterima', align: 'center', cellsalign: 'center', datafield: 'ReceivingDateTime', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy HH:mm:ss', width: '15%' }
+				{ text: 'Waktu Diterima', align: 'center', cellsalign: 'center', datafield: 'ReceivingDateTime', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy HH:mm:ss', width: '20%' }
             ]
 		});
 

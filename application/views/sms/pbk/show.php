@@ -18,14 +18,12 @@
           <h3 class="box-title">{title_form}</h3>
 	    </div>
 	      <div class="box-footer">
-    		<div class="col-md-4">
-			 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>sms/pbk/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah Nomor</button>
+    		<div class="col-md-9">
 			 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
-			 </div>
-    		<div class="col-md-5">
 			 	<button type="button" class="btn btn-warning" id="btn_import"><i class='fa fa-download'></i> &nbsp; Import</button>
 			 	<button type="button" class="btn btn-danger" id="btn-export"><i class='fa fa-save'></i> &nbsp; Export</button>
 			 </div>
+			<br>
     		<div class="col-md-3">
 	     		<select id="id_sms_grup" class="form-control">
 	     			<option value="">-- Pilih Grup --</option>
