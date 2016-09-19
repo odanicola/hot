@@ -1,12 +1,14 @@
-<?php if($this->session->flashdata('alert')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-	<?php echo $this->session->flashdata('alert')?>
+<div id="popup" style="display:none;">
+  <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
-<?php } ?>
-
+<div id="popup_del" style="display:none;">
+  <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
+</div>
+<div id="popup_del1" style="display:none;">
+  <div id="popup_title_del1">Hypertension Online Treatment</div><div id="popup_content_del1">{popup}</div>
+</div>
 <section class="content">
+<form>
   <div class="row">
     <!-- left column -->
     <div class="col-md-12">
@@ -15,7 +17,6 @@
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
 	    </div>
-
 	      <div class="box-footer">
     		<div class="col-md-4">
 			 	<button type="button" class="btn btn-primary" onclick="document.location.href='<?php echo base_url()?>sms/pbk/add'"><i class='fa fa-plus-square-o'></i> &nbsp; Tambah Nomor</button>
@@ -36,32 +37,29 @@
 	     </div>
         <div class="box-body">
 		    <div class="div-grid">
-		        <div id="jqxgrid"></div>
+		        <div id="jqxgrid_pbk"></div>
 			</div>
 	    </div>
 	  </div>
 	</div>
   </div>
+</form>
 </section>
-<div id="popup" style="display:none">
-	<div id="popup_title">SMS</div>
-	<div id="popup_content">&nbsp;</div>
-</div>
 
 <script type="text/javascript">
 	$(function () {	
-		$("#menu_esms").addClass("active");
+		$("#menu_sms_gateway").addClass("active");
 		$("#menu_sms_pbk").addClass("active");
 
 		$("#id_sms_grup").change(function(){
 			$.post("<?php echo base_url().'sms/pbk/filter' ?>", 'id_sms_grup='+$(this).val(),  function(){
-				$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+				$("#jqxgrid_pbk").jqxGrid('updatebounddata', 'cells');
 			});
 		});
 
 		$("#btn-export").click(function(){
 			var post = "";
-			var filter = $("#jqxgrid").jqxGrid('getfilterinformation');
+			var filter = $("#jqxgrid_pbk").jqxGrid('getfilterinformation');
 			for(i=0; i < filter.length; i++){
 				var fltr 	= filter[i];
 				var value	= fltr.filter.getfilters()[0].value;
@@ -77,12 +75,12 @@
 			}
 			post = post+'&filterscount='+i;
 			
-			var sortdatafield = $("#jqxgrid").jqxGrid('getsortcolumn');
+			var sortdatafield = $("#jqxgrid_pbk").jqxGrid('getsortcolumn');
 			if(sortdatafield != "" && sortdatafield != null){
 				post = post + '&sortdatafield='+sortdatafield;
 			}
 			if(sortdatafield != null){
-				var sortorder = $("#jqxgrid").jqxGrid('getsortinformation').sortdirection.ascending ? "asc" : ($("#jqxgrid").jqxGrid('getsortinformation').sortdirection.descending ? "desc" : "");
+				var sortorder = $("#jqxgrid_pbk").jqxGrid('getsortinformation').sortdirection.ascending ? "asc" : ($("#jqxgrid_pbk").jqxGrid('getsortinformation').sortdirection.descending ? "desc" : "");
 				post = post+'&sortorder='+sortorder;
 			}
 			
@@ -104,30 +102,37 @@
 			});
 			$("#popup").jqxWindow('open');
 	    });
+
+		$("#popup").jqxWindow({
+			theme: theme, resizable: false,
+			width: 250,
+			height: 180,
+			isModal: true, autoOpen: false, modalOpacity: 0.4
+		});
 	});
+
+      var btn_confirm = "</br></br><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='sync()'> <input class='btn btn-success' style='width:100px' type='button' value='Tidak' onClick='close_popup()'>";
+      var btn_ok = "</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
 
 	   var source = {
 			datatype: "json",
 			type	: "POST",
 			datafields: [
 			{ name: 'no', type: 'number'},
-			{ name: 'id', type: 'string'},
-			{ name: 'nomor', type: 'string'},
+			{ name: 'username', type: 'string'},
+			{ name: 'phone_number', type: 'string'},
+			{ name: 'nama_group', type: 'string'},
 			{ name: 'nama', type: 'string'},
-			{ name: 'nama_grup', type: 'string'},
-			{ name: 'created_on', type: 'date'},
-			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
         ],
 		url: "<?php echo site_url('sms/pbk/json'); ?>",
 		cache: false,
 		updaterow: function (rowid, rowdata, commit) {
 			},
 		filter: function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+			$("#jqxgrid_pbk").jqxGrid('updateBoundData', 'filter');
 		},
 		sort: function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'sort');
+			$("#jqxgrid_pbk").jqxGrid('updateBoundData', 'sort');
 		},
 		root: 'Rows',
         pagesize: 10,
@@ -144,12 +149,12 @@
 		});
      
 		$('#btn-refresh').click(function () {
-			$("#jqxgrid").jqxGrid('clearfilters');
+			$("#jqxgrid_pbk").jqxGrid('clearfilters');
 		});
 
-		$("#jqxgrid").jqxGrid(
+		$("#jqxgrid_pbk").jqxGrid(
 		{		
-			width: '100%',
+			width: '100%', autoheight: true,autorowheight: true,
 			selectionmode: 'singlerow',
 			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
 			showfilterrow: true, filterable: true, sortable: true, autoheight: true, pageable: true, virtualmode: true, editable: false,
@@ -158,50 +163,82 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Edit', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.edit==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_edit.gif' onclick='edit(\""+dataRecord.id+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'Del', align: 'center', filtertype: 'none', sortable: false, width: '5%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.delete==1){
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_del.gif' onclick='del(\""+dataRecord.id+"\");'></a></div>";
-					}else{
-						return "<div style='width:100%;padding-top:2px;text-align:center'><a href='javascript:void(0);'><a href='javascript:void(0);'><img border=0 src='<?php echo base_url(); ?>media/images/16_lock.gif'></a></div>";
-					}
-                 }
-                },
-				{ text: 'No', align: 'center', cellsalign: 'center', datafield: 'no', columntype: 'textbox', sortable: false, filtertype: 'none', width: '5%' },
-				{ text: 'Nomor', datafield: 'nomor', columntype: 'textbox', filtertype: 'textbox', width: '25%' },
-				{ text: 'Nama', datafield: 'nama', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
-				{ text: 'Grup', datafield: 'nama_grup', columntype: 'textbox', filtertype: 'textbox', width: '20%' },
-				{ text: 'Tanggal Dibuat', align: 'center', cellsalign: 'center', datafield: 'created_on', columntype: 'date', filtertype: 'date', cellsformat: 'dd-MM-yyyy HH:mm:ss', width: '20%' },
+				{ text: 'Nomor', datafield: 'phone_number', columntype: 'textbox', filtertype: 'textbox', width: '25%' },
+				{ text: 'Nama', datafield: 'nama', columntype: 'textbox', filtertype: 'textbox', width: '45%' },
+				{ text: 'Group', datafield: 'nama_group', columntype: 'textbox', filtertype: 'textbox', width: '30%' }
+
             ]
 		});
 
-	function close_popup(){
-		$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		$("#popup").jqxWindow('close');
+		$("#jqxgrid_pbk").on('rowselect', function (event) {
+			var args = event.args;
+			var rowData = args.row;
+
+	        $("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.username+"\")'> <input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del(\""+rowData.username+"\")'><br><br><input class='btn btn-warning' style='width:204px' type='button' value='Close' onClick='close_popup()'></div></div>");
+ 			$("html, body").animate({ scrollTop: 0 }, "slow");
+			$("#popup").jqxWindow('open');
+		});
+
+	function btn_edit(username){
+      	document.location.href="<?php echo base_url()?>sms/pbk/edit/"+username;
 	}
 
-	function edit(id){
-		document.location.href="<?php echo base_url().'sms/pbk/edit';?>/" + id;
+	function btn_del(username){
+		$("#popup").hide();
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_pasien("+username+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+        $("#popup_del").jqxWindow('open');
 	}
 
-	function del(id){
-		var confirms = confirm("Hapus Data ?");
-		if(confirms == true){
-			$.post("<?php echo base_url().'sms/pbk/dodel' ?>/" + id,  function(){
-				alert('Nomor berhasil dihapus');
-
-				$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-			});
-		}
+	function del_pasien(username){
+		$.post("<?php echo base_url().'sms/pbk/dodel' ?>/" +username,  function(){
+		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
+          $("#popup_del1").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+        
+			$("#popup_del1").jqxWindow('open');
+			$("#popup").jqxWindow('close');
+			$("#popup_del").jqxWindow('close');
+			$("#jqxgrid_pbk").jqxGrid('updatebounddata', 'cells');
+		});
 	}
+
+	// function del(username){
+	// 	var confirms = confirm("Hapus Data ?");
+	// 	if(confirms == true){
+	// 		$.post("<?php echo base_url().'sms/pbk/dodel' ?>/" + id,  function(){
+	// 			alert('Nomor berhasil dihapus');
+
+	// 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+	// 		});
+	// 	}
+	// }
+
+    function close_popup(){
+        $("#popup").jqxWindow('close');
+        $("#jqxgrid_pbk").jqxGrid('clearselection');
+    }
+
+    function close_popup_del(){
+        $("#jqxgrid_pbk").jqxGrid('clearselection');
+        $("#popup").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
+    }
+
+    function close_popup_del1(){
+        $("#jqxgrid_pbk").jqxGrid('clearselection');
+        $("#popup").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
+        $("#popup_del1").jqxWindow('close');
+    }
 
 </script>

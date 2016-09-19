@@ -1,7 +1,7 @@
 <?php
 class Pbk_model extends CI_Model {
 
-    var $tabel    = 'sms_pbk';
+    var $tabel    = 'app_users_profile';
 	var $lang	  = 'ina';
 
     function __construct() {
@@ -9,18 +9,31 @@ class Pbk_model extends CI_Model {
 		$this->lang	  = $this->config->item('language');
     }
 
-    function get_data($start=0,$limit=999999,$options=array())
-    {
-	    $this->db->select("sms_pbk.*,sms_grup.nama AS nama_grup");
-	    $this->db->join('sms_grup', 'sms_grup.id_grup = sms_pbk.id_sms_grup', 'left'); 
+    function get_data($start=0,$limit=999999,$options=array()){
+	    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
+	    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_grup', 'left'); 
 	    $query = $this->db->get($this->tabel,$limit,$start);
     	return $query->result();
 	
     }
 
- 	function get_data_row($id){
+  //   function get_data_row($username){
+	 //    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
+	 //    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_sms_group', 'left'); 
+		// $this->db->where("username",$username);
+  //       $query = $this->db->get($this->tabel);
+  //       if ($query->num_rows()>0) {
+  //           $data = $query->row_array();
+  //       }
+  //       $query->free_result();
+  //       return $data;
+  //   }
+
+ 	function get_data_row($username){
 		$data = array();
-		$this->db->where("nomor",$id);
+	    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
+	    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_grup', 'left'); 
+		$this->db->where("username",$username);
 		$query = $this->db->get($this->tabel)->row_array();
 
 		if(!empty($query)){
@@ -40,16 +53,16 @@ class Pbk_model extends CI_Model {
 
 	public function getSelectedData($tabel,$data)
     {
-        return $this->db->get_where($tabel, array('nomor'=>$data));
+        return $this->db->get_where($tabel, array('phone_number'=>$data));
     }
 
     function insert_entry()
     {
-		$data['nomor']			= $this->input->post('nomor');
-		$data['nama']			= $this->input->post('nama');
-		$data['id_sms_grup']	= $this->input->post('id_sms_grup');
+		$data['phone_number']  = $this->input->post('phone_number');
+		$data['nama']		   = $this->input->post('nama');
+		$data['id_grup']	   = $this->input->post('id_grup');
 
-		if($this->getSelectedData($this->tabel, $data['nomor'])->num_rows() > 0) {
+		if($this->getSelectedData($this->tabel, $data['phone_number'])->num_rows() > 0) {
 			return 0;
 		}else{
 			if($this->db->insert($this->tabel, $data)){
@@ -60,13 +73,13 @@ class Pbk_model extends CI_Model {
 		}
     }
 
-    function update_entry($nomor)
+    function update_entry($username)
     {
 		$data['nama']			= $this->input->post('nama');
-		$data['id_sms_grup']	= $this->input->post('id_sms_grup');
-		$data['modified_on']	= date("Y-m-d H:i:s");
+		$data['id_grup']		= $this->input->post('id_grup');
+		$data['phone_number']	= $this->input->post('phone_number');
 
-		$this->db->where('nomor',$nomor);
+		$this->db->where('username',$username);
 		if($this->db->update($this->tabel, $data)){
 			return true;
 		}else{
@@ -74,9 +87,11 @@ class Pbk_model extends CI_Model {
 		}
     }
 
-	function delete_entry($nomor)
-	{
-		$this->db->where('nomor',$nomor);
+	function delete_entry($username){
+		
+		$this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
+	    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_grup', 'left'); 
+		$this->db->where("username",$username);
 
 		return $this->db->delete($this->tabel);
 	}

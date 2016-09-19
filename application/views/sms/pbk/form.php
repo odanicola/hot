@@ -16,7 +16,7 @@
 
 
 <section class="content">
-<form action="<?php echo base_url()?>sms/pbk/{action}/{nomor}" method="POST" name="">
+<form action="<?php echo base_url()?>sms/pbk/{action}/{username}" method="POST" name="">
   <div class="row">
     <!-- left column -->
     <div class="col-md-6">
@@ -33,11 +33,11 @@
           <div class="box-body">
             <div class="form-group">
               <label>Nomor (+62)</label>
-              <input type="text" class="form-control" name="nomor" placeholder="+62" <?php if($action=="edit") echo "readonly"; ?> value="<?php 
-                if(set_value('nomor')=="" && isset($nomor)){
-                  echo $nomor;
+              <input type="text" class="form-control" name="phone_number" placeholder="+62" <?php if($action=="edit") echo "readonly"; ?> value="<?php 
+                if(set_value('phone_number')=="" && isset($phone_number)){
+                  echo $phone_number;
                 }else{
-                  echo  set_value('nomor');
+                  echo  set_value('phone_number');
                 }
                 ?>">
             </div>
@@ -53,14 +53,14 @@
             </div>
             <div class="form-group">
               <label>Grup</label>
-              <select  name="id_sms_grup" id="id_sms_grup" class="form-control">
+              <select  name="id_grup" id="id_grup" class="form-control">
                   <option value="">-- Pilih Grup --</option>
                   <?php foreach($grupoption as $row) : ?>
                     <?php 
-                    if(isset($id_sms_grup) && $id_sms_grup==$row->id_grup){
-                      $select = $row->id_grup == $id_sms_grup ? 'selected' : '';
-                    }elseif(set_value('id_sms_grup')!=""){
-                      $select = $row->id_grup == set_value('id_sms_grup') ? 'selected' : '';
+                    if(isset($id_grup) && $id_grup==$row->id_grup){
+                      $select = $row->id_grup == $id_grup ? 'selected' : '';
+                    }elseif(set_value('id_grup')!=""){
+                      $select = $row->id_grup == set_value('id_grup') ? 'selected' : '';
                     }else{
                       $select ='';
                     } 
@@ -79,7 +79,7 @@
 
 <script>
 	$(function () {	
-    $("#menu_esms").addClass("active");
+    $("#menu_sms_gateway").addClass("active");
     $("#menu_sms_pbk").addClass("active");
 	});
 </script>

@@ -16,7 +16,7 @@ class Pbk extends CI_Controller {
 	function index(){
 		$this->authentication->verify('sms','show');
 		$data['title_group'] = "Buku Telepon";
-		$data['title_form'] = "Nomor Terdaftar";
+		$data['title_form']  = "Nomor Terdaftar";
 
 		$this->session->unset_userdata('filter_id_sms_grup');
 
@@ -38,27 +38,17 @@ class Pbk extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'created_on') {
-					$value = date("Y-m-d",strtotime($value));
-					$this->db->like("sms_pbk.created_on",$value);
-				}
-				elseif($field == 'nama') {
-					$this->db->like("sms_pbk.nama",$value);
-				}
-				elseif($field == 'nama_grup') {
-					$this->db->like("sms_grup.nama",$value);
-				}else{
-					$this->db->like($field,$value);
-				}
 			}
 
 			if(!empty($ord)) {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
+
 		if($this->session->userdata('filter_id_sms_grup') != '') {
-			$this->db->where('sms_pbk.id_sms_grup',$this->session->userdata('filter_id_sms_grup'));
+			$this->db->where('app_users_profile.id_sms_group',$this->session->userdata('filter_id_sms_grup'));
 		}
+
 		$rows_all = $this->pbk_model->get_data();
 
 		if($_POST) {
@@ -69,40 +59,27 @@ class Pbk extends CI_Controller {
 				$field = $this->input->post('filterdatafield'.$i);
 				$value = $this->input->post('filtervalue'.$i);
 
-				if($field == 'created_on') {
-					$value = date("Y-m-d",strtotime($value));
-					$this->db->like("sms_pbk.created_on",$value);
-				}
-				elseif($field == 'nama') {
-					$this->db->like("sms_pbk.nama",$value);
-				}
-				elseif($field == 'nama_grup') {
-					$this->db->like("sms_grup.nama",$value);
-				}else{
-					$this->db->like($field,$value);
-				}
 			}
 
 			if(!empty($ord)) {
 				$this->db->order_by($ord, $this->input->post('sortorder'));
 			}
 		}
+
 		if($this->session->userdata('filter_id_sms_grup') != '') {
-			$this->db->where('sms_pbk.id_sms_grup',$this->session->userdata('filter_id_sms_grup'));
+			$this->db->where('app_users_profile.id_sms_group',$this->session->userdata('filter_id_sms_grup'));
 		}
+
 		$rows = $this->pbk_model->get_data($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		$no=1;
 		foreach($rows as $act) {
 			$data[] = array(
-				'no'		=> $no++,
-				'id'		=> $act->nomor,
-				'nomor'		=> '+62 - '.$act->nomor,
-				'nama' 		=> $act->nama,
-				'nama_grup'	=> $act->nama_grup,
-				'created_on'=> $act->created_on,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'no'		   => $no++,
+				'username' 	   => $act->username,
+				'phone_number' => $act->phone_number,
+				'nama_group'   => $act->nama_group,
+				'nama' 		   => $act->nama
 			);
 		}
 
@@ -128,15 +105,15 @@ class Pbk extends CI_Controller {
 	function add(){
 		$this->authentication->verify('sms','add');
 
-        $this->form_validation->set_rules('nomor', 'Nomor', 'trim|required|callback_cekNomor');
+        $this->form_validation->set_rules('phone_number', 'Nomor', 'trim|required|callback_cekNomor');
         $this->form_validation->set_rules('nama', 'Nama', 'trim|required');
-        $this->form_validation->set_rules('id_sms_grup', 'Grup', 'trim|required');
+        $this->form_validation->set_rules('id_grup', 'Grup', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
 			$data['title_group'] = "Buku Telepon";
-			$data['title_form']="Tambah Nomor Telepon";
-			$data['action']="add";
-			$data['nomor']="";
+			$data['title_form']  ="Tambah Nomor Telepon";
+			$data['action']      ="add";
+			$data['username']    ="";
 
 			$data['grupoption'] 	= $this->pbk_model->get_grupoption();
 		
@@ -152,39 +129,39 @@ class Pbk extends CI_Controller {
 		$this->template->show($data,"home");
 	}
 
-	function edit($nomor=""){
+	function edit($username=""){
 		$this->authentication->verify('sms','edit');
 
         $this->form_validation->set_rules('nama', 'Nama', 'trim|required');
-        $this->form_validation->set_rules('id_sms_grup', 'Grup', 'trim|required');
+        $this->form_validation->set_rules('id_grup', 'Grup', 'trim|required');
+        $this->form_validation->set_rules('phone_number', 'Grup', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
-			$data 	= $this->pbk_model->get_data_row($nomor); 
-
+			$data 					= $this->pbk_model->get_data_row($username); 
 			$data['title_group'] 	= "Buku Telepon";
 			$data['title_form']		= "Ubah Nomor Telepon";
 			$data['action']			= "edit";
-			$data['nomor']			= $nomor;
+			$data['username']		= $username;
 
 			$data['grupoption'] 	= $this->pbk_model->get_grupoption();
 
 			$data['content'] 	= $this->parser->parse("sms/pbk/form",$data,true);
-		}elseif($this->pbk_model->update_entry($nomor)){
+		}elseif($this->pbk_model->update_entry($username)){
 			$this->session->set_flashdata('alert_form', 'Save data successful...');
-			redirect(base_url()."sms/pbk/edit/".$nomor);
+			redirect(base_url()."sms/pbk/edit/".$username);
 		}else{
 			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."sms/pbk/edit/".$nomor);
+			redirect(base_url()."sms/pbk/edit/".$username);
 		}
 
 		$this->template->show($data,"home");
 	}
 
-	function dodel($kode=0,$code_cl_phc=""){
+	function dodel($username=""){
 		$this->authentication->verify('sms','del');
 
-		if($this->pbk_model->delete_entry($kode,$code_cl_phc)){
-			$this->session->set_flashdata('alert', 'Delete data ('.$kode.')');
+		if($this->pbk_model->delete_entry($username)){
+			$this->session->set_flashdata('alert', 'Delete data ('.$username.')');
 		}else{
 			$this->session->set_flashdata('alert', 'Delete data error');
 		}
