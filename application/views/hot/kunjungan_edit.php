@@ -31,11 +31,11 @@
     $(function () { 
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
 
-      $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{tb}' });
-      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
+      $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{tb}' });
+      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
       
-      $('#tb').on('change', function (event) { bmi(); });
-      $('#bb').on('change', function (event) { bmi(); });
+      // $('#tb').on('change', function (event) {  bmi(); });
+      // $('#bb').on('change', function (event) { bmi(); });
 
       $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gdp}' });
       $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gds}' });
@@ -81,23 +81,23 @@
 
       $("#btn-simpan").click(function(){
         var data = new FormData();
-        data.append("waktu", $("#waktu").val());
-        data.append("tb", $("#tb").val());
-        data.append("bb", $("#bb").val());
-        data.append("bmi", $("#bmi").val());
-        data.append("kategori", $("#kategori").val());
-        data.append("systolic", $("#systolic").jqxSlider('value'));
-        data.append("diastolic", $("#diastolic").jqxSlider('value'));
-        data.append("pulse", $("#pulse").jqxSlider('value'));
-        data.append("gds", $("#gds").val());
-        data.append("gdp", $("#gdp").val());
-        data.append("gdpp", $("#gdpp").val());
-        data.append("kolesterol", $("#kolesterol").val());
-        data.append("is_diabetic", $("#is_diabetic").is(':checked') ? 1:0);
-        data.append("is_ckd", $("#is_ckd").is(':checked') ? 1:0);
-        data.append("is_black", $("#is_black").is(':checked') ? 1:0);
+        data.append("waktu",        $("#waktu").val());
+        data.append("tb",           $("#tb").val());
+        data.append("bb",           $("#bb").val());
+        data.append("bmi",          $("#bmi").val());
+        data.append("kategori",     $("#kategori").val());
+        data.append("systolic",     $("#systolic").jqxSlider('value'));
+        data.append("diastolic",    $("#diastolic").jqxSlider('value'));
+        data.append("pulse",        $("#pulse").jqxSlider('value'));
+        data.append("gds",          $("#gds").val());
+        data.append("gdp",          $("#gdp").val());
+        data.append("gdpp",         $("#gdpp").val());
+        data.append("kolesterol",   $("#kolesterol").val());
+        data.append("is_diabetic",  $("#is_diabetic").is(':checked') ? 1:0);
+        data.append("is_ckd",       $("#is_ckd").is(':checked') ? 1:0);
+        data.append("is_black",     $("#is_black").is(':checked') ? 1:0);
         data.append("status_antri", "periksa");
-        data.append("username_op", "<?php echo $this->session->userdata('username')?>");
+        data.append("username_op",  "<?php echo $this->session->userdata('username')?>");
 
         $.ajax({
             cache : false,
@@ -190,40 +190,27 @@
               <input type="hidden" id="waktu" value="{waktu}">
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-3 text-right" style="padding-top:15px"><b>TB</b></div>
-              <div class="col-xs-6"><div id="tb"></div></div>
-              <div class="col-xs-3 text-left" style="padding-top:15px">cm</div>
+              <div class="col-xs-3 text-right" style="padding-top:2px"><b>TB</b>
+                <input type='button' value='-' class='btn btn-primary minus_tb' style="height:48px;width:44px" field='tb' />
+              </div>
+              <div class="col-xs-4">
+                <div id="tb"></div>
+              </div>
+              <div class="col-xs-3 text-left" style="padding-top:2px">  
+                <input type='button' value='+' class='btn btn-primary plus_tb' style="height:48px;width:44px;" field='tb' /> &nbsp; cm
+              </div>
             </div>
-<!--             <div class="row" style="padding:4px">
-              <div class="col-xs-3 text-right" style="padding-top:15px"><b>BB</b></div>
-              <div class="col-xs-6"><div id="bb"></div></div>
-              <div class="col-xs-3 text-left" style="padding-top:15px">kg</div>
-            </div> -->
-            
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:2px"><b>BB</b>
                 <input type='button' value='-' class='btn btn-success minus_bb' style="height:48px;width:44px" field='bb' />
               </div>
-              <div class="col-xs-6">
-                <!-- <input type='button' value='-' class='minus_bb' style="height:31px;width:31px" field='bb' /> -->
-                <input class='qty' id="bb">
-                <!-- <input type='text' name='bb' value='0' size="8" style="padding: 5px" class='qty' /> -->
-                <!-- <input type='button' value='+' class='plus_bb'  style="height:31px;width:31px" field='bb' /> -->
+              <div class="col-xs-4">
+                <div id="bb"></div>
               </div>
               <div class="col-xs-3 text-left" style="padding-top:2px">  
-                <input type='button' value='+' class='btn btn-success plus_bb' style="height:48px;width:44px;" field='bb' />kg
+                <input type='button' value='+' class='btn btn-success plus_bb' style="height:48px;width:44px;" field='bb' /> &nbsp; kg
               </div>
             </div>
-
-<!--             <div class="row" style="padding:4px">
-              <div class="col-xs-3 text-right" style="padding-top:15px"><b>BB</b></div>
-              <div class="col-xs-6">
-                <input type='button' value='-' class='btn btn-success minus_bb' style="height:31px;width:31px" field='bb' />
-                <input type='text' name='bb' value='0' size="8" style="padding: 5px" class='qty' />
-                <input type='button' value='+' class='btn btn-success plus_bb'  style="height:31px;width:31px" field='bb' />
-              </div>
-              <div class="col-xs-3 text-left" style="padding-top:15px">&nbsp;kg</div>
-            </div> -->
 
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
@@ -335,27 +322,54 @@
     $('.btn.btn-success.plus_bb').click(function(e){
         e.preventDefault();
         fieldName = $(this).attr('field');
-        var currentVal = parseInt($('input[name='+fieldName+']').val());
+        var currentVal = parseInt($("#bb").val());
         
         if (!isNaN(currentVal)) {
-            $('input[name='+fieldName+']').val(currentVal + 1);
+            $("#bb").val(currentVal + 1);
+            bmi(); 
         } else {
-            $('input[name='+fieldName+']').val(0);
+            $("#bb").val(0);
         }
     });
 
     $(".btn.btn-success.minus_bb").click(function(e) {
         e.preventDefault();
         fieldName = $(this).attr('field');
-        var currentVal = parseInt($('input[name='+fieldName+']').val());
+        var currentVal = parseInt($("#bb").val());
       
         if (!isNaN(currentVal) && currentVal > 0) {
-            $('input[name='+fieldName+']').val(currentVal - 1);
+            $("#bb").val(currentVal - 1);
+            bmi(); 
         } else {
-            $('input[name='+fieldName+']').val(0);
+            $("#bb").val(0);
         }
     });
 
+    $('.btn.btn-primary.plus_tb').click(function(e){
+        e.preventDefault();
+        fieldName = $(this).attr('field');
+        var currentVal = parseInt($("#tb").val());
+        
+        if (!isNaN(currentVal)) {
+            $("#tb").val(currentVal + 1);
+            bmi(); 
+        } else {
+            $("#tb").val(0);
+        }
+    });
+
+    $(".btn.btn-primary.minus_tb").click(function(e) {
+        e.preventDefault();
+        fieldName = $(this).attr('field');
+        var currentVal = parseInt($("#tb").val());
+      
+        if (!isNaN(currentVal) && currentVal > 0) {
+            $("#tb").val(currentVal - 1);
+            bmi(); 
+        } else {
+            $("#tb").val(0);
+        }
+    });
 
 	});
 </script>
