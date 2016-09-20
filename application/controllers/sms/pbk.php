@@ -20,8 +20,8 @@ class Pbk extends CI_Controller {
 
 		$this->session->unset_userdata('filter_id_sms_grup');
 
-		$data['grupoption'] 	= $this->pbk_model->get_grupoption();
-		$data['content'] = $this->parser->parse("sms/pbk/show",$data,true);
+		$data['grupoption']  = $this->pbk_model->get_grupoption();
+		$data['content']     = $this->parser->parse("sms/pbk/show",$data,true);
 
 		$this->template->show($data,"home");
 	}
@@ -132,29 +132,30 @@ class Pbk extends CI_Controller {
 	function edit($username=""){
 		$this->authentication->verify('sms','edit');
 
-        $this->form_validation->set_rules('nama', 'Nama', 'trim|required');
+		$data 					= $this->pbk_model->get_data_row($username); 
+		$data['title_group'] 	= "Buku Telepon";
+		$data['title_form']		= "Ubah Nomor Telepon";
+		$data['action']			= "edit";
+		$data['username']		= $username;
+		$data['grupoption']  = $this->pbk_model->get_grupoption();
+
         $this->form_validation->set_rules('id_grup', 'Grup', 'trim|required');
-        $this->form_validation->set_rules('phone_number', 'Grup', 'trim|required');
 
 		if($this->form_validation->run()== FALSE){
-			$data 					= $this->pbk_model->get_data_row($username); 
-			$data['title_group'] 	= "Buku Telepon";
-			$data['title_form']		= "Ubah Nomor Telepon";
-			$data['action']			= "edit";
-			$data['username']		= $username;
-
-			$data['grupoption'] 	= $this->pbk_model->get_grupoption();
-
-			$data['content'] 	= $this->parser->parse("sms/pbk/form",$data,true);
-		}elseif($this->pbk_model->update_entry($username)){
-			$this->session->set_flashdata('alert_form', 'Save data successful...');
-			redirect(base_url()."sms/pbk/edit/".$username);
+			die($this->parser->parse('sms/pbk/form', $data));
 		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."sms/pbk/edit/".$username);
-		}
+			$values = array(
+				'id_grup' => $this->input->post('id_grup')
+			);
 
-		$this->template->show($data,"home");
+        	$this->db->where('app_users_profile.username',$username);
+			if($this->db->update('app_users_profile', $values)){
+				die("OK|");
+			}else{
+				die("Error|Proses data gagal");
+			}
+		}
+		
 	}
 
 	function dodel($username=""){
@@ -166,7 +167,6 @@ class Pbk extends CI_Controller {
 			$this->session->set_flashdata('alert', 'Delete data error');
 		}
 	}
-
 
 	function cekNomor(){
 		$nomor = $this->input->post('nomor');

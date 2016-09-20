@@ -22,7 +22,8 @@ class Pbk_model extends CI_Model {
 		$data = array();
 	    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
 	    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_grup', 'left'); 
-		$this->db->where("username",$username);
+	    $this->db->join('app_users_list', 'app_users_list.username = app_users_profile.username', 'left'); 
+		$this->db->where("app_users_profile.username",$username);
 		$query = $this->db->get($this->tabel)->row_array();
 
 		if(!empty($query)){
