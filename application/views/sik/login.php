@@ -473,7 +473,7 @@
   <?php if(validation_errors() !="" || $this->session->flashdata('notification') !=""){ 
     $err_msg = str_replace("\n", "", validation_errors()."<p>".$this->session->flashdata('notification')."</p>");
   ?>
-        $("#popup_content").html("<center><?php echo $err_msg?></center>");
+        $("#popup_content").html("<center><?php echo $err_msg?><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></center>");
         $("#popup").jqxWindow({
           theme: theme, resizable: false,
           width: 300,
