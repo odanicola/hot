@@ -12,22 +12,11 @@ class Pbk_model extends CI_Model {
     function get_data($start=0,$limit=999999,$options=array()){
 	    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
 	    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_grup', 'left'); 
+	    $this->db->join('app_users_list', 'app_users_list.username = app_users_profile.username', 'left'); 
+		$this->db->where("app_users_list.level",'pasien');
 	    $query = $this->db->get($this->tabel,$limit,$start);
     	return $query->result();
-	
     }
-
-  //   function get_data_row($username){
-	 //    $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.phone_number,sms_grup.id_grup,sms_grup.nama AS nama_group ");
-	 //    $this->db->join('sms_grup', 'sms_grup.id_grup = app_users_profile.id_sms_group', 'left'); 
-		// $this->db->where("username",$username);
-  //       $query = $this->db->get($this->tabel);
-  //       if ($query->num_rows()>0) {
-  //           $data = $query->row_array();
-  //       }
-  //       $query->free_result();
-  //       return $data;
-  //   }
 
  	function get_data_row($username){
 		$data = array();

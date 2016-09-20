@@ -20,7 +20,6 @@
 	      <div class="box-footer">
     		<div class="col-md-9">
 			 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
-			 	<button type="button" class="btn btn-warning" id="btn_import"><i class='fa fa-download'></i> &nbsp; Import</button>
 			 	<button type="button" class="btn btn-danger" id="btn-export"><i class='fa fa-save'></i> &nbsp; Export</button>
 			 </div>
 			<br>
@@ -209,17 +208,6 @@
 			$("#jqxgrid_pbk").jqxGrid('updatebounddata', 'cells');
 		});
 	}
-
-	// function del(username){
-	// 	var confirms = confirm("Hapus Data ?");
-	// 	if(confirms == true){
-	// 		$.post("<?php echo base_url().'sms/pbk/dodel' ?>/" + id,  function(){
-	// 			alert('Nomor berhasil dihapus');
-
-	// 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-	// 		});
-	// 	}
-	// }
 
     function close_popup(){
         $("#popup").jqxWindow('close');
