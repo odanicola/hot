@@ -32,7 +32,7 @@
       var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
 
       $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{tb}' });
-      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
+      $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "50", inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
       
       $('#tb').on('change', function (event) { bmi(); });
       $('#bb').on('change', function (event) { bmi(); });
@@ -194,11 +194,37 @@
               <div class="col-xs-6"><div id="tb"></div></div>
               <div class="col-xs-3 text-left" style="padding-top:15px">cm</div>
             </div>
-            <div class="row" style="padding:4px">
+<!--             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BB</b></div>
               <div class="col-xs-6"><div id="bb"></div></div>
               <div class="col-xs-3 text-left" style="padding-top:15px">kg</div>
+            </div> -->
+            
+            <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:2px"><b>BB</b>
+                <input type='button' value='-' class='btn btn-success minus_bb' style="height:48px;width:44px" field='bb' />
+              </div>
+              <div class="col-xs-6">
+                <!-- <input type='button' value='-' class='minus_bb' style="height:31px;width:31px" field='bb' /> -->
+                <input class='qty' id="bb">
+                <!-- <input type='text' name='bb' value='0' size="8" style="padding: 5px" class='qty' /> -->
+                <!-- <input type='button' value='+' class='plus_bb'  style="height:31px;width:31px" field='bb' /> -->
+              </div>
+              <div class="col-xs-3 text-left" style="padding-top:2px">  
+                <input type='button' value='+' class='btn btn-success plus_bb' style="height:48px;width:44px;" field='bb' />kg
+              </div>
             </div>
+
+<!--             <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>BB</b></div>
+              <div class="col-xs-6">
+                <input type='button' value='-' class='btn btn-success minus_bb' style="height:31px;width:31px" field='bb' />
+                <input type='text' name='bb' value='0' size="8" style="padding: 5px" class='qty' />
+                <input type='button' value='+' class='btn btn-success plus_bb'  style="height:31px;width:31px" field='bb' />
+              </div>
+              <div class="col-xs-3 text-left" style="padding-top:15px">&nbsp;kg</div>
+            </div> -->
+
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
               <div class="col-xs-4"><input style="height:50px" type="text" class="form-control" id="bmi" value="{bmi}" readonly placeholder="BMI"></div>
@@ -305,6 +331,31 @@
 
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_kunjungan").addClass("active");
+
+    $('.btn.btn-success.plus_bb').click(function(e){
+        e.preventDefault();
+        fieldName = $(this).attr('field');
+        var currentVal = parseInt($('input[name='+fieldName+']').val());
+        
+        if (!isNaN(currentVal)) {
+            $('input[name='+fieldName+']').val(currentVal + 1);
+        } else {
+            $('input[name='+fieldName+']').val(0);
+        }
+    });
+
+    $(".btn.btn-success.minus_bb").click(function(e) {
+        e.preventDefault();
+        fieldName = $(this).attr('field');
+        var currentVal = parseInt($('input[name='+fieldName+']').val());
+      
+        if (!isNaN(currentVal) && currentVal > 0) {
+            $('input[name='+fieldName+']').val(currentVal - 1);
+        } else {
+            $('input[name='+fieldName+']').val(0);
+        }
+    });
+
 
 	});
 </script>
