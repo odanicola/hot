@@ -69,6 +69,7 @@
 	}
 
 	function reply(id){
+		$("#popup1").hide();
 		$("#popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
 		$.get("<?php echo base_url().'sms/inbox/reply/'; ?>" + id , function(data) {
 			$("#popup_content").html(data);
@@ -83,6 +84,7 @@
 	}
 
 	function detail(id){
+		$("#popup1").hide();
 		$("#popup_content").html("<div style='text-align:center'><br><br><br><br><img src='<?php echo base_url();?>media/images/indicator.gif' alt='loading content.. '><br>loading</div>");
 		$.get("<?php echo base_url().'sms/inbox/detail/'; ?>" + id , function(data) {
 			$("#popup_content").html(data);
@@ -103,7 +105,7 @@
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.2
+            isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         $("#popup").jqxWindow('open');
 	}
@@ -115,7 +117,7 @@
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.2
+            isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         
 			$("#popup_del").jqxWindow('open');

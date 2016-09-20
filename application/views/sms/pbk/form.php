@@ -48,7 +48,6 @@
           </div>
           <div class="box-footer pull-right">
             <button type="submit" class="btn btn-primary">Simpan</button>
-            <button type="reset" class="btn btn-warning">Ulang</button>
             <button type="reset" id="btn-close" class="btn btn-success">Batal</button>
           </div>
       </div><!-- /.box -->

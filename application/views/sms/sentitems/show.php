@@ -73,7 +73,7 @@
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.2
+            isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         $("#popup").jqxWindow('open');
 	}
@@ -85,7 +85,7 @@
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.2
+            isModal: true, autoOpen: false, modalOpacity: 0.4
           });
         
 			$("#popup_del").jqxWindow('open');
