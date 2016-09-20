@@ -167,9 +167,17 @@ class Pasien_model extends CI_Model {
         return $query->result();
     }
 
+    function check_email($str){
+        $uid = ($this->session->userdata('username')!="") ? $this->session->userdata('username') : "";
+        $this->db->where('email',$str);
+        $this->db->where('username <>', $uid);
+        $query = $this->db->get('app_users_profile');
+        return $query->num_rows();
+    }
 
-
- 
+    function _prep_password($password){
+        return $this->encrypt->sha1($password.$this->config->item('encryption_key'));
+    }
 
 }
 
