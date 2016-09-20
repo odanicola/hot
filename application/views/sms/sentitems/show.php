@@ -14,6 +14,9 @@
   <div id="popup_title1">Hypertension Online Treatment</div><div id="popup_content1">{popup}</div>
 </div>
 
+<div id="popup_del" style="display:none;">
+  <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
+</div>
 
 <section class="content">
   <div class="row">
@@ -47,24 +50,49 @@
 	});
 
 	function close_popup(){
+        $("#jqxgrid").jqxGrid('clearselection');
 		$("#popup").jqxWindow('close');
 		$("#popup1").jqxWindow('close');
-		
 	}
 
 	function close_popup1(){
+        $("#jqxgrid").jqxGrid('clearselection');
 		$("#popup1").jqxWindow('close');
 	}
 
-	function del(id){
-		var confirms = confirm("Hapus Data ?");
-		if(confirms == true){
-			$.post("<?php echo base_url().'sms/sentitems/dodel' ?>/" + id,  function(){
-				alert('SMS berhasil dihapus');
+	function close_popup_del(){
+        $("#jqxgrid").jqxGrid('clearselection');
+        $("#popup").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
+    }
 
-				$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-			});
-		}
+	function btn_del(id){
+		$("#popup1").hide();
+		$("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_senditm("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup()'></div></div>");
+          $("#popup").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.2
+          });
+        $("#popup").jqxWindow('open');
+	}
+
+	function del_senditm(id){
+		$.post("<?php echo base_url().'sms/sentitems/dodel' ?>/" +id,  function(){
+		  $("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.2
+          });
+        
+			$("#popup_del").jqxWindow('open');
+			$("#popup").jqxWindow('close');
+			$("#popup1").jqxWindow('close');
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
 	}
 
 	function detail(id){
@@ -78,6 +106,7 @@
 			height: 440,
 			isModal: true, autoOpen: false, modalOpacity: 0.2
 		});
+		$("#popup1").hide();
 		$("#popup").jqxWindow('open');
 	}
 
@@ -85,7 +114,7 @@
 			theme: theme, resizable: false,
 			width: 250,
 			height: 180,
-			isModal: true, autoOpen: false, modalOpacity: 0.4
+			isModal: true, autoOpen: false, modalOpacity: 0.2
 		});
 
 	   var source = {
@@ -150,7 +179,7 @@
 			var args = event.args;
 			var rowData = args.row;
 
-	        $("#popup_content1").html("<div style='padding:5px' align='center'><br>"+rowData.DestinationNumber+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Detail' onClick='detail(\""+rowData.ID+"\")'> <input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del(\""+rowData.ID+"\")'><br><br><input class='btn btn-warning' style='width:204px' type='button' value='Close' onClick='close_popup1()'></div></div>");
+	        $("#popup_content1").html("<div style='padding:5px' align='center'><br>"+rowData.DestinationNumber+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Detail' onClick='detail(\""+rowData.ID+"\")'> <input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_del(\""+rowData.ID+"\")'><br><br><input class='btn btn-warning' style='width:204px' type='button' value='Close' onClick='close_popup1()'></div></div>");
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup1").jqxWindow('open');
 		});
