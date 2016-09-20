@@ -4,8 +4,8 @@
 <div id="popup1" style="display:none;">
   <div id="popup_title1">Hypertension Online Treatment</div><div id="popup_content1">{popup}</div>
 </div>
-<div id="popup_del1" style="display:none;">
-  <div id="popup_title_del1">Hypertension Online Treatment</div><div id="popup_content_del1">{popup}</div>
+<div id="popup_del" style="display:none;">
+  <div id="popup_title_del">Hypertension Online Treatment</div><div id="popup_content_del">{popup}</div>
 </div>
 <section class="content">
 <form>
@@ -193,27 +193,27 @@
 
 	function btn_del(username){
 		$("#popup").hide();
-		$("#popup_content1").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_pasien("+username+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup_del()'></div></div>");
-          $("#popup1").jqxWindow({
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_pasien("+username+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
             height: 150,
             isModal: true, autoOpen: false, modalOpacity: 0.2
           });
-        $("#popup1").jqxWindow('open');
+        $("#popup_del").jqxWindow('open');
 	}
 
 	function del_pasien(username){
 		$.post("<?php echo base_url().'sms/pbk/dodel' ?>/" +username,  function(){
-		  $("#popup_content_del1").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del1()'></div></div>");
-          $("#popup_del1").jqxWindow({
+		  $("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil dihapus<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
             height: 150,
             isModal: true, autoOpen: false, modalOpacity: 0.2
           });
         
-			$("#popup_del1").jqxWindow('open');
+			$("#popup_del").jqxWindow('open');
 			$("#popup").jqxWindow('close');
 			$("#popup1").jqxWindow('close');
 			$("#jqxgrid_pbk").jqxGrid('updatebounddata', 'cells');
@@ -230,13 +230,7 @@
         $("#jqxgrid_pbk").jqxGrid('clearselection');
         $("#popup").jqxWindow('close');
         $("#popup1").jqxWindow('close');
-    }
-
-    function close_popup_del1(){
-        $("#jqxgrid_pbk").jqxGrid('clearselection');
-        $("#popup").jqxWindow('close');
-        $("#popup1").jqxWindow('close');
-        $("#popup_del1").jqxWindow('close');
+        $("#popup_del").jqxWindow('close');
     }
 
 </script>

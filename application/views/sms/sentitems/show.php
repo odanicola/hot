@@ -68,14 +68,14 @@
 
 	function btn_del(id){
 		$("#popup1").hide();
-		$("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_senditm("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup()'></div></div>");
-          $("#popup").jqxWindow({
+		$("#popup_content_del").html("<div style='padding:5px'><br><div style='text-align:center'>Hapus Data?<br><br><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='del_senditm("+id+")'>&nbsp;&nbsp;<input class='btn btn-success' style='width:100px' type='button' value='Batal' onClick='close_popup_del()'></div></div>");
+          $("#popup_del").jqxWindow({
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
+            isModal: true, autoOpen: false, modalOpacity: 0.2
           });
-        $("#popup").jqxWindow('open');
+        $("#popup_del").jqxWindow('open');
 	}
 
 	function del_senditm(id){
@@ -85,7 +85,7 @@
             theme: theme, resizable: false,
             width: 250,
             height: 150,
-            isModal: true, autoOpen: false, modalOpacity: 0.4
+            isModal: true, autoOpen: false, modalOpacity: 0.2
           });
         
 			$("#popup_del").jqxWindow('open');
