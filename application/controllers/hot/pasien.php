@@ -153,6 +153,7 @@ class Pasien extends CI_Controller {
 				'usia'   	    => $act->usia,
 				'bpjs'   	    => $act->bpjs,
 				'phone_number'	=> $act->phone_number,
+				'cl_pid'		=> $act->cl_pid,
 				'edit'		    => 1,
 				'delete'	    => 1
 			);
@@ -185,6 +186,21 @@ class Pasien extends CI_Controller {
 	function add(){
 		$this->authentication->verify('hot','add');
 
+		$data['title_group'] = "Dashboard";
+		$data['title_form']  = "Tambah Data Pasien";
+		$data['action']      = "add";
+		$data['alert_form']  = '';
+
+		$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
+
+		$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
+		
+		$this->template->show($data,"home");
+	}
+
+	function doadd(){
+		$this->authentication->verify('hot','add');
+
         $this->form_validation->set_rules('username','NIK', 'trim|required');
         $this->form_validation->set_rules('bpjs','BPJS', 'trim');
         $this->form_validation->set_rules('password','Password', 'trim|required|matches[password2]');
@@ -197,29 +213,16 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('code','Puskesmas','trim');
         $this->form_validation->set_rules('tb','Tinggi Badan','trim');
         $this->form_validation->set_rules('bb','Berat Badan','trim');
+        $this->form_validation->set_rules('cl_pid','No MR','trim');
 
 		if($this->form_validation->run()== FALSE){
-			$data['title_group'] = "Dashboard";
-			$data['title_form']  = "Tambah Data Pasien";
-			$data['action']      = "add";
-			$data['alert_form']  = '';
-
-			$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
-
-			$data['content'] = $this->parser->parse("hot/data_pasien_add",$data,true);
-		}elseif($this->pasien_model->insert_pasien()=='true'){
-			// $this->session->set_flashdata('alert_form', 'Save data successful...');
-			// redirect(base_url()."hot/pasien");
+			$err = validation_errors();
+			die($err);
+		}elseif($res = $this->pasien_model->insert_pasien()){
 			die("OK");
-
 		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			// redirect(base_url()."hot/pasien/add");
-			// $data['alert_form'] = 'Save data failed...';
-			die("NOTOK");
+			die($res);
 		}
-		
-		$this->template->show($data,"home");
 	}
 
 	function profil_pasien_edit($username){

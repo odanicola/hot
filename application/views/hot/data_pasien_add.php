@@ -1,19 +1,3 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
-
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
-
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -34,9 +18,21 @@
             <button type="button"class="btn btn-success" onClick="document.location.href='<?php echo base_url()?>hot/pasien'">Kembali</button>
           </div>
           <div class="box-body">
+
+            <div class="form-group">
+              <label>Nomor RM</label>
+              <input type="text" class="form-control" name="cl_pid" id="cl_pid" placeholder="Nomor MR" value="<?php 
+                if(set_value('cl_pid')=="" && isset($cl_pid)){
+                  echo $cl_pid;
+                }else{
+                  echo  set_value('cl_pid');
+                }
+                ?>">
+            </div>
+
             <div class="form-group">
               <label>NIK*</label>
-              <input type="text" class="form-control" name="username" placeholder="NIK" <?php if($action == "edit") echo "disabled"?> value="<?php 
+              <input type="text" class="form-control" name="username" id="username" maxlength="16" placeholder="NIK" <?php if($action == "edit") echo "disabled"?> value="<?php 
                 if(set_value('username')=="" && isset($username)){
                   echo $username;
                 }else{
@@ -46,7 +42,7 @@
             </div>
             <div class="form-group">
               <label>BPJS</label>
-              <input type="text" class="form-control" name="bpjs" placeholder="BPJS" value="<?php 
+              <input type="text" class="form-control" name="bpjs" id="bpjs" maxlength="13" placeholder="BPJS" value="<?php 
                 if(set_value('bpjs')=="" && isset($bpjs)){
                   echo $bpjs;
                 }else{
@@ -195,6 +191,54 @@
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
 
+    var csource = function (query, response) {
+      var dataAdapter = new $.jqx.dataAdapter
+        (
+          { 
+            datatype: "json",
+            datafields: [
+                { name: 'username', type: 'string'},
+                { name: 'nama', type: 'string'},
+                { name: 'bpjs', type: 'string'}
+            ],
+            username: 'username',
+            url: "<?php echo site_url('hot/kunjungan/json_autocomplete'); ?>",
+            type: "post"
+          },
+          {
+              autoBind: true,
+              formatData: function (data) {
+                data.nama = query;
+                return data;
+              },
+              loadComplete: function (data) {
+                if (data.length>0){
+                  response($.map(data, function (item) {
+                      return {
+                        label: item.nama,
+                        name: item.name,
+                        value: item.username
+                      }
+                  }));                                
+          }
+            }
+           }
+      );
+    }
+    $("#cl_pid").jqxInput({ source: csource, width: '99%' });
+    $("#cl_pid").focus(function() {
+      $(this).select();
+    });
+    $("#cl_pid").on('select', function (event) {
+        if (event.args) {
+            var item = event.args.item;
+            if (item) {
+              var label = item.label.split("<br>");
+                $("#cl_pid").val(item.value);
+            }
+        }
+    });
+
     $("#btn-simpan").click(function(){
         var data = new FormData();
 
@@ -211,35 +255,37 @@
         data.append('email',        $("[name='email']").val());
         data.append('alamat',       $("[name='alamat']").val());
         data.append('code',         $("[name='code']").val());
+        data.append('cl_pid',       $("[name='cl_pid']").val());
+
 
         $.ajax({
             cache : false,
             contentType : false,
             processData : false,
             type : 'POST',
-            url : '<?php echo base_url()."hot/pasien/add"   ?>',
+            url : '<?php echo base_url()."hot/pasien/doadd"?>',
             data : data,
             success : function(response){
                 if(response=="OK"){
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil disimpan.<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-                      $("#popup").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 120,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil disimpan.<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                  $("#popup").jqxWindow({
+                    theme: theme, resizable: false,
+                    width: 250,
+                    height: 150,
+                    isModal: true, autoOpen: false, modalOpacity: 0.4
+                  });
+
                   $("#popup").jqxWindow('open');
                   window.location.href = "<?php echo base_url().'hot/pasien' ?>";
                 }else{
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data gagal disimpan<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-                      $("#popup").jqxWindow({
-                        theme: theme, resizable: false,
-                        width: 250,
-                        height: 120,
-                        isModal: true, autoOpen: false, modalOpacity: 0.4
-                      });
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+response+"<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                  $("#popup").jqxWindow({
+                    theme: theme, resizable: false,
+                    width: 250,
+                    height: 220,
+                    isModal: true, autoOpen: false, modalOpacity: 0.4
+                  });
                   $("#popup").jqxWindow('open');
-                  // window.location.href = "<?php echo base_url().'hot/pasien/add' ?>";
                 }
             }
         });
@@ -247,6 +293,77 @@
         return false;
     });
 
+
+
+      $("#username").keyup(function(){
+        var nik = $("#username").val();
+        if(nik.length==16){
+          $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+nik,function(res){
+              if(res.metaData.code=="200"){
+              
+            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+              $("#popup").jqxWindow({
+                theme: theme, resizable: false,
+                width: 320,
+                height: 210,
+                isModal: true, autoOpen: false, modalOpacity: 0.4
+              });
+              $("#popup").jqxWindow('open');
+
+                  $("input[name='bpjs']").val(res.response.noKartu).change();
+                  $("input[name='nama']").val(res.response.nama).change();
+
+                  var tgl = res.response.tglLahir.split("-");
+                  var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
+                  $("#tgl_lahir").jqxDateTimeInput('setDate', date);
+
+                  if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
+                  if(res.response.sex=="P"){
+                    $("select[name='jk']").val("P").change();
+                  }else{
+                    $("select[name='jk']").val("L").change();
+                  }
+                $("#pass").focus();
+              }
+          },"json");
+        }
+
+        return false;
+      });
+
+      $("#bpjs").keyup(function(){
+        var bpjs = $("#bpjs").val();
+        if(bpjs.length==13){
+          $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
+              if(res.metaData.code=="200"){
+
+            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+              $("#popup").jqxWindow({
+                theme: theme, resizable: false,
+                width: 320,
+                height: 210,
+                isModal: true, autoOpen: false, modalOpacity: 0.4
+              });
+              $("#popup").jqxWindow('open');
+
+                  $("input[name='username']").val(res.response.noKTP).change();
+                  $("input[name='nama']").val(res.response.nama).change();
+
+                  var tgl = res.response.tglLahir.split("-");
+                  var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
+                  $("#tgl_lahir").jqxDateTimeInput('setDate', date);
+
+                  if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
+                  if(res.response.sex=="P"){
+                    $("select[name='jk']").val("P").change();
+                  }else{
+                    $("select[name='jk']").val("L").change();
+                  }
+                $("#pass").focus();
+              }
+          },"json");
+        }
+    });
 
 
   });

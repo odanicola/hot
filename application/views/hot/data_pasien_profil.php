@@ -38,7 +38,16 @@
                 }
                 ?>">
             </div>
-
+            <div class="form-group">
+              <label>Nomor RM</label>
+              <input type="text" class="form-control" name="cl_pid" id="cl_pid" placeholder="Nomor MR" value="<?php 
+                if(set_value('cl_pid')=="" && isset($cl_pid)){
+                  echo $cl_pid;
+                }else{
+                  echo  set_value('cl_pid');
+                }
+                ?>">
+            </div>
             <div class="form-group">
               <label>Nama*</label>
               <input type="text" class="form-control" name="nama" placeholder="Nama" value="<?php 
@@ -170,6 +179,54 @@
       isModal: true, autoOpen: false, modalOpacity: 0.4
     });
 
+    var csource = function (query, response) {
+      var dataAdapter = new $.jqx.dataAdapter
+        (
+          { 
+            datatype: "json",
+            datafields: [
+                { name: 'username', type: 'string'},
+                { name: 'nama', type: 'string'},
+                { name: 'bpjs', type: 'string'}
+            ],
+            username: 'username',
+            url: "<?php echo site_url('hot/kunjungan/json_autocomplete'); ?>",
+            type: "post"
+          },
+          {
+              autoBind: true,
+              formatData: function (data) {
+                data.nama = query;
+                return data;
+              },
+              loadComplete: function (data) {
+                if (data.length>0){
+                  response($.map(data, function (item) {
+                      return {
+                        label: item.nama,
+                        name: item.name,
+                        value: item.username
+                      }
+                  }));                                
+          }
+            }
+           }
+      );
+    }
+    $("#cl_pid").jqxInput({ source: csource, width: '99%' });
+    $("#cl_pid").focus(function() {
+      $(this).select();
+    });
+    $("#cl_pid").on('select', function (event) {
+        if (event.args) {
+            var item = event.args.item;
+            if (item) {
+              var label = item.label.split("<br>");
+                $("#cl_pid").val(item.value);
+            }
+        }
+    });
+
     $("#btn_simpan").click(function(){
           var data = new FormData();
           $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
@@ -186,6 +243,7 @@
           data.append('email',        $("[name='email']").val());
           data.append('alamat',       $("[name='alamat']").val());
           data.append('code',         $("[name='code']").val());
+          data.append('cl_pid',       $("[name='cl_pid']").val());
 
           $.ajax({
               cache : false,

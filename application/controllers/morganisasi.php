@@ -46,7 +46,6 @@ class Morganisasi extends CI_Controller {
 		$data['title_form']			="Profil Pengguna";
 
 		$data['username']			= $this->session->userdata('username');
-		$data['provinsi_option']	= $this->crud->provinsi_option();
 		$data['content']			= $this->parser->parse("sik/profile",$data,true);
 
 		$this->template->show($data,"home");
@@ -59,19 +58,10 @@ class Morganisasi extends CI_Controller {
         $this->form_validation->set_rules('phone_number', 'Nama Pendaftar', 'trim');
 
 		if($this->form_validation->run()== FALSE){
-			// echo "0";
 			echo validation_errors();
-			// $this->session->set_flashdata('alert', "".validation_errors());
-			// redirect(base_url()."sik/profile");
 		}elseif($username=$this->morganisasi_model->update_profile()){
-			// $this->session->set_flashdata('alert', 'Save data successful...');
-			// echo "1";
 			echo "Data berhasil disimpan";
-			// redirect(base_url()."sik/profile");
 		}else{
-			// $this->session->set_flashdata('alert_form', 'Save data failed...');
-			// echo "0";
-			// redirect(base_url()."sik/profile");
 			echo "Penyimpanan data gagal dilakukan";
 		}
 	}
