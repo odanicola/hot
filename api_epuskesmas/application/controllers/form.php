@@ -14,7 +14,7 @@ class Form extends CI_Controller {
         $data = array();
         $data['title_form'] = "Form Test send_logout";
         
-        $this->load->view('api/form_get_obat',$data);
+        $this->load->view('api/form_get_StokObatApotek',$data);
     }
     function form_get_allPasien(){
         $data = array();
@@ -27,6 +27,12 @@ class Form extends CI_Controller {
         $data['title_form'] = "Form Test send_logout";
 
         $this->load->view('api/form_get_alldokter',$data);
+    }
+    function form_get_allObat(){
+        $data = array();
+        $data['title_form'] = "Form Test send_logout";
+
+        $this->load->view('api/form_get_allObat',$data);
     }
 }
 ?>
