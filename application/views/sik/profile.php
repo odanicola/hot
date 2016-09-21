@@ -115,20 +115,18 @@
           <p class="login-box-msg">Silahkan periksa kembali kelengkapan data profil anda :</p>
              <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-qrcode" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-qrcode" style="width:20px"></i> Username
+                </div>
               </span>
-              <input type="text" class="form-control" placeholder="Kode" name="code" readonly value="<?php 
-                      if(set_value('code')=="" && isset($code)){
-                        echo $code;
-                      }else{
-                        echo  set_value('code');
-                      }
-                      ?>"/>
+              <input type="text" class="form-control" placeholder="username" name="username" readonly value="{username}"/>
             </div>
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-user" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-user" style="width:20px"></i> Nama Lengkap
+                </div>
               </span>
               <input type="text" class="form-control" placeholder="** Nama Lengkap" name="nama" value="<?php 
                       if(set_value('nama')=="" && isset($nama)){
@@ -141,7 +139,9 @@
             <br>
              <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-hospital-o" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-hospital-o" style="width:20px"></i> BPJS
+                </div>
               </span>
               <input type="text" class="form-control" placeholder="BPJS" name="bpjs" value="<?php 
                       if(set_value('bpjs')=="" && isset($bpjs)){
@@ -154,7 +154,9 @@
             <br>
              <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-envelope" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-envelope" style="width:20px"></i> Email
+                </div>
               </span>
               <input type="text" class="form-control" placeholder="Email" name="email" value="<?php 
                       if(set_value('email')=="" && isset($email)){
@@ -167,7 +169,9 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-phone" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-phone" style="width:20px"></i> Phone
+                </div>
               </span>
               <input type="text" class="form-control" placeholder="** No. Tlp" name="phone_number" value="<?php 
                       if(set_value('phone_number')=="" && isset($phone_number)){
@@ -180,7 +184,9 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-home" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-home" style="width:20px"></i>Alamat
+                </div>
               </span>
               <input type="text" class="form-control" placeholder="Alamat" name="alamat" value="<?php 
                       if(set_value('alamat')=="" && isset($alamat)){
@@ -193,23 +199,18 @@
             <br>
               <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-calendar" style="width:20px"></i>
-              </span>
-                <div id='tgl_lahir' name="tgl_lahir" value="<?php
-                  if(set_value('tgl_lahir')=="" && isset($tgl_lahir)){
-                    $tgl_lahir = strtotime($tgl_lahir);
-                  }else{
-                    $tgl_lahir = strtotime(set_value('tgl_lahir'));
-                  }
-                  if($tgl_lahir=="") $tgl_lahir = time();
-                  echo date("Y-m-d",$tgl_lahir);
-                ?>" >
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-calendar" style="width:20px"></i> Tgl Lahir
                 </div>
+              </span>
+                <div id='tgl_lahir' name="tgl_lahir"></div>
              </div>
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-venus-mars" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-venus-mars" style="width:20px"></i> Jenis Kelamin
+                </div>
               </span>
                 <select name="jk" type="text" class="form-control">
                   <?php
@@ -226,7 +227,9 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-child" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-child" style="width:20px"></i>Tinggi Badan
+                </div>
               </span>
               <input type="number" class="form-control" placeholder="Tinggi Badan" name="tb" value="<?php 
                       if(set_value('tb')=="" && isset($tb)){
@@ -240,7 +243,9 @@
             <br>
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-street-view" style="width:20px"></i>
+                <div style="width:150px;text-align:left">
+                  <i class="fa fa-street-view" style="width:20px"></i> Berat Badan
+                </div>
               </span>
               <input type="number" class="form-control" placeholder="Berat Badan" name="bb" value="<?php 
                       if(set_value('bb')=="" && isset($bb)){
@@ -269,6 +274,9 @@ $(function(){
     $("#menu_dashboard").addClass("active");
     $("#menu_morganisasi_profile").addClass("active");
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
+    var tgl = "{tgl_lahir}".split("-");
+    var date = new Date(tgl[0], (tgl[1]-1), tgl[2]);
+    $("#tgl_lahir").jqxDateTimeInput('setDate', date);
 
   });
 </script>

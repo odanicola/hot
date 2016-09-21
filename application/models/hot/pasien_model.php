@@ -9,7 +9,7 @@ class Pasien_model extends CI_Model {
     }
 
     function get_data_pasien($start=0,$limit=999999,$options=array()){
-        $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->select("app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.cl_pid, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
         $this->db->join('app_users_list','app_users_profile.username = app_users_list.username','left');
         $this->db->where("level","pasien");
         $query = $this->db->get($this->tabel_pasien_profil,$limit,$start);
@@ -76,16 +76,21 @@ class Pasien_model extends CI_Model {
         $data_profile['alamat']          = $this->input->post('alamat');
         $data_profile['tb']              = $this->input->post('tb');
         $data_profile['bb']              = $this->input->post('bb');
+        $data_profile['cl_pid']          = $this->input->post('cl_pid');
 
         $this->db->where('username',$this->input->post('username'));
         $query = $this->db->get('app_users_list');
 
         if ($query->num_rows() > 0) {
+            echo "NIK pasien sudah pernah terdaftar";
             return 'false';
         }else{
-            $this->db->insert('app_users_list', $data_list);
-            $this->db->insert('app_users_profile', $data_profile);
+            if($this->db->insert('app_users_list', $data_list)){
+                $this->db->insert('app_users_profile', $data_profile);
                 return 'true';  
+            }else{
+                echo mysql_error();
+            }
         }
     }
 
@@ -123,6 +128,7 @@ class Pasien_model extends CI_Model {
     function update_pasien_profil($username){
         $data_profile['nama']            = $this->input->post('nama');
         $data_profile['code']            = substr($this->input->post('code'),1,10);
+        $data_profile['cl_pid']          = $this->input->post('cl_pid');
         $data_profile['phone_number']    = $this->input->post('phone_number');
         $data_profile['email']           = $this->input->post('email');
         $data_profile['bpjs']            = $this->input->post('bpjs');

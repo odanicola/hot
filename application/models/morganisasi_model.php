@@ -224,9 +224,16 @@ class Morganisasi_model extends CI_Model {
 
     function update_profile() 
     {
-    	$profile['email']=$this->input->post('email');
-    	$profile['nama']=$this->input->post('nama');
-    	$profile['phone_number']=$this->input->post('phone_number');
+        $profile['nama']            = $this->input->post('nama');
+        $profile['phone_number']    = $this->input->post('phone_number');
+        $profile['email']           = $this->input->post('email');
+        $profile['bpjs']            = $this->input->post('bpjs');
+        $profile['jk']              = $this->input->post('jk');
+        $profile['tgl_lahir']       = date("Y-m-d",strtotime($this->input->post('tgl_lahir')));
+        $profile['alamat']          = $this->input->post('alamat');
+        $profile['tb']              = $this->input->post('tb');
+        $profile['bb']              = $this->input->post('bb');
+        $profile['cl_pid']          = $this->input->post('cl_pid');
 
     	$check = $this->db->get_where('app_users_profile', array('username' => $this->session->userdata('username'),'code'=>$this->session->userdata('puskesmas')));
 		$check = $check->num_rows();

@@ -101,6 +101,7 @@
 			{ name: 'usia', type: 'int'},
 			{ name: 'nama', type: 'string'},
 			{ name: 'bpjs', type: 'string'},
+			{ name: 'cl_pid', type: 'string'},
 			{ name: 'phone_number', type: 'string'},
 			{ name: 'edit', type: 'number'},
 			{ name: 'delete', type: 'number'}
@@ -149,9 +150,27 @@
 					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
                  }
                 },
-				{ text: 'BPJS / Telepon', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
+				{ text: 'Informasi', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.phone_number+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+				    if(dataRecord.cl_pid != null){
+				    	mr = "No MR: "+dataRecord.cl_pid;
+				    }else{
+				    	mr = "<span style='color:red'>No MR: "+dataRecord.cl_pid+"</span>";
+				    }
+
+				    if(dataRecord.bpjs != null){
+				    	bpjs = "BJPS: "+dataRecord.bpjs;
+				    }else{
+				    	bpjs = "<span style='color:orange'>Non BPJS</span>";
+				    }
+
+				    if(dataRecord.phone_number != null && dataRecord.phone_number != ''){
+				    	phone = "Phone: "+dataRecord.phone_number;
+				    }else{
+				    	phone = "<span style='color:orange'>Phone tidak terdata</span>";
+				    }
+
+					return "<div style='width:100%;padding:7px;'>"+phone+"<br>"+bpjs+"<br>"+mr+"</div>";
                  }
                 }            
             ]
