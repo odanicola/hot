@@ -1,5 +1,5 @@
 [gammu]
-device = com11:
+device = com3:
 connection = at115200
 
 [smsd]
