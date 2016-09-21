@@ -30,7 +30,7 @@ class Kunjungan_model extends CI_Model {
     }
 
     function get_pemeriksaan($id_kunjungan){
-        $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.tb,app_users_profile.bb,app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.tb,app_users_profile.bb,app_users_profile.asamurat,app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->order_by('id_kunjungan','asc');
         $this->db->where('id_kunjungan',$id_kunjungan);

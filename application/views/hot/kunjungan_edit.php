@@ -33,9 +33,7 @@
 
       $("#tb").jqxNumberInput({ width: '99%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{tb}' });
       $("#bb").jqxNumberInput({ width: '99%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{bb}' });
-      
-      // $('#tb').on('change', function (event) {  bmi(); });
-      // $('#bb').on('change', function (event) { bmi(); });
+      $("#asamurat").jqxNumberInput({ width: '99%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{asamurat}' });
 
       $("#gdp").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gdp}' });
       $("#gds").jqxNumberInput({ width: '99%', height: 50, value: "50", spinButtons: true, inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', symbol: '   ', decimalDigits: 0, value: '{gds}' });
@@ -191,19 +189,17 @@
             </div>
             <div class="row tb" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:14px"><b>TB</b></div>
-              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='-' class='btn btn-primary minus_tb' style="height:48px;width:44px" field='tb' /></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='-' class='btn btn-danger minus_tb' style="height:48px;width:44px" field='tb' /></div>
               <div class="col-xs-4" style="left:12px"><div class="tb" id="tb"></div></div>
-              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='+' class='btn btn-primary plus_tb' style="height:48px;width:44px;" field='tb' /></div> 
-              <div class="col-xs-2" style="padding-top:14px;"> &nbsp; cm
-              </div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='+' class='btn btn-warning plus_tb' style="height:48px;width:44px;" field='tb' /></div> 
+              <div class="col-xs-2" style="padding-top:14px;"> &nbsp; cm</div>
             </div>
             <div class="row bb" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:14px"><b>BB</b></div>
-              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='-' class='btn btn-success minus_bb' style="height:48px;width:44px" field='bb' /></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='-' class='btn btn-danger minus_bb' style="height:48px;width:44px" field='bb' /></div>
               <div class="col-xs-4" style="left:12px"><div class="bb" id="bb"></div></div>
-              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='+' class='btn btn-success plus_bb' style="height:48px;width:44px;" field='bb' /></div> 
-              <div class="col-xs-2" style="padding-top:14px;"> &nbsp; kg
-              </div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='+' class='btn btn-warning plus_bb' style="height:48px;width:44px;" field='bb' /></div> 
+              <div class="col-xs-2" style="padding-top:14px;"> &nbsp; kg</div>
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>BMI</b></div>
@@ -268,6 +264,13 @@
               <div class="col-xs-6"><div id="kolesterol"></div></div>
               <div class="col-xs-2 text-center" style="padding-top:15px">mg/dl</div>
             </div>
+            <div class="row asamurat" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:14px"><b>Asam Urat</b></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='-' class='btn btn-danger minus_asamurat' style="height:48px;width:44px" field='bb' /></div>
+              <div class="col-xs-4" style="left:12px"><div class="asamurat" id="asamurat"></div></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:40px" value='+' class='btn btn-warning plus_asamurat' style="height:48px;width:44px;" field='bb' /></div> 
+              <div class="col-xs-2" style="padding-top:14px;"> &nbsp; mg/dl</div>
+            </div>
           </div>
           <div class="box-footer text-center" style="padding:15px">
             <button type="button" class="btn btn-primary" id="btn-simpan">Simpan</button>
@@ -319,8 +322,8 @@
         }
     } 
 
-    $('.btn.btn-success.plus_bb').on('touchstart click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-warning.plus_bb').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchstart") {
           // Handle touchstart event.
           var $bb=$(this).closest('.row.bb').find("#bb");
@@ -328,7 +331,7 @@
           bmi();
           $bb.data('timer',setInterval(function(){inc_bb();bmi();}, 500));
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mousedown") {
           // Handle click event.
           var $bb=$(this).closest('.row.bb').find("#bb");
           inc_bb();
@@ -337,8 +340,8 @@
         }
     });
 
-    $('.btn.btn-success.plus_bb').on('touchend click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-warning.plus_bb').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchend") {
            // Handle touchstart event.
             var $bb, timer;
@@ -350,7 +353,7 @@
                 $bb.data('timer', '');
             }
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mouseup") {
             // Handle click event.
             var $bb, timer;
                 $bb=$(this).closest('.row.bb').find("#bb");
@@ -370,8 +373,8 @@
         }
     }  
 
-    $('.btn.btn-success.minus_bb').on('touchstart click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-danger.minus_bb').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchstart") {
           // Handle touchstart event.
           var $bb=$(this).closest('.row.bb').find("#bb");
@@ -379,7 +382,7 @@
           bmi();
           $bb.data('timer',setInterval(function(){dec_bb();bmi(); }, 500));
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mousedown") {
           // Handle click event.
           var $bb=$(this).closest('.row.bb').find("#bb");
           dec_bb();
@@ -388,8 +391,8 @@
         }
     });
 
-    $('.btn.btn-success.minus_bb').on('touchend click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-danger.minus_bb').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchend") {
            // Handle touchstart event.
             var $bb, timer;
@@ -401,7 +404,7 @@
                 $bb.data('timer', '');
             }
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mouseup") {
             // Handle click event.
             var $bb, timer;
                 $bb=$(this).closest('.row.bb').find("#bb");
@@ -421,8 +424,8 @@
         }
     }  
 
-    $('.btn.btn-primary.plus_tb').on('touchstart click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-warning.plus_tb').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchstart") {
           // Handle touchstart event.
           var $tb=$(this).closest('.row.tb').find("#tb");
@@ -430,7 +433,7 @@
           bmi();
           $tb.data('timer',setInterval(function(){inc_tb();bmi();},500));
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mousedown") {
           // Handle click event.
           var $tb=$(this).closest('.row.tb').find("#tb");
           inc_tb();
@@ -439,8 +442,8 @@
         }
     });
 
-    $('.btn.btn-primary.plus_tb').on('touchend click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-warning.plus_tb').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchend") {
            // Handle touchstart event.
             var $tb, timer;
@@ -451,7 +454,7 @@
                 clearInterval(timer);
                 $tb.data('timer', '');
             }
-        } else if(e.type == "click") {
+        } else if(e.type == "mouseup") {
             // Handle click event.
             var $tb, timer;
                 $tb=$(this).closest('.row.tb').find("#tb");
@@ -471,8 +474,8 @@
         }
     } 
 
-    $('.btn.btn-primary.minus_tb').on('touchstart click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-danger.minus_tb').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchstart") {
           // Handle touchstart event.
           var $tb=$(this).closest('.row.tb').find("#tb");
@@ -480,7 +483,7 @@
           bmi();
           $tb.data('timer',setInterval(function(){dec_tb();bmi();},500));
 
-        } else if(e.type == "click") {
+        } else if(e.type == "mousedown") {
           // Handle click event.
           var $tb=$(this).closest('.row.tb').find("#tb");
           dec_tb();
@@ -489,8 +492,8 @@
         }
     });
 
-    $('.btn.btn-primary.minus_tb').on('touchend click', function(e) {    
-        e.stopPropagation(); //stops propagation
+    $('.btn.btn-danger.minus_tb').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
         if(e.type == "touchend") {
            // Handle touchstart event.
             var $tb, timer;
@@ -501,15 +504,115 @@
                 clearInterval(timer);
                 $tb.data('timer', '');
             }
-        } else if(e.type == "click") {
+        } else if(e.type == "mouseup") {
             // Handle click event.
             var $tb, timer;
-            $tb=$(this).closest('.row.tb').find("#tb");
+                $tb=$(this).closest('.row.tb').find("#tb");
             timer = $tb.data('timer');
                 
             if (timer !== ''){
                 clearInterval(timer);
                 $tb.data('timer', '');
+            }
+        }
+    });
+
+    // function inc_asamurat(){
+    //     var currentVal = parseInt($("#asamurat").val(),10);
+    //     if (!isNaN(currentVal)) {
+    //         $("#asamurat").val(currentVal + 0.1);
+    //     }
+    // }  
+
+    // $('.btn.btn-warning.plus_asamurat').on('touchstart mousedown', function(e) {    
+    //     e.preventDefault(); //stops propagation
+    //     if(e.type == "touchstart") {
+    //       // Handle touchstart event.
+    //       var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+    //       inc_asamurat();
+    //       bmi();
+    //       $asamurat.data('timer',setInterval(function(){inc_asamurat();bmi();},500));
+
+    //     } else if(e.type == "mousedown") {
+    //       // Handle click event.
+    //       var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+    //       inc_asamurat();
+    //       bmi();
+    //       $asamurat.data('timer',setInterval(function(){inc_asamurat();bmi();},500));
+    //     }
+    // });
+
+    // $('.btn.btn-warning.plus_asamurat').on('touchend mouseup', function(e) {    
+    //     e.preventDefault(); //stops propagation
+    //     if(e.type == "touchend") {
+    //        // Handle touchstart event.
+    //         var $asamurat, timer;
+    //             $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+    //         timer = $asamurat.data('timer');
+                
+    //         if (timer !== ''){
+    //             clearInterval(timer);
+    //             $asamurat.data('timer', '');
+    //         }
+    //     } else if(e.type == "mouseup") {
+    //         // Handle click event.
+    //         var $asamurat, timer;
+    //             $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+    //         timer = $asamurat.data('timer');
+                
+    //         if (timer !== ''){
+    //             clearInterval(timer);
+    //             $asamurat.data('timer', '');
+    //         }
+    //     }
+    // });
+
+    function dec_asamurat(){
+        var currentVal = parseInt($("#asamurat").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#asamurat").val(currentVal - 0.1);
+        }
+    } 
+
+    $('.btn.btn-danger.minus_asamurat').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        if(e.type == "touchstart") {
+          // Handle touchstart event.
+          var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+          dec_asamurat();
+          bmi();
+          $asamurat.data('timer',setInterval(function(){dec_asamurat();bmi();},500));
+
+        } else if(e.type == "mousedown") {
+          // Handle click event.
+          var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+          dec_asamurat();
+          bmi();
+          $asamurat.data('timer',setInterval(function(){dec_asamurat();bmi();},500));
+        }
+    });
+
+    $('.btn.btn-danger.minus_asamurat').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        if(e.type == "touchend") {
+           // Handle touchstart event.
+            var $asamurat, timer;
+                $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+            timer = $asamurat.data('timer');
+                
+            if (timer !== ''){
+                clearInterval(timer);
+                $asamurat.data('timer', '');
+            }
+        } else if(e.type == "mouseup") {
+            // Handle click event.
+            var $asamurat, timer;
+            $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+            timer = $asamurat.data('timer');
+                
+            if (timer !== ''){
+                clearInterval(timer);
+                $asamurat.data('timer', '');
             }
         }
     });
