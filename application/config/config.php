@@ -30,7 +30,7 @@ $config['cache_path'] 			= '';
 $config['encryption_key'] 		= "viktoredz";
 
 $config['sess_cookie_name']		= 'hot_makasar';
-$config['sess_expiration']		= 7200;
+$config['sess_expiration']		= 0;
 $config['sess_encrypt_cookie']	= TRUE;
 $config['sess_use_database']	= FALSE;
 $config['sess_table_name']		= 'ci_sessions';

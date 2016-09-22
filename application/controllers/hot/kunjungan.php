@@ -224,6 +224,11 @@ class Kunjungan extends CI_Controller {
 		$data['systolic']		= $data['systolic']=="" ? 130 : $data['systolic'];
 		$data['diastolic']		= $data['diastolic']=="" ? 80 : $data['diastolic'];
 		$data['pulse']			= $data['pulse']=="" ? 80 : $data['pulse'];
+		$data['gds']			= $data['gds']=="" ? 180 : $data['gds'];
+		$data['gdp']			= $data['gdp']=="" ? 100 : $data['gdp'];
+		$data['gdpp']			= $data['gdpp']=="" ? 140 : $data['gdpp'];
+		$data['kolesterol']		= $data['kolesterol']=="" ? 200 : $data['kolesterol'];
+		$data['asamurat']		= $data['asamurat']=="" ? 7.7 : $data['asamurat'];
 		$data['tgl']	= date("d M Y", strtotime($data['tgl']));
 		$data['waktu']	= date("H:i:s",time());
 
