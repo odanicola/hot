@@ -104,6 +104,8 @@ class Api extends CI_Controller {
             return $this->api_model->do_get_dataAllObat($token);   
         }else if($function=='do_get_dataPasienByDiagnosa_validation'){
             return $this->api_model->do_get_dataPasienByDiagnosa($token);   
+        }else if($function=='do_insert_dataDiagnosa_validation'){
+            return $this->api_model->do_insert_dataDiagnosa($token);   
         }
     }
     
@@ -179,6 +181,36 @@ class Api extends CI_Controller {
         $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
         
         $this->form_validasi('do_get_dataPasienByDiagnosa_validation',$form);
+    }
+    function insert_data_diagnosa(){
+        $request_token  = $this->input->post('request_token');
+        $client_id      = $this->input->post('client_id');
+        $no_register    = $this->input->post('no_register');
+        $no_icdx        = $this->input->post('no_icdx');
+        $nama_diagnosa  = $this->input->post('nama_diagnosa');
+        $jenis_kasus   = $this->input->post('jenis_kasus');
+        $jenis_diagnosa = $this->input->post('jenis_diagnosa');
+        $no_urut = $this->input->post('no_urut');
+
+        $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
+        $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
+        $rules_no_icdx          = array('trim','required');
+        $rules_nama_diagnosa    = array('trim','required');
+        $rules_jenis_kasus     = array('trim','required');
+        $rules_jenis_diagnosa   = array('trim','required');
+        $rules_no_register      = array('trim','required');
+        $rules_no_urut          = array('trim');
+        
+        $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
+        $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
+        $form[2] = array('var'=>'no_register','label'=>'No Register','value'=>$no_register,'rules'=>$rules_no_register);
+        $form[3] = array('var'=>'no_icdx','label'=>'No ICD-X','value'=>$no_icdx,'rules'=>$rules_no_icdx);
+        $form[4] = array('var'=>'nama_diagnosa','label'=>'Nama Diagnosa','value'=>$nama_diagnosa,'rules'=>$rules_nama_diagnosa);
+        $form[5] = array('var'=>'jenis_kasus','label'=>'Jenis Kasus','value'=>$jenis_kasus,'rules'=>$rules_jenis_kasus);
+        $form[6] = array('var'=>'jenis_diagnosa','label'=>'Jenis Diagnosa','value'=>$jenis_diagnosa,'rules'=>$rules_jenis_diagnosa);
+        $form[7] = array('var'=>'no_urut','label'=>'No urut','value'=>$no_urut,'rules'=>$rules_no_urut);
+        
+        $this->form_validasi('do_insert_dataDiagnosa_validation',$form);
     }
 }
 ?>

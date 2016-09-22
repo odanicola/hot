@@ -40,5 +40,17 @@ class Form extends CI_Controller {
 
         $this->load->view('api/form_get_pasienByDiagnosa',$data);
     }
+    function form_get_insertResep(){
+        $data = array();
+        $data['title_form'] = "Form Semua Insert Resep";
+
+        $this->load->view('api/form_get_insertResep',$data);
+    }
+    function form_get_insertDiagosa(){
+        $data = array();
+        $data['title_form'] = "Form Semua Insert Resep";
+
+        $this->load->view('api/form_get_insertDiagosa',$data);   
+    }
 }
 ?>

@@ -354,6 +354,47 @@ class Api_model extends CI_Model {
         $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
+    function do_insert_dataDiagnosa($token){
+        $no_register    = $this->input->post('no_register');
+        $no_icdx        = $this->input->post('no_icdx');
+        $nama_diagnosa  = $this->input->post('nama_diagnosa');
+        $jenis_kasus    = $this->input->post('jenis_kasus');
+        $jenis_diagnosa = $this->input->post('jenis_diagnosa');
+        $no_urut        = $this->input->post('no_urut');
+        
+        $qCekUsername = $this->db->get_where('app_poli_detail_diagnosa', array('reg_id'=>$no_register,'diag_id'=>$no_icdx,'no_urut'=>$no_urut),1);
+        if($qCekUsername->num_rows()>0){
+            $content=array('validation'=>'Diagnosa entered is already existed.'); 
+            $status_code = $this->status_code('412'); 
+        }else{
+                $data['reg_id']=$no_register;
+                $data['diag_id']=$diag_id;
+                $data['diag_kasus']=$jenis_kasus;
+                $data['diag_jenis']=$jenis_diagnosa;
+                $data['no']='0';
+                $data['no_urut']=$no_urut;
+                
+                $this->db->insert('app_poli_detail_diagnosa', $data);
+                $id = $data['reg_id'];
+                
+                $options = array('reg_id' => $id,'diag_id'=>$data['diag_id'],'no_urut'=>$data['no_urut']);
+                $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
+                if ($query->num_rows() > 0){
+                    $data = $query->row_array();
+                    $content = array('id'=>$data['reg_id'],'no_icdx'=>$data['reg_id'],'no_urut'=>$data['no_urut'],
+                                    'kode_diagnosa_kasus'=>$data['diag_kasus'],'kode_diagnosa_jenis'=>$data['diag_kasus']);
+                    $status_code = $this->status_code('201');
+                }else{
+                    $query->free_result();   
+                    $content=array('validation'=>'No data found.'); 
+                    $status_code = $this->status_code('204'); 
+                }
+        }
+
+        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        
+        return $result;
+    }
     function header($token=''){
         $arr['request_time']   = $this->input->post('request_time');
         $arr['response_time']  = time();
