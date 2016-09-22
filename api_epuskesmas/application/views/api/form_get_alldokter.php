@@ -1,5 +1,5 @@
 <title><?php echo $title_form; ?></title>
-<form method="post" action="<?php echo base_url(); ?>index.php/api/get_data_allDokter">
+<form method="post" action="">
 <table width='40%' border='1' cellpadding='5' cellspacing='1' style="background: yellow;">
     <tr>
         <td colspan="3">Header</td>
@@ -27,6 +27,11 @@
 </table>
 <table width='40%' border='1' cellpadding='5' cellspacing='1'>
     <tr>
+        <td width='20%'>Kode Puskesmas</td>
+        <td width='3%' align='center'>:</td>
+        <td><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
+    </tr>
+    <tr>
         <td width='20%'>No Pegawai</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="no_peg" value=""> *</td>
@@ -45,9 +50,30 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>
-            <input type="submit" value="Submit" />
-            <input type="reset" value="Reset" />
+            <input type="button" id="btn_lihatdatas" value="Submit" />
+            <input type="reset" id="resetdata" value="Reset" />
         </td>
     </tr>
 </table>
 </form>
+
+<div id="showdata"></div>
+<script type="text/javascript" language="javascript" src="<?php echo base_url()?>plugins/jquery-3.1.0.min.js"></script>
+<script type="text/javascript">  
+$("#resetdata").click(function(){
+    $("#showdata").html('');
+});
+$("#btn_lihatdatas").click(function(){
+    $.ajax({
+      type   : "POST",
+      url    : "<?php echo base_url(); ?>api/get_data_allDokter",
+      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&no_peg="+$("[name='no_peg']").val()+"&nama="+$("[name='nama']").val()+"&limit="+$("[name='limit']").val(),
+      success: function (response, text) {
+        $("#showdata").html(response);
+      },
+      error: function (request, status, error) {
+          alert(request+' '+status+' '+error);
+      }
+    });
+});
+</script>

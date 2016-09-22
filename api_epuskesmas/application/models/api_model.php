@@ -61,7 +61,7 @@ class Api_model extends CI_Model {
             }
             else
             {
-                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
                 $status_code = $this->status_code('204');
             }
         }else{
@@ -137,7 +137,7 @@ class Api_model extends CI_Model {
             }
             else
             {
-                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
                 $status_code = $this->status_code('204');
             }
         }else{
@@ -197,7 +197,7 @@ class Api_model extends CI_Model {
             }
             else
             {
-                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
                 $status_code = $this->status_code('204');
             }
         }else{
@@ -262,7 +262,7 @@ class Api_model extends CI_Model {
             }
             else
             {
-                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
                 $status_code = $this->status_code('204');
             }
         }else{
@@ -290,13 +290,13 @@ class Api_model extends CI_Model {
             $nama_diagnosa  = $this->input->post('nama_diagnosa');
             $limit          = $this->input->post('limit');
             
-            if(!empty($nameObat))
+            if(!empty($nama_diagnosa))
             {
-                $this->db->like('cl_drugnm.nama',$nameObat);
+                $this->db->like('cl_icdx.value',$nama_diagnosa);
             }
-            if(!empty($kodeObat))
+            if(!empty($kode_dianosa))
             {
-                $this->db->where('cl_drugnm.code',$kodeObat);
+                $this->db->where('cl_icdx.code',$kode_dianosa);
             }
             
             if (!empty($limit)) {
@@ -304,30 +304,42 @@ class Api_model extends CI_Model {
             }else{
                 $limit = 10;
             }
-            $this->db->order_by("id");
-            $this->db->select("cl_drugnm.code as id,cl_drugnm.nama as nama_obat,cl_drugnm.kelas as kelas,cl_drugnm.title,cl_drugsunit.value as satuan_obat,cl_drugnm.jenis as jenis,cl_drugnm.isi as isi,cl_drugnm.harga as harga,",false);
-            $this->db->join('cl_drugsunit','cl_drugnm.satuan=cl_drugsunit.id','left');
-            $querygetObat=$this->db->get('cl_drugnm',$limit);
+            $this->db->group_by("pasien_id");
+            $this->db->select("cl_pasien.cl_pid as pasien_id,cl_pasien.cl_pname as nama_pasien,IF(cl_pasien.cl_gender='0' OR cl_pasien.cl_gender='2','Perempuan','Laki-laki') AS jeniskelamin,cl_pasien.cl_address as alamat,cl_icdx.value as diagonosa,app_poli_detail_diagnosa.diag_id as kode_diagnosa,app_reg.reg_poli,app_reg.reg_jenis_kasus,app_reg.reg_pemeriksa as kode_periksa,pemeriksa1.sdm_nama AS nama_pemeriksa,app_reg.reg_pemeriksa2 as kode_asiste,pemeriksa2.sdm_nama AS nama_asisten,app_reg.asuransi as kode_asuransi,cl_hinsnm.value AS nama_asuransi",false);
+            $this->db->join('cl_pasien','app_reg.cl_pid = cl_pasien.cl_pid','left');
+            $this->db->join('app_poli_detail_diagnosa','app_reg.reg_id = app_poli_detail_diagnosa.reg_id','left');
+            $this->db->join('cl_icdx','cl_icdx.code = app_poli_detail_diagnosa.diag_id','left');
+            $this->db->join('app_sdm pemeriksa1','pemeriksa1.sdm_id = app_reg.reg_pemeriksa','left');
+            $this->db->join('app_sdm pemeriksa2','pemeriksa2.sdm_id = app_reg.reg_pemeriksa','left');
+            $this->db->join('cl_hinsnm','app_reg.asuransi = cl_hinsnm.id ','left');
+            $querygetObat=$this->db->get('app_reg',$limit);
             if($querygetObat->num_rows() >0)
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
-                                    'id'                => $data['id'],
-                                    'nama_obat'         => $data['nama_obat'],
-                                    'kelas'             => $data['kelas'],
-                                    'title'             => $data['title'],
-                                    'satuan_obat'       => $data['satuan_obat'],
-                                    'jenis'             => $data['jenis'],
-                                    'isi'               => $data['isi'],
-                                    'harga'             => $data['harga'],
+                                    'pasien_id'         => $data['pasien_id'],
+                                    'nama_pasien'       => $data['nama_pasien'],
+                                    'jeniskelamin'      => $data['jeniskelamin'],
+                                    'alamat'            => $data['alamat'],
+                                    'diagonosa'         => $data['diagonosa'],
+                                    'kode_diagnosa'     => $data['kode_diagnosa'],
+                                    'reg_poli'          => $data['reg_poli'],
+                                    'reg_jenis_kasus'   => $data['reg_jenis_kasus'],
+                                    'kode_periksa'      => $data['kode_periksa'],
+                                    'nama_pemeriksa'    => $data['nama_pemeriksa'],
+                                    'nama_pemeriksa'    => $data['nama_pemeriksa'],
+                                    'kode_asiste'       => $data['kode_asiste'],
+                                    'nama_asisten'      => $data['nama_asisten'],
+                                    'kode_asuransi'     => $data['kode_asuransi'],
+                                    'nama_asuransi'     => $data['nama_asuransi'],
                                     );
                 }
                  $status_code = $this->status_code('200');
             }
             else
             {
-                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
                 $status_code = $this->status_code('204');
             }
         }else{
