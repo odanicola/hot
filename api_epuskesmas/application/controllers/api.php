@@ -102,6 +102,8 @@ class Api extends CI_Controller {
             return $this->api_model->do_get_dataAllDokter($token);   
         }else if($function=='do_get_dataAllObat_validation'){
             return $this->api_model->do_get_dataAllObat($token);   
+        }else if($function=='do_get_dataPasienByDiagnosa_validation'){
+            return $this->api_model->do_get_dataPasienByDiagnosa($token);   
         }
     }
     
@@ -165,6 +167,18 @@ class Api extends CI_Controller {
         $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
         
         $this->form_validasi('do_get_dataAllObat_validation',$form);
+    }
+    function form_get_pasienByDiagnosa(){
+        $request_token = $this->input->post('request_token');
+        $client_id = $this->input->post('client_id');
+        
+        $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
+        $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
+        
+        $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
+        $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
+        
+        $this->form_validasi('do_get_dataPasienByDiagnosa_validation',$form);
     }
 }
 ?>

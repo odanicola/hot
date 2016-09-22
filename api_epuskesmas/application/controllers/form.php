@@ -34,5 +34,11 @@ class Form extends CI_Controller {
 
         $this->load->view('api/form_get_allObat',$data);
     }
+    function form_get_pasienByDiagnosa(){
+        $data = array();
+        $data['title_form'] = "Form Test send_logout";
+
+        $this->load->view('api/form_get_pasienByDiagnosa',$data);
+    }
 }
 ?>

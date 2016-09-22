@@ -277,6 +277,71 @@ class Api_model extends CI_Model {
         $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
+    function do_get_dataPasienByDiagnosa($token){
+        $content=array();  
+        $request_token  = $this->input->post('request_token');
+        $client_id      = $this->input->post('client_id');
+        
+        $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
+        if($query->num_rows() == 0) {
+
+
+            $kode_dianosa   = $this->input->post('kode_dianosa');
+            $nama_diagnosa  = $this->input->post('nama_diagnosa');
+            $limit          = $this->input->post('limit');
+            
+            if(!empty($nameObat))
+            {
+                $this->db->like('cl_drugnm.nama',$nameObat);
+            }
+            if(!empty($kodeObat))
+            {
+                $this->db->where('cl_drugnm.code',$kodeObat);
+            }
+            
+            if (!empty($limit)) {
+                $limit = $limit;
+            }else{
+                $limit = 10;
+            }
+            $this->db->order_by("id");
+            $this->db->select("cl_drugnm.code as id,cl_drugnm.nama as nama_obat,cl_drugnm.kelas as kelas,cl_drugnm.title,cl_drugsunit.value as satuan_obat,cl_drugnm.jenis as jenis,cl_drugnm.isi as isi,cl_drugnm.harga as harga,",false);
+            $this->db->join('cl_drugsunit','cl_drugnm.satuan=cl_drugsunit.id','left');
+            $querygetObat=$this->db->get('cl_drugnm',$limit);
+            if($querygetObat->num_rows() >0)
+            {
+                $datas = $querygetObat->result_array();
+                foreach ($datas as $data) {
+                    $content[] = array(   
+                                    'id'                => $data['id'],
+                                    'nama_obat'         => $data['nama_obat'],
+                                    'kelas'             => $data['kelas'],
+                                    'title'             => $data['title'],
+                                    'satuan_obat'       => $data['satuan_obat'],
+                                    'jenis'             => $data['jenis'],
+                                    'isi'               => $data['isi'],
+                                    'harga'             => $data['harga'],
+                                    );
+                }
+                 $status_code = $this->status_code('200');
+            }
+            else
+            {
+                $content = array("reason"=>"Data yang dicari tidak diketemukan");
+                $status_code = $this->status_code('204');
+            }
+        }else{
+             $query->free_result(); 
+             $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
+             $status_code = $this->status_code('412'); 
+        }
+        
+        $update['token']=$token;
+        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        
+        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        return $result;
+    }
     function header($token=''){
         $arr['request_time']   = $this->input->post('request_time');
         $arr['response_time']  = time();
