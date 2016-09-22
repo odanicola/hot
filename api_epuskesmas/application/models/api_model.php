@@ -3,6 +3,10 @@ class Api_model extends CI_Model {
     
     function __construct(){
         parent::__construct();
+        $codepuskesmas=$this->input->post('kodepuskesmas');
+        if (!empty($codepuskesmas)) {
+            $this->load->database("epuskesmas_live_jaktim_".$codepuskesmas, FALSE, TRUE);
+        }
     }
     function do_get_dataStokObatApotek($token){
         $content=array();  

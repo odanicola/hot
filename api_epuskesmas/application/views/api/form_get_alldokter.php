@@ -27,6 +27,11 @@
 </table>
 <table width='40%' border='1' cellpadding='5' cellspacing='1'>
     <tr>
+        <td width='20%'>Kode Puskesmas</td>
+        <td width='3%' align='center'>:</td>
+        <td><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
+    </tr>
+    <tr>
         <td width='20%'>No Pegawai</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="no_peg" value=""> *</td>
