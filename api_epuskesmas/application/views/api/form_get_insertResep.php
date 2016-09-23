@@ -25,84 +25,62 @@
         <td><input type="text" size="30" name="request_output" value="json" /> *</td>
     </tr>
 </table>
-<table width='80%' border='1' cellpadding='5' cellspacing='1'>
+<table width='80%' border='0' cellpadding='5' cellspacing='1'>
     <tr>
         <td width='20%'>Kode Puskesmas</td>
         <td width='3%' align='center'>:</td>
-        <td colspan="4"><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
+        <td ><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
+    </tr>
+     <tr>
+        <td width='20%'>Register Pasien</td>
+        <td width='3%' align='center'>:</td>
+        <td ><input type="text" size="30" name="no_register" value="RJ201605100001"></td>
     </tr>
     <tr>
-        <td width='20%'>Pemeriksa</td>
+        <td width='20%'>Jumlah Data</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="pemeriksa_nama" value="" /> *</td>
-        <td width='20%'>NIP</td>
-        <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="pemeriksa_nip" value="" /> *</td>
+        <td ><input type="text" size="30" name="jumlahdata" value="3" /> *</td>
     </tr>
     <tr>
-       <td width='20%'>Asisten</td>
+        <td width='20%'>Diagnosa Pasien</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="asisten_nama" value="" /> *</td>
-        <td width='20%'>NIP Asistern</td>
-        <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="asisten_nip" value="" /> *</td>
-    </tr>
-    <tr>
-        <td width='20%'>Anamnesa</td>
-        <td width='3%' align='center'>:</td>
-        <td><textarea name="anamnesa" rows="2" cols="25"></textarea></td>
-        <td width='20%' rowspan="3" colspan="3">
-            <table>
+        <td>
+            <table border="1">
                 <tr>
-                    <td>Sistole</td>
-                    <td><input type="text" size="10" name="sistole" value="" /> mmHg</td>
-                    <td width="10%"></td>
-                    <td>Berat Badan</td>
-                    <td><input type="text" size="10" name="berat_badan" value="" /> Kg</td>
+                    <td>No Urut</td>
+                    <td>Kode Obat *</td>
+                    <td>Nama Obat *</td>
+                    <td>Jumlah *</td>
+                    <td>Racikan *</td>
+                    <td>Dosis *</td>
                 </tr>
+                <?php for ($i=1; $i <=3 ; $i++) { ?>
                 <tr>
-                    <td>Diastole</td>
-                    <td><input type="text" size="10" name="diastole" value="" /> mmHg</td>
-                    <td width="10%"></td>
-                    <td>Tinggi Badan</td>
-                    <td><input type="text" size="10" name="tinggi_badan" value="" /> Cm</td>
+                    <td><input type="text" size="30" name="resep_no_urut<?php echo $i;?>" value="<?php echo $i;?>"></td>
+                    <td><input type="text" size="30" name="resep_kodeobat<?php echo $i;?>" value=""></td>
+                    <td><input type="text" size="30" name="resep_nama_obat<?php echo $i;?>" value=""></td>
+                    <td><input type="text" size="30" name="resep_jumlah<?php echo $i;?>" value="" /></td>
+                    <td>
+                        <select name="resep_racikan<?php echo $i;?>">
+                            <option value="0">-</option>
+                            <option selected="" value="1">R1</option>
+                            <option value="2">R2</option>
+                            <option value="3">R3</option>
+                            <option value="4">R4</option>
+                            <option value="5">R5</option>
+                        </select>
+                    </td>
+                    <td><input type="text" size="30" name="resep_dosis<?php echo $i;?>" value="" /></td>
                 </tr>
-                <tr>
-                    <td>Detak Nadi</td>
-                    <td><input type="text" size="10" name="detak_nadi" value="" /></td>
-                    <td width="10%"></td>
-                    <td>Suhu Badan</td>
-                    <td><input type="text" size="10" name="suhu_badan" value="" /> Cm</td>
-                </tr>
-                <tr>
-                    <td>Kesadaran</td>
-                    <td><input type="text" size="10" name="kesadaran" value="" /></td>
-                    <td width="10%"></td>
-                    <td>Nafas</td>
-                    <td><input type="text" size="10" name="nafas" value="" /> Cm</td>
-                </tr>
-                <tr>
-                    <td>Edukasi</td>
-                    <td colspan="4"><textarea name="edukasi" rows="2" cols="25"></textarea></td>
-                </tr>
+                <?php } ?>
             </table>
         </td>
-    </tr>
-    <tr>
-        <td width='20%'>Terapi</td>
-        <td width='3%' align='center'>:</td>
-        <td ><textarea name="terapi" rows="2" cols="25"></textarea></td>
-    </tr>
-    <tr>
-        <td width='20%'>Keterangan</td>
-        <td width='3%' align='center'>:</td>
-        <td ><textarea name="keterangan" rows="2" cols="25"></textarea></td>
     </tr>
     <tr>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>
-            <input type="button" id="btn_lihatdatas" value="Submit" />
+            <input type="button" id="btn_lihatdatas" value="submit" />
             <input type="reset" id="resetdata" value="Reset" />
         </td>
     </tr>
@@ -115,17 +93,25 @@
 $("#resetdata").click(function(){
     $("#showdata").html('');
 });
+
+
+
+
 $("#btn_lihatdatas").click(function(){
-    $.ajax({
-      type   : "POST",
-      url    : "<?php echo base_url(); ?>api/form_get_pasienByDiagnosa",
-      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&kode_dianosa="+$("[name='kode_dianosa']").val()+"&nama_diagnosa="+$("[name='nama_diagnosa']").val()+"&limit="+$("[name='limit']").val(),
-      success: function (response, text) {
-        $("#showdata").html(response);
-      },
-      error: function (request, status, error) {
-          alert(request+' '+status+' '+error);
-      }
-    });
+    if ($("[name='request_time']").val()=='' || $("[name='request_token']").val()=='' ||$("[name='client_id']").val()=='' ||$("[name='request_output']").val()=='' ||$("[name='kodepuskesmas']").val()==''||$("[name='no_register']").val()=='') {
+        alert('tidakbolehkosong');
+    }else{
+        $.ajax({
+          type   : "POST",
+          url    : "<?php echo base_url(); ?>api/getarray_data_Resep",
+          data   : $("form").serialize(),
+          success: function (response, text) {
+            $("#showdata").html(response);
+          },
+          error: function (request, status, error) {
+              alert(request+' '+status+' '+error);
+          }
+        });
+    }
 });
 </script>

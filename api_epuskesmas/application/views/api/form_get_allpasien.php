@@ -35,22 +35,22 @@
     <tr>
         <td width='20%'>Nik</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="nik" value=""> *</td>
+        <td><input type="text" size="30" name="nik" value=""></td>
     </tr>
     <tr>
         <td width='20%'>BPJS</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="bpjs" value="" /> *</td>
+        <td><input type="text" size="30" name="bpjs" value="" /></td>
     </tr>
     <tr>
         <td width='20%'>Nama</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="nama" value="" /> *</td>
+        <td><input type="text" size="30" name="nama" value="" /></td>
     </tr>
     <tr>
         <td width='20%'>Limit Data</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="limit" value="" /> *</td>
+        <td><input type="text" size="30" name="limit" value="" /></td>
     </tr>
     <tr>
         <td>&nbsp;</td>

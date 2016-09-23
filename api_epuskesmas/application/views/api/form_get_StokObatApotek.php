@@ -34,17 +34,17 @@
     <tr>
         <td width='20%'>Nama Obat</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="nameObat" value=""> *</td>
+        <td><input type="text" size="30" name="nameObat" value=""></td>
     </tr>
     <tr>
         <td width='20%'>Kode Obat</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="kodeObat" value="" /> *</td>
+        <td><input type="text" size="30" name="kodeObat" value="" /></td>
     </tr>
     <tr>
         <td width='20%'>Limit Data</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="limit" value="" /> *</td>
+        <td><input type="text" size="30" name="limit" value="" /></td>
     </tr>
     <tr>
         <td>&nbsp;</td>

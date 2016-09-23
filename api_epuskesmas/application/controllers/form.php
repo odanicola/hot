@@ -22,6 +22,12 @@ class Form extends CI_Controller {
 
         $this->load->view('api/form_get_allpasien',$data);
     }
+    function form_get_detailPasien(){
+        $data = array();
+        $data['title_form'] = "Form Semua Pasien";
+
+        $this->load->view('api/form_get_detailPasien',$data);
+    }
     function form_get_allDokter(){
         $data = array();
         $data['title_form'] = "Form Semua Pegawai";
@@ -40,17 +46,23 @@ class Form extends CI_Controller {
 
         $this->load->view('api/form_get_pasienByDiagnosa',$data);
     }
+    function form_get_insertAnamnesa(){
+        $data = array();
+        $data['title_form'] = "Form Semua Insert Anamnesa";
+
+        $this->load->view('api/form_get_insertAnamnesa',$data);
+    }
+    function form_get_insertDiagosa(){
+        $data = array();
+        $data['title_form'] = "Form Semua Insert Diagnosa";
+
+        $this->load->view('api/form_get_insertDiagosa',$data);   
+    }
     function form_get_insertResep(){
         $data = array();
         $data['title_form'] = "Form Semua Insert Resep";
 
-        $this->load->view('api/form_get_insertResep',$data);
-    }
-    function form_get_insertDiagosa(){
-        $data = array();
-        $data['title_form'] = "Form Semua Insert Resep";
-
-        $this->load->view('api/form_get_insertDiagosa',$data);   
+        $this->load->view('api/form_get_insertResep',$data);   
     }
 }
 ?>

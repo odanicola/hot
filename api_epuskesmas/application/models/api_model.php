@@ -8,7 +8,7 @@ class Api_model extends CI_Model {
             $this->load->database("epuskesmas_live_jaktim_".$codepuskesmas, FALSE, TRUE);
         }
     }
-    function do_get_dataStokObatApotek($token){
+    function do_get_dataStokObatApotek(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
@@ -70,13 +70,14 @@ class Api_model extends CI_Model {
              $status_code = $this->status_code('412'); 
         }
         
-        $update['token']=$token;
-        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
-    function do_get_dataAllPasien($token){
+
+    function do_get_dataAllPasien(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
@@ -107,7 +108,57 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->order_by("id");
-            $this->db->select("pasien.cl_pid AS id, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*",false);
+            $this->db->select("pasien.cl_pid AS id, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat",false);
+            $querygetObat=$this->db->get('cl_pasien as pasien',$limit);
+            if($querygetObat->num_rows() >0)
+            {
+                $datas = $querygetObat->result_array();
+                foreach ($datas as $data) {
+                    $content[] = array(   
+                                    'id'                => $data['id'],
+                                    'nama_lengkap'      => $data['nama_lengkap'],
+                                    'alamat'            => $data['alamat'],
+                                    );
+                }
+                 $status_code = $this->status_code('200');
+            }
+            else
+            {
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
+                $status_code = $this->status_code('204');
+            }
+        }else{
+             $query->free_result(); 
+             $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
+             $status_code = $this->status_code('412'); 
+        }
+        
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        return $result;
+    }
+    function do_get_data_DetailPasien(){
+        $content=array();  
+        $request_token  = $this->input->post('request_token');
+        $client_id      = $this->input->post('client_id');
+        
+        $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
+        if($query->num_rows() == 0) {
+            $id_pasien        = $this->input->post('id_pasien');
+            if(!empty($id_pasien))
+            {
+                $this->db->where('pasien.cl_pid',$id_pasien);
+            }
+            
+            if (!empty($limit)) {
+                $limit = $limit;
+            }else{
+                $limit = 10;
+            }
+            $this->db->order_by("id");
+            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*",false);
             $this->db->join('cl_village desa','pasien.cl_village=desa.code','left');
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
             $querygetObat=$this->db->get('cl_pasien as pasien',$limit);
@@ -121,6 +172,7 @@ class Api_model extends CI_Model {
                                     'alamat'            => $data['alamat'],
                                     'desa'              => $data['desa'],
                                     'ttl'               => $data['ttl'],
+                                    'nik'               => $data['nik'],
                                     'data_origin'       => $data['data_origin'],
                                     'no_bpjs'           =>$data['no_bpjs'],
                                     'kode_provider'     =>$data['kode_provider'],
@@ -146,13 +198,13 @@ class Api_model extends CI_Model {
              $status_code = $this->status_code('412'); 
         }
         
-        $update['token']=$token;
-        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
-    function do_get_dataAllDokter($token){
+    function do_get_dataAllDokter(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
@@ -206,14 +258,14 @@ class Api_model extends CI_Model {
              $status_code = $this->status_code('412'); 
         }
         
-        $update['token']=$token;
-        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
 
-    function do_get_dataAllObat($token){
+    function do_get_dataAllObat(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
@@ -271,13 +323,13 @@ class Api_model extends CI_Model {
              $status_code = $this->status_code('412'); 
         }
         
-        $update['token']=$token;
-        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
-    function do_get_dataPasienByDiagnosa($token){
+    function do_get_dataPasienByDiagnosa(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
@@ -348,60 +400,195 @@ class Api_model extends CI_Model {
              $status_code = $this->status_code('412'); 
         }
         
-        $update['token']=$token;
-        $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
     }
-    function do_insert_dataDiagnosa($token){
-        $no_register    = $this->input->post('no_register');
-        $no_icdx        = $this->input->post('no_icdx');
-        $nama_diagnosa  = $this->input->post('nama_diagnosa');
-        $jenis_kasus    = $this->input->post('jenis_kasus');
-        $jenis_diagnosa = $this->input->post('jenis_diagnosa');
-        $no_urut        = $this->input->post('no_urut');
-        
-        $qCekUsername = $this->db->get_where('app_poli_detail_diagnosa', array('reg_id'=>$no_register,'diag_id'=>$no_icdx,'no_urut'=>$no_urut),1);
-        if($qCekUsername->num_rows()>0){
-            $content=array('validation'=>'Diagnosa entered is already existed.'); 
-            $status_code = $this->status_code('412'); 
+
+    function do_action_dataDiagnosa($data=array()){
+        $this->db->where('reg_id',$data['no_register']);
+        if ($this->db->delete('app_poli_detail_diagnosa')==FALSE) {
+            $content=array('validation'=>'Execution data is failed'); 
+            $status_code = $this->status_code('417'); 
         }else{
-                $data['reg_id']=$no_register;
-                $data['diag_id']=$diag_id;
-                $data['diag_kasus']=$jenis_kasus;
-                $data['diag_jenis']=$jenis_diagnosa;
-                $data['no']='0';
-                $data['no_urut']=$no_urut;
-                
-                $this->db->insert('app_poli_detail_diagnosa', $data);
-                $id = $data['reg_id'];
-                
-                $options = array('reg_id' => $id,'diag_id'=>$data['diag_id'],'no_urut'=>$data['no_urut']);
-                $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
+            foreach ($data['diagnosa'] as $key) {
+                $qCekUsername = $this->db->get_where('app_poli_detail_diagnosa', array('reg_id'=>$data['no_register'],'diag_id'=>$key['diagnosa_no_icdx']),1);
+                if($qCekUsername->num_rows()>0){
+                    $content=array('validation'=>'Diagnosa entered is already existed.'); 
+                    $status_code = $this->status_code('412'); 
+                }else{
+                    $datasave['reg_id']=$data['no_register'];
+                    $datasave['diag_id']=$key['diagnosa_no_icdx'];
+                    $datasave['diag_kasus']=$key['diagnosa_jenis_kasus'];
+                    $datasave['diag_jenis']=$key['diagnosa_jenis_diagnosa'];
+                    $datasave['no']=$key['diagnosa_no_urut'];
+                    $datasave['no_urut']='0';
+                    
+                    $this->db->insert('app_poli_detail_diagnosa', $datasave);
+                }
+                $nama_diagnosa = $key['diagnosa_nama_diagnosa'];
+            }
+            $this->db->where('reg_id',$data['no_register']);
+            $this->db->set('app_update_time',time());
+            $this->db->set('app_update',$this->session->userdata('username'));
+            $this->db->update('app_reg');
+
+            $id = $datasave['reg_id'];
+            $options = array('reg_id' => $id,'diag_id'=>$datasave['diag_id'],'no'=>$datasave['no']);
+            $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
+            if ($query->num_rows() > 0){
+                $data = $query->row_array();
+                $content = array('id'=>$data['reg_id'],'kode diagnosa'=>$data['reg_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$data['no'],
+                                'kode kasus'=>$data['diag_kasus'],'kode jenis'=>$data['diag_jenis']);
+                $status_code = $this->status_code('201');
+            }else{
+                $query->free_result();   
+                $content=array('validation'=>'No data found.'); 
+                $status_code = $this->status_code('204'); 
+            }
+        }
+        
+
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        
+        return $result;
+    }
+    function cekstokobat($data){
+        foreach ($data['resep'] as $key) {
+            $query = $this->db->query("SELECT SUM(jml_obat) AS jml_stok FROM obat_stok_detail WHERE id_obat='".trim($key['resep_kodeobat'])."'");
+            $data=$query->row_array();
+            $jml_stok=intval($data['jml_stok']);
+            if($key['resep_jumlah']>$jml_stok) {
+                return false;
+            }
+        }
+        return true;
+    }
+    function do_action_dataResep($data=array()){
+        
+        if ($this->cekstokobat($data)) {
+            $this->db->where('reg_id',$data['no_register']);
+            if ($this->db->delete('app_poli_detail_resep')==FALSE) {
+                $content=array('validation'=>'Execution data is failed'); 
+                $status_code = $this->status_code('417'); 
+            }else{
+                foreach ($data['resep'] as $key) {
+                    $qCekUsername = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$key['resep_kodeobat']),1);
+                    if($qCekUsername->num_rows()>0){
+                        $content=array('validation'=>'Diagnosa entered is already existed.'); 
+                        $status_code = $this->status_code('412'); 
+                    }else{
+                        $sno_urut=sprintf("%04s", $key['resep_no_urut']);;
+                        $datasave['id_transc']="RE".$_POST['no_register'].$sno_urut;
+                        $datasave['reg_id']=$data['no_register'];
+                        $datasave['obat_id']=$key['resep_kodeobat'];
+                        $datasave['obat_jml']=$key['resep_jumlah'];
+                        $datasave['obat_racik']=$key['resep_racikan'];
+                        $datasave['obat_dosis']=$key['resep_dosis'];
+                        $datasave['no']=$key['resep_no_urut'];
+                        $datasave['no_urut']='0';
+                        $datasave['created_date']=time();
+                        $datasave['created_by']=$this->session->userdata('username');
+                        $datasave['modified_by']=$this->session->userdata('username');
+                        $datasave['modified_date']=time();
+                        
+                        
+                        $cekinsert = $this->db->insert('app_poli_detail_resep', $datasave);
+                    }
+                    $nama_obat = $key['resep_nama_obat'];
+                }
+                if ($cekinsert==TRUE) {
+                    $this->db->where('reg_id',$data['no_register']);
+                    $this->db->set('status_apotek','1');
+                    $this->db->update('app_reg');
+                }
+                $this->db->where('reg_id',$data['no_register']);
+                $this->db->set('app_update_time',time());
+                $this->db->set('app_update',$this->session->userdata('username'));
+                $this->db->update('app_reg');
+
+                $id = $datasave['reg_id'];
+                $options = array('reg_id' => $id,'obat_id'=>$datasave['obat_id'],'no'=>$datasave['no']);
+                $query = $this->db->get_where('app_poli_detail_resep',$options,1);
                 if ($query->num_rows() > 0){
                     $data = $query->row_array();
-                    $content = array('id'=>$data['reg_id'],'no_icdx'=>$data['reg_id'],'no_urut'=>$data['no_urut'],
-                                    'kode_diagnosa_kasus'=>$data['diag_kasus'],'kode_diagnosa_jenis'=>$data['diag_kasus']);
+                    $content = array('id'=>$data['reg_id'],'kode obat'=>$data['obat_id'],'nama obat'=>$nama_obat,'no urut'=>$data['no'],
+                                    'jumlah obat'=>$data['obat_jml'],'dosis obat'=>$data['obat_dosis'],'Kode Racikan'=>$data['obat_racik']);
                     $status_code = $this->status_code('201');
                 }else{
                     $query->free_result();   
                     $content=array('validation'=>'No data found.'); 
                     $status_code = $this->status_code('204'); 
                 }
+            }
+        }else{
+            $content=array('validation'=>'Sorry, Please check your stok of drug !'); 
+            $status_code = $this->status_code('417'); 
         }
-
-        $result = array('header'=>$this->header($token),'content'=>$content,'status_code'=>$status_code);
+        
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         
         return $result;
     }
-    function header($token=''){
+    function do_aaction_dataAnamnesa(){
+        $this->db->where('reg_id',$this->input->post('reg_id'));
+        if ($this->db->delete('app_poli_detail_anamnesa')==FALSE) {
+            $content=array('validation'=>'Execution data is failed'); 
+            $status_code = $this->status_code('417'); 
+        }else{
+            foreach ($data['resep'] as $key) {
+                $qCekUsername = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$key['resep_kodeobat']),1);
+                if($qCekUsername->num_rows()>0){
+                    $content=array('validation'=>'Diagnosa entered is already existed.'); 
+                    $status_code = $this->status_code('412'); 
+                }else{
+                    $sno_urut=sprintf("%04s", $key['resep_no_urut']);;
+                    $datasave['id_transc']="RE".$_POST['no_register'].$sno_urut;
+                    $datasave['reg_id']=$data['no_register'];
+                    $datasave['obat_id']=$key['resep_kodeobat'];
+                    $datasave['obat_jml']=$key['resep_jumlah'];
+                    $datasave['obat_racik']=$key['resep_racikan'];
+                    $datasave['obat_dosis']=$key['resep_dosis'];
+                    $datasave['no']=$key['resep_no_urut'];
+                    $datasave['no_urut']='0';
+                    $datasave['created_date']=time();
+                    $datasave['created_by']=$this->session->userdata('username');
+                    $datasave['modified_by']=$this->session->userdata('username');
+                    $datasave['modified_date']=time();
+                    
+                    
+                    $this->db->insert('app_poli_detail_resep', $datasave);
+                }
+                $nama_obat = $key['resep_nama_obat'];
+            }
+            $this->db->where('reg_id',$data['no_register']);
+            $this->db->set('status_apotek','1');
+            $this->db->update('app_reg');
+
+            $id = $datasave['reg_id'];
+            $options = array('reg_id' => $id,'obat_id'=>$datasave['obat_id'],'no'=>$datasave['no']);
+            $query = $this->db->get_where('app_poli_detail_resep',$options,1);
+            if ($query->num_rows() > 0){
+                $data = $query->row_array();
+                $content = array('id'=>$data['reg_id'],'kode obat'=>$data['obat_id'],'nama obat'=>$nama_obat,'no urut'=>$data['no'],
+                                'jumlah obat'=>$data['obat_jml'],'dosis obat'=>$data['obat_dosis'],'Kode Racikan'=>$data['obat_racik']);
+                $status_code = $this->status_code('201');
+            }else{
+                $query->free_result();   
+                $content=array('validation'=>'No data found.'); 
+                $status_code = $this->status_code('204'); 
+            }
+        }
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        
+        return $result;
+    }
+    function header(){
         $arr['request_time']   = $this->input->post('request_time');
         $arr['response_time']  = time();
-        $arr['request_token']  = $this->input->post('request_token');
-        $arr['response_token'] = $token;
         $arr['request_output'] = $this->input->post('request_output');
-        $arr['client_id']      = $this->input->post('client_id');
         $arr['last_active']    = $this->input->post('request_time');
         
         return $arr;

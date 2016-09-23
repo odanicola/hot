@@ -1,3 +1,4 @@
+
 <title><?php echo $title_form; ?></title>
 <form method="post" action="">
 <table width='40%' border='1' cellpadding='5' cellspacing='1' style="background: yellow;">
@@ -32,19 +33,9 @@
         <td><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
     </tr>
     <tr>
-        <td width='20%'>No Pegawai</td>
+        <td width='20%'>ID Pasien</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="no_peg" value=""></td>
-    </tr>
-    <tr>
-        <td width='20%'>Nama</td>
-        <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="nama" value="" /></td>
-    </tr>
-    <tr>
-        <td width='20%'>Limit Data</td>
-        <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="limit" value="" /></td>
+        <td><input type="text" size="30" name="id_pasien" value=""></td>
     </tr>
     <tr>
         <td>&nbsp;</td>
@@ -66,8 +57,8 @@ $("#resetdata").click(function(){
 $("#btn_lihatdatas").click(function(){
     $.ajax({
       type   : "POST",
-      url    : "<?php echo base_url(); ?>api/get_data_allDokter",
-      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&no_peg="+$("[name='no_peg']").val()+"&nama="+$("[name='nama']").val()+"&limit="+$("[name='limit']").val(),
+      url    : "<?php echo base_url(); ?>api/get_data_DetailPasien",
+      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&id_pasien="+$("[name='id_pasien']").val(),
       success: function (response, text) {
         $("#showdata").html(response);
       },
