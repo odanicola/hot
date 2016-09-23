@@ -53,40 +53,24 @@ class Pasien extends CI_Controller {
 			}
 		}
 
-		if($this->session->userdata('filter_jenis_bpjs')!=''){
+		if($this->session->userdata('filter_jenis_bpjs')!='' && $this->session->userdata('filter_jenis_bpjs')!='-'){
 			if($this->session->userdata('filter_jenis_bpjs')==01){
 				$this->db->where('app_users_profile.bpjs IS NOT NULL');
-			}elseif($this->session->userdata('filter_jenis_bpjs')==02) {
+			}else{
 				$this->db->where('app_users_profile.bpjs IS NULL ');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
 			}
-		}else{
-
 		}
 
-		if($this->session->userdata('filter_jenis_kelamin')!=''){
-			if($this->session->userdata('filter_jenis_kelamin')=='L'){
-				$this->db->where('app_users_profile.jk','L');
-			}elseif ($this->session->userdata('filter_jenis_kelamin')=='P') {
-				$this->db->where('app_users_profile.jk','P');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		if($this->session->userdata('filter_urutan_usia')!=''){
+		if($this->session->userdata('filter_urutan_usia')!='' && $this->session->userdata('filter_urutan_usia')!='-'){
 			if($this->session->userdata('filter_urutan_usia')==01){
 				$this->db->order_by("usia", "ASC");
-			}elseif($this->session->userdata('filter_urutan_usia')==02){
-				$this->db->order_by("usia", "DESC");
 			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
+				$this->db->order_by("usia", "DESC");
 			}
-		}else{
-
 		}
 
 		$rows_all = $this->pasien_model->get_data_pasien();
@@ -107,40 +91,24 @@ class Pasien extends CI_Controller {
 			}
 		}
 
-		if($this->session->userdata('filter_jenis_bpjs')!=''){
+		if($this->session->userdata('filter_jenis_bpjs')!='' && $this->session->userdata('filter_jenis_bpjs')!='-'){
 			if($this->session->userdata('filter_jenis_bpjs')==01){
 				$this->db->where('app_users_profile.bpjs IS NOT NULL');
-			}elseif($this->session->userdata('filter_jenis_bpjs')==02) {
+			}else{
 				$this->db->where('app_users_profile.bpjs IS NULL ');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
 			}
-		}else{
-
 		}
 
-		if($this->session->userdata('filter_jenis_kelamin')!=''){
-			if($this->session->userdata('filter_jenis_kelamin')=='L'){
-				$this->db->where('app_users_profile.jk','L');
-			}elseif ($this->session->userdata('filter_jenis_kelamin')=='P') {
-				$this->db->where('app_users_profile.jk','P');
-			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
-			}
-		}else{
-
+		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
+			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
-		if($this->session->userdata('filter_urutan_usia')!=''){
+		if($this->session->userdata('filter_urutan_usia')!='' && $this->session->userdata('filter_urutan_usia')!='-'){
 			if($this->session->userdata('filter_urutan_usia')==01){
 				$this->db->order_by("usia", "ASC");
-			}elseif($this->session->userdata('filter_urutan_usia')==02){
-				$this->db->order_by("usia", "DESC");
 			}else{
-				$this->db->order_by('app_users_profile.nama','ASC');
+				$this->db->order_by("usia", "DESC");
 			}
-		}else{
-
 		}
 
 		$rows = $this->pasien_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
