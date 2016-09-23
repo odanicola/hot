@@ -104,11 +104,11 @@
       </tr>
       <tr><td colspan="2" height="20">&nbsp;</td></tr>
       <tr>
-        <td class="username-bg">NIK</td>
+        <td class="username-bg">NIK*</td>
         <td class="textfield-bg"><input placeholder=" NIK" name="nik" maxlength="16" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
-        <td class="username-bg">BPJS</td>
+        <td class="username-bg">BPJS*</td>
         <td class="textfield-bg"><input placeholder=" BPJS" name="bpjs" maxlength="13" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
