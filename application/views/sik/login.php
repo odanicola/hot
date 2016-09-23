@@ -104,11 +104,11 @@
       </tr>
       <tr><td colspan="2" height="20">&nbsp;</td></tr>
       <tr>
-        <td class="username-bg">NIK</td>
+        <td class="username-bg">NIK*</td>
         <td class="textfield-bg"><input placeholder=" NIK" name="nik" maxlength="16" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
-        <td class="username-bg">BPJS</td>
+        <td class="username-bg">BPJS*</td>
         <td class="textfield-bg"><input placeholder=" BPJS" name="bpjs" maxlength="13" class="input" autocomplete="off" type="text"></td>
       </tr>
       <tr>
@@ -318,6 +318,9 @@
             var kode    = fields[0];
             var namapus = fields[1];
 
+            var nik  = $("[name='nik']").val();
+            var bpjs = $("[name='bpjs']").val();
+
             var kodepus = kode.substring(11, 1);
             var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
 
@@ -353,6 +356,12 @@
                 $("#popup_daftar").jqxWindow('open');
             }else if($("[name='phone_number']").val()==""){
                 $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nomor telepon."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if(nik.length!=16){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah NIK harus 16 digit."+btn+"</div>");
+                $("#popup_daftar").jqxWindow('open');
+            }else if(bpjs.length!=13){
+                $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah BPJS harus 13 digit."+btn+"</div>");
                 $("#popup_daftar").jqxWindow('open');
             }else{
                 $.ajax({
@@ -400,14 +409,12 @@
                   $("input[name='nama']").val(res.response.nama).change();
 
                   var tglLhr = res.response.tglLahir.split("-");
-
-                  var tgl   = tglLhr[2];
-                  var bln   = tglLhr[1];
-                  var bulan = bln.substring(1, 2);
-                  var thn   = tglLhr[0];
+                  var tgl    = tglLhr[2];
+                  var bln    = tglLhr[1];
+                  var thn    = tglLhr[0];
 
                   $("select[name='thn']").val(tglLhr[2]).change();
-                  $("select[name='bln']").val(bulan).change();
+                  $("select[name='bln']").val(tglLhr[1]).change();
                   $("select[name='tgl']").val(tglLhr[0]).change();
 
                   if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();

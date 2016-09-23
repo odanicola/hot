@@ -1,6 +1,9 @@
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
+<div id="popup_daftar" style="display:none;">
+  <div id="popup_title_Daftar">Hypertension Online Treatment</div><div id="popup_content_daftar">{popup}</div>
+</div>
 <section class="content">
 <form action="<?php echo base_url()?>hot/pasien/add" method="POST" name="">
   <div class="row">
@@ -21,7 +24,7 @@
 
             <div class="form-group">
               <label>Nomor RM</label>
-              <input type="text" class="form-control" name="cl_pid" id="cl_pid" placeholder="Nomor MR" value="<?php 
+              <input type="text" class="form-control" name="cl_pid" id="cl_pid" placeholder="Nomor RM" value="<?php 
                 if(set_value('cl_pid')=="" && isset($cl_pid)){
                   echo $cl_pid;
                 }else{
@@ -185,6 +188,10 @@
     $("#popup").jqxWindow('close');
   }
 
+  function close_popup_daftar(){
+      $("#popup_daftar").jqxWindow('close');
+  }
+
   $(function () { 
     $("#tgl_lahir").jqxDateTimeInput({ formatString: 'dd-MM-yyyy', theme: theme, height:30});
 
@@ -239,8 +246,18 @@
         }
     });
 
+    function validateEmail(email) {
+        var expr = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+        return expr.test(email);
+    };
+
     $("#btn-simpan").click(function(){
         var data = new FormData();
+        var nik  = $("[name='username']").val();
+        var bpjs = $("[name='bpjs']").val();
+
+        var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
+
 
         data.append('username',     $("[name='username']").val());
         data.append('bpjs',         $("[name='bpjs']").val());
@@ -257,6 +274,38 @@
         data.append('code',         $("[name='code']").val());
         data.append('cl_pid',       $("[name='cl_pid']").val());
 
+        $("#popup_daftar").jqxWindow({
+          theme: theme, resizable: false,
+          width: 240,
+          height: 160,
+          isModal: true, autoOpen: false, modalOpacity: 0.2
+        });
+
+        if ($("[name='username']").val() == "" || $("[name='bpjs']").val()==""){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Isi data dengan lengkap."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if($("[name='password']").val() == "" || $("[name='password2']").val()==""){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi password."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if($("[name='password']").val() != $("[name='password2']").val()){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Password tidak sama."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if($("[name='nama']").val() == ""){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nama."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if($("[name='phone_number']").val()==""){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nomor telepon."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if(nik.length!=16){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah NIK harus 16 digit."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if(bpjs.length!=13){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah BPJS harus 13 digit."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if(!validateEmail($("[name='email']").val())){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Email tidak valid."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else{
 
         $.ajax({
             cache : false,
@@ -274,7 +323,6 @@
                     height: 150,
                     isModal: true, autoOpen: false, modalOpacity: 0.4
                   });
-
                   $("#popup").jqxWindow('open');
                   window.location.href = "<?php echo base_url().'hot/pasien' ?>";
                 }else{
@@ -282,18 +330,17 @@
                   $("#popup").jqxWindow({
                     theme: theme, resizable: false,
                     width: 250,
-                    height: 220,
+                    height: 150,
                     isModal: true, autoOpen: false, modalOpacity: 0.4
                   });
                   $("#popup").jqxWindow('open');
                 }
             }
         });
+      }
 
         return false;
     });
-
-
 
       $("#username").keyup(function(){
         var nik = $("#username").val();
