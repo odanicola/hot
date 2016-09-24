@@ -11,24 +11,27 @@ class Antrian_model extends CI_Model {
         $this->db->where('kunjungan.username',$this->session->userdata('username'));
         $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
-        $this->db->where('status_antri','antri');
         $this->db->where('tgl','CURDATE()',false);
         $this->db->order_by('id_kunjungan','asc');
         $querylogin = $this->db->get('kunjungan');
         $keylogin   = $querylogin->row_array();
-        
+
         $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->where('status_antri','antri');
         $this->db->where('tgl','CURDATE()',false);
         $this->db->order_by('id_kunjungan','asc');
-        if ((int)substr($keylogin['id_kunjungan'],-3) < 11) {
+
+        if ((int)substr($keylogin['id_kunjungan'],-3) < 11 && ($keylogin['status_antri']=='antri')) {
             $query = $this->db->get('kunjungan',10);
-        } else {
+
+        } elseif ((int)substr($keylogin['id_kunjungan'],-3) > 10 && ($keylogin['status_antri']=='antri')) {
             $query = $this->db->get('kunjungan',9);
+               
+        } elseif ($keylogin['status_antri']!='antri') {
+            $query = $this->db->get('kunjungan',10);
         }
-        // print_r($query->result_array());
-        // die();
+
         $i=0;
         foreach ($query->result_array() as $key) {
             $data[$i] = array(
@@ -67,7 +70,7 @@ class Antrian_model extends CI_Model {
         return $data;
     }
 
-    function get_data_non_pasien($start=0,$limit=999999,$options=array()){
+    function get_data_non_pasien($start=0,$limit=10,$options=array()){
         $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->where('status_antri','antri');

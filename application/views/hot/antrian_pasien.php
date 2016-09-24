@@ -85,56 +85,25 @@
 			width: '100%', autoheight: true,autorowheight: true,
 			selectionmode: 'singlerow',
 			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-			showfilterrow: false, filterable: false, sortable: false, autoheight: true, pageable: true, virtualmode: true, editable: false,
+			showfilterrow: false, filterable: false, sortable: false, autoheight: true, virtualmode: true, editable: false,
 			rendergridrows: function(obj)
 			{
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'No', align: 'center', width: '12%', cellsrenderer: function (row) {
+				{ text: 'No', align: 'center', width: '25%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
 					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
                  }
                 },				
-		 	<?php if($this->session->userdata('level')!="administrator"){ ?>
-                { text: 'Nama', datafield: 'nama', align: 'center', width: '43%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+dataRecord.jk+"<br>"+dataRecord.usia+" Tahun"+"</div>";
-                 }
-                },
-		 	<?php }else{ ?>
-                { text: 'Tanggal', datafield: 'tgl', align: 'center', width: '43%', cellsrenderer: function (row) {
-				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.waktu != null){
-						return "<div style='width:100%;padding:14px;text-align:center;'>"+dataRecord.tgl+"<br>"+dataRecord.waktu+"</div>";
-				    }else{
-						return "<div style='width:100%;padding:14px;text-align:center;'>"+dataRecord.tgl+"</div>";
-				    }
-                 }
-                },
-		 	<?php } ?>
 
-				{ text: 'Status', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
+                { text: 'Nama', datafield: 'nama', align: 'center', width: '75%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding-top:14px;text-align:center' >"+dataRecord.status_antri+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"/"+dataRecord.jk+"/"+dataRecord.usia+" Tahun"+"</div>";
                  }
-                }            
+                }
             ]
 		});
-
-		$("#jqxgrid").on('rowselect', function (event) {
-			var args = event.args;
-			var rowData = args.row;
-
-			if(rowData.status_antri != "Batal"){
-        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
-			}else{
-        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_delete(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
-			}
- 			$("html, body").animate({ scrollTop: 0 }, "slow");
-			$("#popup").jqxWindow('open');
-		});
-
 
 	function btn_edit(id){
       	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;

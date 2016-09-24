@@ -71,6 +71,8 @@ class Antrian extends CI_Controller {
 		$new_kodepus = substr($kodepus,1);
 		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
 			$this->db->where('app_users_profile.code',$new_kodepus);
+		}else{
+			$this->db->order_by('kunjungan.id_kunjungan','asc');
 		}
 
 		$rows_all = $this->antrian_model->get_data_non_pasien();
@@ -79,6 +81,8 @@ class Antrian extends CI_Controller {
 		$new_kodepus = substr($kodepus,1);
 		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
 			$this->db->where('app_users_profile.code',$new_kodepus);
+		}else{
+			$this->db->order_by('kunjungan.id_kunjungan','asc');
 		}
 
 		$rows = $this->antrian_model->get_data_non_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
