@@ -408,14 +408,14 @@
 
     $('.btn.btn-danger.minus_gdp').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-        var $gdp=$(this).closest('.row.gdp').find("#gdp");
+        $gdp=$("#gdp");
         $gdp.data('timer',setInterval(function(){dec_gdp();},100));
     });
 
     $('.btn.btn-danger.minus_gdp').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $gdp, timer;
-        $gdp=$(this).closest('.row.gdp').find("#gdp");
+        $gdp=$("#gdp");
         timer = $gdp.data('timer');
             
         if (timer !== ''){
@@ -433,14 +433,14 @@
 
     $('.btn.btn-warning.plus_gdp').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-          var $gdp=$(this).closest('.row.gdp').find("#gdp");
-          $gdp.data('timer',setInterval(function(){inc_gdp();},100));
+        $gdp=$("#gdp");
+        $gdp.data('timer',setInterval(function(){inc_gdp();},100));
     });
 
     $('.btn.btn-warning.plus_gdp').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $gdp, timer;
-            $gdp=$(this).closest('.row.gdp').find("#gdp");
+        $gdp=$("#gdp");
         timer = $gdp.data('timer');
             
         if (timer !== ''){
@@ -448,6 +448,159 @@
             $gdp.data('timer', '');
         }
     });
+
+    function dec_gdpp(){
+        var currentVal = parseInt($("#gdpp").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#gdpp").val(currentVal - 1);
+        }
+    } 
+
+    $('.btn.btn-danger.minus_gdpp').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $gdpp=$("#gdpp");
+        $gdpp.data('timer',setInterval(function(){dec_gdpp();},100));
+    });
+
+    $('.btn.btn-danger.minus_gdpp').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $gdpp, timer;
+        $gdpp=$("#gdpp");
+        timer = $gdpp.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $gdpp.data('timer', '');
+        }
+    });
+
+    function inc_gdpp(){
+        var currentVal = parseInt($("#gdpp").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#gdpp").val(currentVal + 1);
+        }
+    }  
+
+    $('.btn.btn-warning.plus_gdpp').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $gdpp=$("#gdpp");
+        $gdpp.data('timer',setInterval(function(){inc_gdpp();},100));
+    });
+
+    $('.btn.btn-warning.plus_gdpp').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $gdpp, timer;
+        $gdpp=$("#gdpp");
+        timer = $gdpp.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $gdpp.data('timer', '');
+        }
+    });
+
+    function dec_gds(){
+        var currentVal = parseInt($("#gds").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#gds").val(currentVal - 1);
+        }
+    } 
+
+    $('.btn.btn-danger.minus_gds').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $gds=$("#gds");
+        $gds.data('timer',setInterval(function(){dec_gds();},100));
+    });
+
+    $('.btn.btn-danger.minus_gds').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $gds, timer;
+        $gds=$("#gds");
+        timer = $gds.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $gds.data('timer', '');
+        }
+    });
+
+    function inc_gds(){
+        var currentVal = parseInt($("#gds").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#gds").val(currentVal + 1);
+        }
+    }  
+
+    $('.btn.btn-warning.plus_gds').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $gds=$("#gds");
+        $gds.data('timer',setInterval(function(){inc_gds();},100));
+    });
+
+    $('.btn.btn-warning.plus_gds').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $gds, timer;
+        $gds=$("#gds");
+        timer = $gds.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $gds.data('timer', '');
+        }
+    });
+
+
+
+    function dec_kolesterol(){
+        var currentVal = parseInt($("#kolesterol").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#kolesterol").val(currentVal - 1);
+        }
+    } 
+
+    $('.btn.btn-danger.minus_kolesterol').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $kolesterol=$("#kolesterol");
+        $kolesterol.data('timer',setInterval(function(){dec_kolesterol();},100));
+    });
+
+    $('.btn.btn-danger.minus_kolesterol').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $kolesterol, timer;
+        $kolesterol=$("#kolesterol");
+        timer = $kolesterol.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $kolesterol.data('timer', '');
+        }
+    });
+
+    function inc_kolesterol(){
+        var currentVal = parseInt($("#kolesterol").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#kolesterol").val(currentVal + 1);
+        }
+    }  
+
+    $('.btn.btn-warning.plus_kolesterol').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $kolesterol=$("#kolesterol");
+        $kolesterol.data('timer',setInterval(function(){inc_kolesterol();},100));
+    });
+
+    $('.btn.btn-warning.plus_kolesterol').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $kolesterol, timer;
+        $kolesterol=$("#kolesterol");
+        timer = $kolesterol.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $kolesterol.data('timer', '');
+        }
+    });
+
 
     function dec_tb(){
         var currentVal = parseInt($("#tb").val(),10);
@@ -490,14 +643,14 @@
 
     $('.btn.btn-warning.plus_asamurat').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-        var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+        $asamurat=$("#asamurat");
         $asamurat.data('timer',setInterval(function(){inc_asamurat();},100));
     });
 
     $('.btn.btn-warning.plus_asamurat').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $asamurat, timer;
-        $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+        $asamurat=$("#asamurat");
         timer = $asamurat.data('timer');
             
         if (timer !== ''){
@@ -515,14 +668,14 @@
 
     $('.btn.btn-danger.minus_asamurat').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-        var $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+        $asamurat=$("#asamurat");
         $asamurat.data('timer',setInterval(function(){dec_asamurat();},100));
     });
 
     $('.btn.btn-danger.minus_asamurat').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $asamurat, timer;
-        $asamurat=$(this).closest('.row.asamurat').find("#asamurat");
+        $asamurat=$("#asamurat");
         timer = $asamurat.data('timer');
             
         if (timer !== ''){

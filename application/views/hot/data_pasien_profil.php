@@ -190,22 +190,30 @@
                 { name: 'bpjs', type: 'string'}
             ],
             username: 'username',
-            url: "<?php echo site_url('hot/kunjungan/json_autocomplete'); ?>",
+            url: "http://viktoredz:81/infokes/hot/api_epuskesmas/api/get_data_allPasien",
             type: "post"
           },
           {
               autoBind: true,
               formatData: function (data) {
+                data.bpjs = '';
+                data.client_id = "20160302000001";
+                data.kodepuskesmas = "P<?php echo $this->session->userdata('puskesmas')?>";
                 data.nama = query;
+                data.nik = '';
+                data.limit = 10;
+                data.request_output = "json";
+                data.request_time = "<?php echo time(); ?>";
+                data.request_token = "lggsxl3roze498rqlp8hd90r57nw6c9f";
                 return data;
               },
               loadComplete: function (data) {
-                if (data.length>0){
-                  response($.map(data, function (item) {
+                if (data.content.length>0){
+                  response($.map(data.content, function (item) {
                       return {
-                        label: item.nama,
-                        name: item.name,
-                        value: item.username
+                        label: item.id + ' - ' + item.nama_lengkap + '<br>' + item.alamat,
+                        name: item.nama_lengkap,
+                        value: item.id
                       }
                   }));                                
           }
