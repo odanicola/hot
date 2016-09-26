@@ -28,7 +28,7 @@ class Api_model extends CI_Model {
             else
             {
                 $this->db->where('cl_drugnm.code',$kodeObat);
-                if(!empty($nama))
+                if(!empty($nameObat))
                 {
                     $this->db->or_like('cl_drugnm.nama',$nameObat);
                 }
@@ -96,15 +96,27 @@ class Api_model extends CI_Model {
             }
             if(!empty($id_pasien))
             {
-                $this->db->where('pasien.cl_pid',$id_pasien);
+                if (!empty($nama)) {
+                    $this->db->or_where('pasien.cl_pid',$id_pasien);
+                }else{
+                    $this->db->where('pasien.cl_pid',$id_pasien);
+                }
             }
             if(!empty($bpjs))
             {
-                $this->db->where('bpjs.no_bpjs',$bpjs);
+                if (!empty($nama) || !empty($id_pasien)) {
+                    $this->db->or_where('bpjs.no_bpjs',$bpjs);
+                }else{
+                    $this->db->where('bpjs.no_bpjs',$bpjs);
+                }
             }
             if(!empty($nik))
             {
-                $this->db->where('pasien.cl_nik',$nik);
+                if (!empty($nama) || !empty($id_pasien) || !empty($bpjs)) {
+                    $this->db->or_where('pasien.cl_nik',$nik);
+                }else{
+                    $this->db->where('pasien.cl_nik',$nik);
+                }
             }
             
             if (!empty($limit)) {
@@ -224,14 +236,22 @@ class Api_model extends CI_Model {
             $nama       = $this->input->post('nama');
             $limit      = $this->input->post('limit');
             
-            if(!empty($nama))
+            if(empty($no_peg))
             {
-                $this->db->like('app_sdm.sdm_nama',$nama);
+                if(!empty($nama))
+                {
+                    $this->db->like('app_sdm.sdm_nama',$nama);
+                }
             }
-            if(!empty($no_peg))
+            else
             {
                 $this->db->where('app_sdm.sdm_nopeg',$no_peg);
+                if(!empty($nama))
+                {
+                    $this->db->or_like('app_sdm.sdm_nama',$nama);
+                }
             }
+            
             
             if (!empty($limit)) {
                 $limit = $limit;
@@ -285,14 +305,20 @@ class Api_model extends CI_Model {
             $kodeObat   = $this->input->post('kodeObat');
             $nameObat   = $this->input->post('nameObat');
             $limit      = $this->input->post('limit');
-            
-            if(!empty($nameObat))
+            if(empty($kodeObat))
             {
-                $this->db->like('cl_drugnm.nama',$nameObat);
+                if(!empty($nameObat))
+                {
+                    $this->db->like('cl_drugnm.nama',$nameObat);
+                }
             }
-            if(!empty($kodeObat))
+            else
             {
                 $this->db->where('cl_drugnm.code',$kodeObat);
+                if(!empty($nameObat))
+                {
+                    $this->db->or_like('cl_drugnm.nama',$nameObat);
+                }
             }
             
             if (!empty($limit)) {
@@ -346,18 +372,23 @@ class Api_model extends CI_Model {
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
 
-
             $kode_dianosa   = $this->input->post('kode_dianosa');
             $nama_diagnosa  = $this->input->post('nama_diagnosa');
             $limit          = $this->input->post('limit');
-            
-            if(!empty($nama_diagnosa))
+            if(empty($kode_dianosa))
             {
-                $this->db->like('cl_icdx.value',$nama_diagnosa);
+                if(!empty($nama_diagnosa))
+                {
+                    $this->db->like('cl_icdx.value',$nama_diagnosa);
+                }
             }
-            if(!empty($kode_dianosa))
+            else
             {
                 $this->db->where('cl_icdx.code',$kode_dianosa);
+                if(!empty($nama_diagnosa))
+                {
+                    $this->db->or_like('cl_icdx.value',$nama_diagnosa);
+                }
             }
             
             if (!empty($limit)) {
@@ -423,12 +454,9 @@ class Api_model extends CI_Model {
             $status_code = $this->status_code('417'); 
         }else{
             foreach ($data['diagnosa'] as $key) {
-                $qCekUsername = $this->db->get_where('app_poli_detail_diagnosa', array('reg_id'=>$data['no_register'],'diag_id'=>$key['diagnosa_no_icdx']),1);
-                if($qCekUsername->num_rows()>0){
-                    $content=array('validation'=>'Diagnosa entered is already existed.'); 
-                    $status_code = $this->status_code('412'); 
-                }else{
-                    $datasave['reg_id']=$data['no_register'];
+                $qCekUsername = $this->db->get_where('cl_icdx', array('trim(code)'=>$key['diagnosa_no_icdx']),1);
+                if($qCekUsername->num_rows() > 0){
+                     $datasave['reg_id']=$data['no_register'];
                     $datasave['diag_id']=$key['diagnosa_no_icdx'];
                     $datasave['diag_kasus']=$key['diagnosa_jenis_kasus'];
                     $datasave['diag_jenis']=$key['diagnosa_jenis_diagnosa'];
@@ -436,26 +464,31 @@ class Api_model extends CI_Model {
                     $datasave['no_urut']='0';
                     
                     $this->db->insert('app_poli_detail_diagnosa', $datasave);
+                }else{
+                   $content=array('validation'=>'Sorry,You cannot insert data. Please check your diagnosa in master data!'); 
+                    $status_code = $this->status_code('412'); 
                 }
                 $nama_diagnosa = $key['diagnosa_nama_diagnosa'];
             }
-            $this->db->where('reg_id',$data['no_register']);
-            $this->db->set('app_update_time',time());
-            $this->db->set('app_update',$this->session->userdata('username'));
-            $this->db->update('app_reg');
+            if (!isset($status_code) && empty($status_code)) {
+                $this->db->where('reg_id',$data['no_register']);
+                $this->db->set('app_update_time',time());
+                $this->db->set('app_update',$this->session->userdata('username'));
+                $this->db->update('app_reg');
 
-            $id = $datasave['reg_id'];
-            $options = array('reg_id' => $id,'diag_id'=>$datasave['diag_id'],'no'=>$datasave['no']);
-            $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
-            if ($query->num_rows() > 0){
-                $data = $query->row_array();
-                $content = array('id'=>$data['reg_id'],'kode diagnosa'=>$data['reg_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$data['no'],
-                                'kode kasus'=>$data['diag_kasus'],'kode jenis'=>$data['diag_jenis']);
-                $status_code = $this->status_code('201');
-            }else{
-                $query->free_result();   
-                $content=array('validation'=>'No data found.'); 
-                $status_code = $this->status_code('204'); 
+                $id = $datasave['reg_id'];
+                $options = array('reg_id' => $id,'diag_id'=>$datasave['diag_id'],'no'=>$datasave['no']);
+                $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
+                if ($query->num_rows() > 0){
+                    $data = $query->row_array();
+                    $content = array('id'=>$data['reg_id'],'kode diagnosa'=>$data['reg_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$data['no'],
+                                    'kode kasus'=>$data['diag_kasus'],'kode jenis'=>$data['diag_jenis']);
+                    $status_code = $this->status_code('201');
+                }else{
+                    $query->free_result();   
+                    $content=array('validation'=>'No data found.'); 
+                    $status_code = $this->status_code('204'); 
+                }
             }
         }
         
@@ -470,17 +503,19 @@ class Api_model extends CI_Model {
             $data=$query->row_array();
             $jml_stok=intval($data['jml_stok']);
             if($key['resep_jumlah']>$jml_stok) {
-                return false;
+                echo 'gagal|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
+                die();
             }
         }
-        return true;
+        echo 'sukses|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
+        die();
     }
     function do_action_dataResep($data=array()){
-        
-        if ($this->cekstokobat($data)) {
+        $check = explode("|",$this->cekstokobat($data));
+        if ($check[0]=='sukses') {
             $this->db->where('reg_id',$data['no_register']);
             if ($this->db->delete('app_poli_detail_resep')==FALSE) {
-                $content=array('validation'=>'Execution data is failed'); 
+                $content=array('validation'=>'Delete data is failed'); 
                 $status_code = $this->status_code('417'); 
             }else{
                 foreach ($data['resep'] as $key) {
@@ -533,7 +568,7 @@ class Api_model extends CI_Model {
                 }
             }
         }else{
-            $content=array('validation'=>'Sorry, Please check your stok of drug !'); 
+            $content=array('validation'=>"Sorry, Insert data is failed.Stok $check[2] is amount $check[3]"); 
             $status_code = $this->status_code('417'); 
         }
         
