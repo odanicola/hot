@@ -8,8 +8,6 @@
 		}
 
 		function verify($module,$action){
-
-
 			$query = $this->obj->db-> query("SELECT * FROM app_users_access AS a, app_files AS b WHERE a.file_id=b.id AND b.module='".$module."' AND a.level_id='".$this->obj->session->userdata('level')."' AND do".$action."=1");
 			//echo $this->obj->db->last_query();return;
 			//echo $this->obj->session->userdata('level');

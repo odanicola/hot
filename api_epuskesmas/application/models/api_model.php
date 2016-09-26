@@ -517,6 +517,21 @@ class Api_model extends CI_Model {
             $content=array('validation'=>'Execution data is failed'); 
             $status_code = $this->status_code('417'); 
         }else{
+            foreach($_POST as $a=>$b)
+            {
+                if(substr($a,0,9)=='anamnesa_')
+                {
+                    $c = str_replace('_input','',$a);
+                    $c = substr($c,9,100);
+                    $no_urut=empty($_POST['no_urut'])?0:$_POST['no_urut'];
+                    $sql = "INSERT INTO app_poli_detail_anamnesa(reg_id,name,value,no_urut,created_by,created_date) 
+                    VALUES('".$_POST['reg_id']."','".$c."','".$b."',".$no_urut.",'".$_SESSION['username']."','".time()."')
+                    ON DUPLICATE KEY UPDATE value='".$b."',modified_by='".$_SESSION['username']."',modified_date='".time()."'
+                    ";
+                    //echo $sql;die;
+                    mysql_query($sql);
+                }
+            }
             foreach ($data['resep'] as $key) {
                 $qCekUsername = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$key['resep_kodeobat']),1);
                 if($qCekUsername->num_rows()>0){
@@ -584,6 +599,39 @@ class Api_model extends CI_Model {
         }
         
         return $status_code;
+    }
+    function do_aaction_dataSettingBPJS(){
+        $content=array();  
+        $request_token  = $this->input->post('request_token');
+        $client_id      = $this->input->post('client_id');
+        
+        $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
+        if($query->num_rows() == 0) {
+            $querygetObat=$this->db->get('bpjs_setting');
+            if($querygetObat->num_rows() >0)
+            {
+                $datas = $querygetObat->result_array();
+                foreach ($datas as $data) {
+                    $content[][$data['name']]=$data['value'];
+                }
+                 $status_code = $this->status_code('200');
+            }
+            else
+            {
+                $content = array("validation"=>"Data yang dicari tidak diketemukan");
+                $status_code = $this->status_code('204');
+            }
+        }else{
+             $query->free_result(); 
+             $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
+             $status_code = $this->status_code('412'); 
+        }
+        
+        // $update['token']=$token;
+        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
+        
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        return $result;
     }
 }
 ?>

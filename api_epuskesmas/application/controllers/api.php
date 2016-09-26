@@ -123,6 +123,8 @@ class Api extends CI_Controller {
             return $this->api_model->do_action_dataResep($data);   
         }else if($function=='do_aaction_dataAnamnesa_validation'){
             return $this->api_model->do_aaction_dataAnamnesa($data);   
+        }else if($function=='do_get_dataSettingBPJS_validation'){
+            return $this->api_model->do_aaction_dataSettingBPJS($data);   
         }
     }
     
@@ -292,6 +294,17 @@ class Api extends CI_Controller {
         $form[6] = array('var'=>'reg_id','label'=>'Register Pasien','value'=>$reg_id,'rules'=>$rules_reg_id);
         
         $this->form_validasi('do_aaction_dataAnamnesa_validation',$form);
+    }
+    function get_data_SettingBPJS(){
+        $request_token = $this->input->post('request_token');
+        $client_id = $this->input->post('client_id');
+        
+        $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
+        $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
+        
+        $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
+        $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
+        $this->form_validasi('do_get_dataSettingBPJS_validation',$form);
     }
 }
 ?>
