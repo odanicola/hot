@@ -184,10 +184,10 @@ class Pasien extends CI_Controller {
         $this->form_validation->set_rules('cl_pid','No MR','trim');
 
 		if($this->form_validation->run()== FALSE){
-			$err = validation_errors();
+			$err = "err|".validation_errors();
 			die($err);
 		}elseif($res = $this->pasien_model->insert_pasien()){
-			die("OK");
+			die($res);
 		}else{
 			die($res);
 		}

@@ -188,6 +188,11 @@
     $("#popup").jqxWindow('close');
   }
 
+  function close_popup_ok(){
+    $("#popup").jqxWindow('close');
+     window.location.href = "<?php echo base_url().'hot/pasien' ?>";
+  }
+
   function close_popup_daftar(){
       $("#popup_daftar").jqxWindow('close');
   }
@@ -297,10 +302,10 @@
             $("#popup_content_daftar").html("<div style='text-align:center'><br>Anda belum mengisi nomor telepon."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
         }else if(nik.length!=16){
-            $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah NIK harus 16 digit."+btn+"</div>");
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>NIK 16 digit."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
         }else if(bpjs.length!=13){
-            $("#popup_content_daftar").html("<div style='text-align:center'><br>Jumlah BPJS harus 13 digit."+btn+"</div>");
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>Nomor BPJS 13 digit."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
         }else if(!validateEmail($("[name='email']").val())){
             $("#popup_content_daftar").html("<div style='text-align:center'><br>Email tidak valid."+btn+"</div>");
@@ -315,8 +320,9 @@
             url : '<?php echo base_url()."hot/pasien/doadd"?>',
             data : data,
             success : function(response){
-                if(response=="OK"){
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil disimpan.<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+              a = response.split("|");
+                if(a[0]=="true"){
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_ok()'></div></div>");
                   $("#popup").jqxWindow({
                     theme: theme, resizable: false,
                     width: 250,
@@ -324,9 +330,8 @@
                     isModal: true, autoOpen: false, modalOpacity: 0.4
                   });
                   $("#popup").jqxWindow('open');
-                  window.location.href = "<?php echo base_url().'hot/pasien' ?>";
                 }else{
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+response+"<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
                   $("#popup").jqxWindow({
                     theme: theme, resizable: false,
                     width: 250,
