@@ -15,23 +15,12 @@ class Api_model extends CI_Model {
         
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
-            $nameObat = $this->input->post('nameObat');
-            $kodeObat = $this->input->post('kodeObat');
+            $filterObat = $this->input->post('filterObat');
             $limit    = $this->input->post('limit');
-            if(empty($kodeObat))
+            if(!empty($filterObat))
             {
-                if(!empty($nameObat))
-                {
-                    $this->db->like('cl_drugnm.nama',$nameObat);
-                }
-            }
-            else
-            {
-                $this->db->where('cl_drugnm.code',$kodeObat);
-                if(!empty($nameObat))
-                {
-                    $this->db->or_like('cl_drugnm.nama',$nameObat);
-                }
+                $this->db->like('cl_drugnm.code',$filterObat);
+                $this->db->or_like('cl_drugnm.nama',$filterObat);
             }
             if (!empty($limit)) {
                 $limit = $limit;
@@ -84,41 +73,48 @@ class Api_model extends CI_Model {
         
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
-            $nik        = $this->input->post('nik');
-            $bpjs       = $this->input->post('bpjs');
-            $nama       = $this->input->post('nama');
-            $id_pasien  = $this->input->post('id_pasien');
+            // $nik        = $this->input->post('nik');
+            // $bpjs       = $this->input->post('bpjs');
+            // $nama       = $this->input->post('nama');
+            // $id_pasien  = $this->input->post('id_pasien');
+            $filterPasien  = $this->input->post('filterPasien');
             $limit      = $this->input->post('limit');
             
-            if(!empty($nama))
+            // if(!empty($nama))
+            // {
+            //     $this->db->like('pasien.cl_pname',$nama);
+            // }
+            // if(!empty($id_pasien))
+            // {
+            //     if (!empty($nama)) {
+            //         $this->db->or_where('pasien.cl_pid',$id_pasien);
+            //     }else{
+            //         $this->db->where('pasien.cl_pid',$id_pasien);
+            //     }
+            // }
+            // if(!empty($bpjs))
+            // {
+            //     if (!empty($nama) || !empty($id_pasien)) {
+            //         $this->db->or_where('bpjs.no_bpjs',$bpjs);
+            //     }else{
+            //         $this->db->where('bpjs.no_bpjs',$bpjs);
+            //     }
+            // }
+            // if(!empty($nik))
+            // {
+            //     if (!empty($nama) || !empty($id_pasien) || !empty($bpjs)) {
+            //         $this->db->or_where('pasien.cl_nik',$nik);
+            //     }else{
+            //         $this->db->where('pasien.cl_nik',$nik);
+            //     }
+            // }
+            if(!empty($filterPasien))
             {
-                $this->db->like('pasien.cl_pname',$nama);
+                $this->db->like('pasien.cl_nik',$filterPasien);
+                $this->db->or_like('pasien.cl_pid',$filterPasien);
+                $this->db->or_like('bpjs.no_bpjs',$filterPasien);
+                $this->db->or_like('pasien.cl_pname',$filterPasien);
             }
-            if(!empty($id_pasien))
-            {
-                if (!empty($nama)) {
-                    $this->db->or_where('pasien.cl_pid',$id_pasien);
-                }else{
-                    $this->db->where('pasien.cl_pid',$id_pasien);
-                }
-            }
-            if(!empty($bpjs))
-            {
-                if (!empty($nama) || !empty($id_pasien)) {
-                    $this->db->or_where('bpjs.no_bpjs',$bpjs);
-                }else{
-                    $this->db->where('bpjs.no_bpjs',$bpjs);
-                }
-            }
-            if(!empty($nik))
-            {
-                if (!empty($nama) || !empty($id_pasien) || !empty($bpjs)) {
-                    $this->db->or_where('pasien.cl_nik',$nik);
-                }else{
-                    $this->db->where('pasien.cl_nik',$nik);
-                }
-            }
-            
             if (!empty($limit)) {
                 $limit = $limit;
             }else{
@@ -127,15 +123,14 @@ class Api_model extends CI_Model {
             $this->db->order_by("id");
             $this->db->select("pasien.cl_pid AS id,bpjs.no_bpjs,concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat,pasien.cl_nik as nik",false);
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
-            $querygetObat=$this->db->get('cl_pasien as pasien',$limit);
-            if($querygetObat->num_rows() >0)
+            $querygetPasien=$this->db->get('cl_pasien as pasien',$limit);
+            if($querygetPasien->num_rows() > 0)
             {
-                $datas = $querygetObat->result_array();
+                $datas = $querygetPasien->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
                                     'id'                => $data['id'],
                                     'nik'               => $data['nik'],
-                                    'no_bpjs'           => $data['no_bpjs'],
                                     'no_bpjs'           => $data['no_bpjs'],
                                     'nama_lengkap'      => $data['nama_lengkap'],
                                     'alamat'            => $data['alamat']
@@ -145,7 +140,7 @@ class Api_model extends CI_Model {
             }
             else
             {
-                $content = array("validation"=>"Data yang dicari tidak diketemukan");
+                $content = array("validation"=>"No Data Found");
                 $status_code = $this->status_code('204');
             }
         }else{
@@ -170,7 +165,7 @@ class Api_model extends CI_Model {
             $id_pasien        = $this->input->post('id_pasien');
             if(!empty($id_pasien))
             {
-                $this->db->where('pasien.cl_pid',$id_pasien);
+                $this->db->like('pasien.cl_pid',$id_pasien);
             }
             
             if (!empty($limit)) {
@@ -232,26 +227,32 @@ class Api_model extends CI_Model {
         
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
-            $no_peg     = $this->input->post('no_peg');
-            $nama       = $this->input->post('nama');
+            // $no_peg     = $this->input->post('no_peg');
+            // $nama       = $this->input->post('nama');
+            $filterDokter       = $this->input->post('filterDokter');
             $limit      = $this->input->post('limit');
             
-            if(empty($no_peg))
+            // if(empty($no_peg))
+            // {
+            //     if(!empty($nama))
+            //     {
+            //         $this->db->like('app_sdm.sdm_nama',$nama);
+            //     }
+            // }
+            // else
+            // {
+            //     $this->db->where('app_sdm.sdm_nopeg',$no_peg);
+            //     if(!empty($nama))
+            //     {
+            //         $this->db->or_like('app_sdm.sdm_nama',$nama);
+            //     }
+            // }
+            if(!empty($filterDokter))
             {
-                if(!empty($nama))
-                {
-                    $this->db->like('app_sdm.sdm_nama',$nama);
-                }
+                $this->db->like('app_sdm.sdm_id',$filterDokter);
+                $this->db->or_like('app_sdm.sdm_nopeg',$filterDokter);
+                $this->db->or_like('app_sdm.sdm_nama',$filterDokter);
             }
-            else
-            {
-                $this->db->where('app_sdm.sdm_nopeg',$no_peg);
-                if(!empty($nama))
-                {
-                    $this->db->or_like('app_sdm.sdm_nama',$nama);
-                }
-            }
-            
             
             if (!empty($limit)) {
                 $limit = $limit;
@@ -294,76 +295,7 @@ class Api_model extends CI_Model {
         return $result;
     }
 
-    function do_get_dataAllObat(){
-        $content=array();  
-        $request_token  = $this->input->post('request_token');
-        $client_id      = $this->input->post('client_id');
-        
-        $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
-        if($query->num_rows() == 0) {
-
-            $kodeObat   = $this->input->post('kodeObat');
-            $nameObat   = $this->input->post('nameObat');
-            $limit      = $this->input->post('limit');
-            if(empty($kodeObat))
-            {
-                if(!empty($nameObat))
-                {
-                    $this->db->like('cl_drugnm.nama',$nameObat);
-                }
-            }
-            else
-            {
-                $this->db->where('cl_drugnm.code',$kodeObat);
-                if(!empty($nameObat))
-                {
-                    $this->db->or_like('cl_drugnm.nama',$nameObat);
-                }
-            }
-            
-            if (!empty($limit)) {
-                $limit = $limit;
-            }else{
-                $limit = 10;
-            }
-            $this->db->order_by("id");
-            $this->db->select("cl_drugnm.code as id,cl_drugnm.nama as nama_obat,cl_drugnm.kelas as kelas,cl_drugnm.title,cl_drugsunit.value as satuan_obat,cl_drugnm.jenis as jenis,cl_drugnm.isi as isi,cl_drugnm.harga as harga,",false);
-            $this->db->join('cl_drugsunit','cl_drugnm.satuan=cl_drugsunit.id','left');
-            $querygetObat=$this->db->get('cl_drugnm',$limit);
-            if($querygetObat->num_rows() >0)
-            {
-                $datas = $querygetObat->result_array();
-                foreach ($datas as $data) {
-                    $content[] = array(   
-                                    'id'                => $data['id'],
-                                    'nama_obat'         => $data['nama_obat'],
-                                    'kelas'             => $data['kelas'],
-                                    'title'             => $data['title'],
-                                    'satuan_obat'       => $data['satuan_obat'],
-                                    'jenis'             => $data['jenis'],
-                                    'isi'               => $data['isi'],
-                                    'harga'             => $data['harga'],
-                                    );
-                }
-                 $status_code = $this->status_code('200');
-            }
-            else
-            {
-                $content = array("validation"=>"Data yang dicari tidak diketemukan");
-                $status_code = $this->status_code('204');
-            }
-        }else{
-             $query->free_result(); 
-             $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
-             $status_code = $this->status_code('412'); 
-        }
-        
-        // $update['token']=$token;
-        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
-        
-        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
-        return $result;
-    }
+    
     function do_get_dataPasienByDiagnosa(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
@@ -372,25 +304,28 @@ class Api_model extends CI_Model {
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
 
-            $kode_dianosa   = $this->input->post('kode_dianosa');
-            $nama_diagnosa  = $this->input->post('nama_diagnosa');
+            $filterDiagnosa   = $this->input->post('filterDiagnosa');
             $limit          = $this->input->post('limit');
-            if(empty($kode_dianosa))
+            // if(empty($kode_dianosa))
+            // {
+            //     if(!empty($nama_diagnosa))
+            //     {
+            //         $this->db->like('cl_icdx.value',$nama_diagnosa);
+            //     }
+            // }
+            // else
+            // {
+            //     $this->db->where('cl_icdx.code',$kode_dianosa);
+            //     if(!empty($nama_diagnosa))
+            //     {
+            //         $this->db->or_like('cl_icdx.value',$nama_diagnosa);
+            //     }
+            // }
+            if(!empty($filterDiagnosa))
             {
-                if(!empty($nama_diagnosa))
-                {
-                    $this->db->like('cl_icdx.value',$nama_diagnosa);
-                }
+                $this->db->like('cl_icdx.value',$filterDiagnosa);
+                $this->db->or_like('cl_icdx.code',$filterDiagnosa);
             }
-            else
-            {
-                $this->db->where('cl_icdx.code',$kode_dianosa);
-                if(!empty($nama_diagnosa))
-                {
-                    $this->db->or_like('cl_icdx.value',$nama_diagnosa);
-                }
-            }
-            
             if (!empty($limit)) {
                 $limit = $limit;
             }else{
@@ -456,7 +391,7 @@ class Api_model extends CI_Model {
             foreach ($data['diagnosa'] as $key) {
                 $qCekUsername = $this->db->get_where('cl_icdx', array('trim(code)'=>$key['diagnosa_no_icdx']),1);
                 if($qCekUsername->num_rows() > 0){
-                     $datasave['reg_id']=$data['no_register'];
+                    $datasave['reg_id']=$data['no_register'];
                     $datasave['diag_id']=$key['diagnosa_no_icdx'];
                     $datasave['diag_kasus']=$key['diagnosa_jenis_kasus'];
                     $datasave['diag_jenis']=$key['diagnosa_jenis_diagnosa'];
@@ -481,8 +416,7 @@ class Api_model extends CI_Model {
                 $query = $this->db->get_where('app_poli_detail_diagnosa',$options,1);
                 if ($query->num_rows() > 0){
                     $data = $query->row_array();
-                    $content = array('id'=>$data['reg_id'],'kode diagnosa'=>$data['reg_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$data['no'],
-                                    'kode kasus'=>$data['diag_kasus'],'kode jenis'=>$data['diag_jenis']);
+                    $content = array('id'=>$data['reg_id'],'kode diagnosa'=>$data['diag_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$data['no'],'kode kasus'=>$data['diag_kasus'],'kode jenis'=>$data['diag_jenis']);
                     $status_code = $this->status_code('201');
                 }else{
                     $query->free_result();   
@@ -503,12 +437,13 @@ class Api_model extends CI_Model {
             $data=$query->row_array();
             $jml_stok=intval($data['jml_stok']);
             if($key['resep_jumlah']>$jml_stok) {
-                echo 'gagal|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
+                $data =  'gagal|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
+                return $data;
                 die();
             }
         }
-        echo 'sukses|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
-        die();
+        $data =  'sukses|'.trim($key['resep_kodeobat']).'|'.$jml_stok;
+        return $data;
     }
     function do_action_dataResep($data=array()){
         $check = explode("|",$this->cekstokobat($data));
@@ -568,7 +503,7 @@ class Api_model extends CI_Model {
                 }
             }
         }else{
-            $content=array('validation'=>"Sorry, Insert data is failed.Stok $check[2] is amount $check[3]"); 
+            $content=array('validation'=>"Sorry, Insert data is failed.Stok $check[1] is $check[2]"); 
             $status_code = $this->status_code('417'); 
         }
         

@@ -31,7 +31,7 @@
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
     </tr>
-    <tr>
+    <!-- <tr>
         <td width='20%'>Kode Diagnosa</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="kode_dianosa" value=""> *</td>
@@ -40,6 +40,11 @@
         <td width='20%'>Nama Diagnosa</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="nama_diagnosa" value="" /></td>
+    </tr> -->
+    <tr>
+        <td width='20%'>Filter Diagnosa (Nama / Kode)</td>
+        <td width='3%' align='center'>:</td>
+        <td><input type="text" size="30" name="filterDiagnosa" value="" /></td>
     </tr>
     <tr>
         <td width='20%'>Limit Data</td>
@@ -67,7 +72,7 @@ $("#btn_lihatdatas").click(function(){
     $.ajax({
       type   : "POST",
       url    : "<?php echo base_url(); ?>api/form_get_pasienByDiagnosa",
-      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&kode_dianosa="+$("[name='kode_dianosa']").val()+"&nama_diagnosa="+$("[name='nama_diagnosa']").val()+"&limit="+$("[name='limit']").val(),
+      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&filterDiagnosa="+$("[name='filterDiagnosa']").val()+"&limit="+$("[name='limit']").val(),
       success: function (response, text) {
         $("#showdata").html(response);
       },

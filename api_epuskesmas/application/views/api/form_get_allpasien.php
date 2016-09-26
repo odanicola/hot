@@ -32,7 +32,7 @@
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
     </tr>
-    <tr>
+    <!-- <tr>
         <td width='20%'>Nik</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="nik" value=""></td>
@@ -51,6 +51,11 @@
         <td width='20%'>Nama</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="nama" value="" /></td>
+    </tr> -->
+    <tr>
+        <td width='20%'>Filter Pasien (NIK / BPJS / ID Pasien / Nama)</td>
+        <td width='3%' align='center'>:</td>
+        <td><input type="text" size="30" name="filterPasien" value="" /></td>
     </tr>
     <tr>
         <td width='20%'>Limit Data</td>
@@ -78,7 +83,7 @@ $("#btn_lihatdatas").click(function(){
     $.ajax({
       type   : "POST",
       url    : "<?php echo base_url(); ?>api/get_data_allPasien",
-      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&nik="+$("[name='nik']").val()+"&bpjs="+$("[name='bpjs']").val()+"&nama="+$("[name='nama']").val()+"&limit="+$("[name='limit']").val()+"&id_pasien="+$("[name='id_pasien']").val(),
+      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&filterPasien="+$("[name='filterPasien']").val()+"&limit="+$("[name='limit']").val(),
       success: function (response, text) {
         $("#showdata").html(response);
       },
