@@ -145,10 +145,10 @@
 
 		$("#jqxgrid").jqxGrid(
 		{		
-			width: '100%', autoheight: true,autorowheight: true,
+			width: '100%', autorowheight: true,
 			selectionmode: 'singlerow',
-			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50', '100'],
-			showfilterrow: false, filterable: false, sortable: false, autoheight: true, pageable: true, virtualmode: true, editable: false,
+			source: dataadapter, theme: theme,columnsresize: true,showtoolbar: false, pagesizeoptions: ['10', '25', '50'],
+			showfilterrow: false, filterable: false, sortable: false, autoheight: true, pageable: true, virtualmode: false, editable: false,
 			rendergridrows: function(obj)
 			{
 				return obj.data;    

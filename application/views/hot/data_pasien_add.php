@@ -209,27 +209,30 @@
           { 
             datatype: "json",
             datafields: [
+                { name: 'id', type: 'string'},
                 { name: 'username', type: 'string'},
                 { name: 'nama', type: 'string'},
                 { name: 'bpjs', type: 'string'}
             ],
             username: 'username',
-            url: "<?php echo site_url('hot/kunjungan/json_autocomplete'); ?>",
+            url: "<?php echo base_url();?>epus_api/pasien_search/",
             type: "post"
           },
           {
               autoBind: true,
               formatData: function (data) {
-                data.nama = query;
+                data.qr = query;
                 return data;
               },
               loadComplete: function (data) {
-                if (data.length>0){
-                  response($.map(data, function (item) {
+                if (data.content.length>0){
+                  response($.map(data.content, function (item) {
+                      var bpjs = item.no_bpjs != null ? ' , BPJS: ' + item.no_bpjs : '';
+
                       return {
-                        label: item.nama,
-                        name: item.name,
-                        value: item.username
+                        label: item.nama_lengkap + ', ' + item.alamat + '<br>NIK: ' + item.nik + bpjs + '<br>' + 'No MR: '+item.id,
+                        name: item.nama_lengkap,
+                        value: item.id
                       }
                   }));                                
           }
@@ -247,6 +250,7 @@
             if (item) {
               var label = item.label.split("<br>");
                 $("#cl_pid").val(item.value);
+                alert(item.value);
             }
         }
     });

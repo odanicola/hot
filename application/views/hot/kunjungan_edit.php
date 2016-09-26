@@ -4,6 +4,7 @@
     var pembagi;
     var bb;
     var tb;
+
     function bmi(){
       bb = $("#bb").val();
       tb = $("#tb").val();
@@ -29,16 +30,16 @@
     }
 
     $(function () { 
-      var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
+      var btn = "</br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'>";
 
-      $("#tb").jqxNumberInput({ width: '98%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 90, max: 200, template: "success", symbolPosition: 'right', decimalDigits: 0, value: '{tb}' });
-      $("#bb").jqxNumberInput({ width: '98%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{bb}' });
-      $("#kolesterol").jqxNumberInput({ width: '98%', height: 50, value: "200", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', min: 30, max: 300, template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{kolesterol}' });
-      $("#asamurat").jqxNumberInput({ width: '98%', height: 50, value: "7.7", textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', min: 2, max: 10, template: "warning", symbolPosition: 'right', decimalDigits: 1, value: '{asamurat}' });
+      $("#tb").jqxNumberInput({ width: '98%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', template: "success", symbolPosition: 'right', decimalDigits: 0, value: '{tb}' });
+      $("#bb").jqxNumberInput({ width: '98%', height: 50, value: "150",textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{bb}' });
+      $("#kolesterol").jqxNumberInput({ width: '98%', height: 50, value: "200", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{kolesterol}' });
+      $("#asamurat").jqxNumberInput({ width: '98%', height: 50, value: "7.7", textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 1, value: '{asamurat}' });
 
-      $("#gdp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdp}' });
-      $("#gds").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gds}' });
-      $("#gdpp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', min: 20, max: 120, template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdpp}' });
+      $("#gdp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdp}' });
+      $("#gds").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gds}' });
+      $("#gdpp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdpp}' });
 
       $('#systolic').jqxSlider({ width: '100%',template: "warning", tooltip: true, mode: 'fixed', min: 100, max: 200, ticksFrequency: 10, value: {systolic}, step: 1 });
       $("#val_systolic").html($('#systolic').jqxSlider('value'));
@@ -76,6 +77,19 @@
         height: 160,
         isModal: true, autoOpen: false, modalOpacity: 0.4
       });
+
+      $("#btn-sebelum").click(function(){
+        $.ajax({
+            type : 'GET',
+            url : '<?php echo base_url()?>hot/kunjungan/sebelumnya/{username}/{tgl_kunjungan}',
+            success : function(response){
+                $("#div-sebelumnya").html(response);
+                $("#btn-sebelum").hide();
+                $("#div-sebelumnya").show();
+            }
+        });        
+      });
+
 
       $("#btn-simpan").click(function(){
         var data = new FormData();
@@ -174,8 +188,11 @@
               <div class="col-xs-9">{jk} / {usia} Tahun</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-12 text-center"><button type="button" name="" class="btn btn-warning">Data Kunjungan Sebelumnya</button></div>
+              <div class="col-xs-12 text-center"><button type="button" id="btn-sebelum" class="btn btn-warning">Lihat {sebelumnya} Kunjungan Sebelumnya</button></div>
             </div>
+
+            <div class="row" style="padding:4px;display:none" id="div-sebelumnya"></div>
+
             <div class="row" style="padding:4px;">
               <div class="col-xs-12 text-center" style="background:#E3E3E3;padding:5px"><label>Kunjungan Baru :</label></div>
             </div>
@@ -324,6 +341,8 @@
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_kunjungan").addClass("active");
 
+    bmi();
+
     function inc_bb(){
         var currentVal = parseInt($("#bb").val(),10);
         if (!isNaN(currentVal)) {
@@ -333,15 +352,15 @@
 
     $('.btn.btn-warning.plus_bb').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-        var $bb=$(this).closest('.row.bb').find("#bb");
+        $bb=$("#bb");
         $bb.data('timer',setInterval(function(){inc_bb();bmi();}, 100));
     });
 
     $('.btn.btn-warning.plus_bb').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $bb, timer;
-            $bb=$(this).closest('.row.bb').find("#bb");
-            timer = $bb.data('timer');
+        $bb=$("#bb");
+        timer = $bb.data('timer');
             
         if (timer !== ''){
             clearInterval(timer);
@@ -358,15 +377,15 @@
 
     $('.btn.btn-danger.minus_bb').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-        var $bb=$(this).closest('.row.bb').find("#bb");
+        $bb=$("#bb");
         $bb.data('timer',setInterval(function(){dec_bb();bmi(); }, 100));
     });
 
     $('.btn.btn-danger.minus_bb').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $bb, timer;
-            $bb=$(this).closest('.row.bb').find("#bb");
-            timer = $bb.data('timer');
+        $bb=$("#bb");
+        timer = $bb.data('timer');
             
         if (timer !== ''){
             clearInterval(timer);
@@ -383,14 +402,14 @@
 
     $('.btn.btn-warning.plus_tb').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
-          var $tb=$(this).closest('.row.tb').find("#tb");
-          $tb.data('timer',setInterval(function(){inc_tb();bmi();},100));
+        $tb=$("#tb");
+        $tb.data('timer',setInterval(function(){inc_tb();bmi();},100));
     });
 
     $('.btn.btn-warning.plus_tb').on('touchend mouseup', function(e) {    
         e.preventDefault(); //stops propagation
         var $tb, timer;
-            $tb=$(this).closest('.row.tb').find("#tb");
+        $tb=$("#tb");
         timer = $tb.data('timer');
             
         if (timer !== ''){
@@ -399,10 +418,42 @@
         }
     });
 
+
+    function dec_tb(){
+        var currentVal = parseInt($("#tb").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#tb").val(currentVal - 1);
+        }
+    } 
+
+    $('.btn.btn-danger.minus_tb').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $tb=$("#tb");
+        $tb.data('timer',setInterval(function(){dec_tb();bmi();},100));
+    });
+
+    $('.btn.btn-danger.minus_tb').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $tb, timer;
+        $tb=$("#tb");
+        timer = $tb.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $tb.data('timer', '');
+        }
+    });
+
+
     function dec_gdp(){
         var currentVal = parseInt($("#gdp").val(),10);
         if (!isNaN(currentVal)) {
             $("#gdp").val(currentVal - 1);
+        }
+        if(currentVal >= 100){
+            $("#gdp").css('color','red');
+        }else{
+            $("#gdp").css('color','green');
         }
     } 
 
@@ -429,6 +480,11 @@
         if (!isNaN(currentVal)) {
             $("#gdp").val(currentVal + 1);
         }
+        if(currentVal >= 100){
+            $("#gdp").css('color','red');
+        }else{
+            $("#gdp").css('color','green');
+        }
     }  
 
     $('.btn.btn-warning.plus_gdp').on('touchstart mousedown', function(e) {    
@@ -453,6 +509,11 @@
         var currentVal = parseInt($("#gdpp").val(),10);
         if (!isNaN(currentVal)) {
             $("#gdpp").val(currentVal - 1);
+        }
+        if(currentVal >= 140){
+            $("#gdpp").css('color','red');
+        }else{
+            $("#gdpp").css('color','green');
         }
     } 
 
@@ -479,6 +540,11 @@
         if (!isNaN(currentVal)) {
             $("#gdpp").val(currentVal + 1);
         }
+        if(currentVal >= 140){
+            $("#gdpp").css('color','red');
+        }else{
+            $("#gdpp").css('color','green');
+        }
     }  
 
     $('.btn.btn-warning.plus_gdpp').on('touchstart mousedown', function(e) {    
@@ -504,6 +570,11 @@
         if (!isNaN(currentVal)) {
             $("#gds").val(currentVal - 1);
         }
+        if(currentVal >= 180){
+            $("#gds").css('color','red');
+        }else{
+            $("#gds").css('color','green');
+        }
     } 
 
     $('.btn.btn-danger.minus_gds').on('touchstart mousedown', function(e) {    
@@ -528,6 +599,11 @@
         var currentVal = parseInt($("#gds").val(),10);
         if (!isNaN(currentVal)) {
             $("#gds").val(currentVal + 1);
+        }
+        if(currentVal >= 180){
+            $("#gds").css('color','red');
+        }else{
+            $("#gds").css('color','green');
         }
     }  
 
@@ -556,6 +632,11 @@
         if (!isNaN(currentVal)) {
             $("#kolesterol").val(currentVal - 1);
         }
+        if(currentVal >= 200){
+            $("#kolesterol").css('color','red');
+        }else{
+            $("#kolesterol").css('color','green');
+        }
     } 
 
     $('.btn.btn-danger.minus_kolesterol').on('touchstart mousedown', function(e) {    
@@ -581,6 +662,11 @@
         if (!isNaN(currentVal)) {
             $("#kolesterol").val(currentVal + 1);
         }
+        if(currentVal >= 200){
+            $("#kolesterol").css('color','red');
+        }else{
+            $("#kolesterol").css('color','green');
+        }
     }  
 
     $('.btn.btn-warning.plus_kolesterol').on('touchstart mousedown', function(e) {    
@@ -602,42 +688,16 @@
     });
 
 
-    function dec_tb(){
-        var currentVal = parseInt($("#tb").val(),10);
-        if (!isNaN(currentVal)) {
-            $("#tb").val(currentVal - 1);
-        }
-    } 
-
-    $('.btn.btn-danger.minus_tb').on('touchstart mousedown', function(e) {    
-        e.preventDefault(); //stops propagation
-        var $tb=$(this).closest('.row.tb').find("#tb");
-        $tb.data('timer',setInterval(function(){dec_tb();bmi();},100));
-    });
-
-    $('.btn.btn-danger.minus_tb').on('touchend mouseup', function(e) {    
-        e.preventDefault(); //stops propagation
-        var $tb, timer;
-        $tb=$(this).closest('.row.tb').find("#tb");
-        timer = $tb.data('timer');
-            
-        if (timer !== ''){
-            clearInterval(timer);
-            $tb.data('timer', '');
-        }
-    });
-
-
-
-
-
-
-
 
     function inc_asamurat(){
         var currentVal = parseFloat($("#asamurat").val(),10);
         if (!isNaN(currentVal)) {
             $("#asamurat").val(currentVal + 0.2);
+        }
+        if(currentVal >= 7.7 || currentVal <= 2.5){
+            $("#asamurat").css('color','red');
+        }else{
+            $("#asamurat").css('color','green');
         }
     }  
 
@@ -663,6 +723,11 @@
         var currentVal = parseFloat($("#asamurat").val(),10);
         if (!isNaN(currentVal)) {
             $("#asamurat").val(currentVal - 0.1);
+        }
+        if(currentVal >= 7.7 || currentVal <= 2.5){
+            $("#asamurat").css('color','red');
+        }else{
+            $("#asamurat").css('color','green');
         }
     } 
 
