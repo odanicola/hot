@@ -87,11 +87,16 @@ class Api_model extends CI_Model {
             $nik        = $this->input->post('nik');
             $bpjs       = $this->input->post('bpjs');
             $nama       = $this->input->post('nama');
+            $id_pasien  = $this->input->post('id_pasien');
             $limit      = $this->input->post('limit');
             
             if(!empty($nama))
             {
                 $this->db->like('pasien.cl_pname',$nama);
+            }
+            if(!empty($id_pasien))
+            {
+                $this->db->where('pasien.cl_pid',$id_pasien);
             }
             if(!empty($bpjs))
             {
@@ -108,7 +113,8 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->order_by("id");
-            $this->db->select("pasien.cl_pid AS id, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat",false);
+            $this->db->select("pasien.cl_pid AS id,bpjs.no_bpjs,concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat,pasien.cl_nik as nik",false);
+            $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
             $querygetObat=$this->db->get('cl_pasien as pasien',$limit);
             if($querygetObat->num_rows() >0)
             {
@@ -116,8 +122,11 @@ class Api_model extends CI_Model {
                 foreach ($datas as $data) {
                     $content[] = array(   
                                     'id'                => $data['id'],
+                                    'nik'               => $data['nik'],
+                                    'no_bpjs'           => $data['no_bpjs'],
+                                    'no_bpjs'           => $data['no_bpjs'],
                                     'nama_lengkap'      => $data['nama_lengkap'],
-                                    'alamat'            => $data['alamat'],
+                                    'alamat'            => $data['alamat']
                                     );
                 }
                  $status_code = $this->status_code('200');

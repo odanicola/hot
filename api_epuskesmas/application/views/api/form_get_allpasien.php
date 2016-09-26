@@ -43,6 +43,11 @@
         <td><input type="text" size="30" name="bpjs" value="" /></td>
     </tr>
     <tr>
+        <td width='20%'>ID Pasien</td>
+        <td width='3%' align='center'>:</td>
+        <td><input type="text" size="30" name="id_pasien" value="" /></td>
+    </tr>
+    <tr>
         <td width='20%'>Nama</td>
         <td width='3%' align='center'>:</td>
         <td><input type="text" size="30" name="nama" value="" /></td>
@@ -73,7 +78,7 @@ $("#btn_lihatdatas").click(function(){
     $.ajax({
       type   : "POST",
       url    : "<?php echo base_url(); ?>api/get_data_allPasien",
-      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&nik="+$("[name='nik']").val()+"&bpjs="+$("[name='bpjs']").val()+"&nama="+$("[name='nama']").val()+"&limit="+$("[name='limit']").val(),
+      data   : "request_time="+$("[name='request_time']").val()+"&request_token="+$("[name='request_token']").val()+"&client_id="+$("[name='client_id']").val()+"&request_output="+$("[name='request_output']").val()+"&kodepuskesmas="+$("[name='kodepuskesmas']").val()+"&nik="+$("[name='nik']").val()+"&bpjs="+$("[name='bpjs']").val()+"&nama="+$("[name='nama']").val()+"&limit="+$("[name='limit']").val()+"&id_pasien="+$("[name='id_pasien']").val(),
       success: function (response, text) {
         $("#showdata").html(response);
       },
