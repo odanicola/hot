@@ -185,33 +185,28 @@
           { 
             datatype: "json",
             datafields: [
+                { name: 'id', type: 'string'},
                 { name: 'username', type: 'string'},
                 { name: 'nama', type: 'string'},
                 { name: 'bpjs', type: 'string'}
             ],
             username: 'username',
-            url: "http://viktoredz:81/infokes/hot/api_epuskesmas/api/get_data_allPasien",
+            url: "<?php echo base_url();?>epus_api/pasien_search/",
             type: "post"
           },
           {
               autoBind: true,
               formatData: function (data) {
-                data.bpjs = '';
-                data.client_id = "20160302000001";
-                data.kodepuskesmas = "P<?php echo $this->session->userdata('puskesmas')?>";
-                data.nama = query;
-                data.nik = '';
-                data.limit = 10;
-                data.request_output = "json";
-                data.request_time = "<?php echo time(); ?>";
-                data.request_token = "lggsxl3roze498rqlp8hd90r57nw6c9f";
+                data.qr = query;
                 return data;
               },
               loadComplete: function (data) {
                 if (data.content.length>0){
                   response($.map(data.content, function (item) {
+                      var bpjs = item.no_bpjs != null ? ' , BPJS: ' + item.no_bpjs : '';
+
                       return {
-                        label: item.id + ' - ' + item.nama_lengkap + '<br>' + item.alamat,
+                        label: item.nama_lengkap + ', ' + item.alamat + '<br>NIK: ' + item.nik + bpjs + '<br>' + 'No MR: '+item.id,
                         name: item.nama_lengkap,
                         value: item.id
                       }

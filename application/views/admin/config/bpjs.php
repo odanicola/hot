@@ -1,9 +1,11 @@
 
+<section class="content">
+
 <?php if($alert_form!=""){ ?>
 <div class="alert alert-success alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-	<?php echo $alert_form;?>
+  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo $alert_form;?>
 </div>
 <?php } ?>
 <?php if(validation_errors()!=""){ ?>
@@ -13,7 +15,6 @@
   <?php echo validation_errors()?>
 </div>
 <?php } ?>
-<section class="content">
 <form method="POST" name="frmUsers">
   <div class="row">
     <!-- left column -->

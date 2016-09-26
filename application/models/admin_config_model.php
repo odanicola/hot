@@ -132,11 +132,11 @@ class Admin_config_model extends CI_Model {
 		$epuskesmas_server['value']=$this->input->post('epuskesmas_server');
 		$this->db->update($this->tabel, $epuskesmas_server, array('key' => 'epuskesmas_server'));
 
-		$epuskesmas_user['value']=$this->input->post('epuskesmas_user');
-		$this->db->update($this->tabel, $epuskesmas_user, array('key' => 'epuskesmas_user'));
+		$epuskesmas_id['value']=$this->input->post('epuskesmas_id');
+		$this->db->update($this->tabel, $epuskesmas_id, array('key' => 'epuskesmas_id'));
 
-		$epuskesmas_password['value']=$this->input->post('epuskesmas_password');
-		$this->db->update($this->tabel, $epuskesmas_password, array('key' => 'epuskesmas_password'));
+		$epuskesmas_token['value']=$this->input->post('epuskesmas_token');
+		$this->db->update($this->tabel, $epuskesmas_token, array('key' => 'epuskesmas_token'));
 
 		return true;
     }

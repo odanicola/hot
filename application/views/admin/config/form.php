@@ -1,9 +1,10 @@
 
+<section class="content">
 <?php if($this->session->flashdata('alert_form')!=""){ ?>
 <div class="alert alert-success alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-	<?php echo $this->session->flashdata('alert_form')?>
+  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
+  <?php echo $this->session->flashdata('alert_form')?>
 </div>
 <?php } ?>
 <?php if(validation_errors()!=""){ ?>
@@ -13,7 +14,6 @@
   <?php echo validation_errors()?>
 </div>
 <?php } ?>
-<section class="content">
 <form method="POST" name="frmUsers">
   <div class="row">
     <!-- left column -->
@@ -72,12 +72,12 @@
               <input type="text" class="form-control" name="epuskesmas_server" placeholder="Server" value="{epuskesmas_server}">
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Username</label>
-              <input type="text" class="form-control" name="epuskesmas_user" placeholder="Username" value="{epuskesmas_user}">
+              <label for="exampleInputEmail1">ePuskesmas Client ID</label>
+              <input type="text" class="form-control" name="epuskesmas_id" placeholder="Client ID" value="{epuskesmas_id}">
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Password</label>
-              <input type="password" class="form-control" name="epuskesmas_password" placeholder="Password" value="{epuskesmas_password}">
+              <label for="exampleInputEmail1">ePuskesmas Token</label>
+              <input type="text" class="form-control" name="epuskesmas_token" placeholder="Token" value="{epuskesmas_token}">
             </div>
             <div class="form-group">
               <button type="button" id="btn-test" class="btn btn-danger">Test Connection</button>
@@ -100,17 +100,18 @@
 
     $("#btn-test").click(function(){
       var url = $("[name='epuskesmas_server']").val();
-      var usr = $("[name='epuskesmas_user']").val();
-      var pass = $("[name='epuskesmas_password']").val();
+      var id = $("[name='epuskesmas_id']").val();
+      var token = $("[name='epuskesmas_token']").val();
 
         $.ajax({
-            url: url + '/index.php?act=login',
+            url: url + 'get_data_allPasien',
             type: 'POST',
+            dataType: "json",
             crossDomain: true,
-            data : 'kode=<?php echo $this->session->userdata('puskesmas')?>&puskesmas=KEC. MATRAMAN&username='+ usr + '&password=' + pass
+            data : 'kodepuskesmas=P<?php echo $this->session->userdata('puskesmas')?>&client_id='+id+'&request_token='+ token + '&nama=a&limit=1&request_output=json'
         }).done(function (data) {
-            alert(data);                
-        })
+            alert("Status " + data.status_code.detail + " : " + data.status_code.code);                
+        });
     });
     function save (){
       var data = new FormData();
@@ -124,8 +125,8 @@
         data.append('theme_offline', $("[name='theme_offline']").val());
         data.append('online', $("[name='online']").val());
         data.append('epuskesmas_server', $("[name='epuskesmas_server']").val());
-        data.append('epuskesmas_user', $("[name='epuskesmas_user']").val());
-        data.append('epuskesmas_password', $("[name='epuskesmas_password']").val());
+        data.append('epuskesmas_id', $("[name='epuskesmas_id']").val());
+        data.append('epuskesmas_token', $("[name='epuskesmas_token']").val());
 
         $.ajax({
             cache : false,
