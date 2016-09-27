@@ -1,19 +1,3 @@
-<?php if(validation_errors()!=""){ ?>
-<div class="alert alert-warning alert-dismissable">
-	<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-	<h4>	<i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo validation_errors()?>
-</div>
-<?php } ?>
-
-<?php if($this->session->flashdata('alert_form')!=""){ ?>
-<div class="alert alert-success alert-dismissable">
-  <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-  <h4>  <i class="icon fa fa-check"></i> Information!</h4>
-  <?php echo $this->session->flashdata('alert_form')?>
-</div>
-<?php } ?>
-
 <div id="popup" style="display:none;">
   <div id="popup_title">Hypertension Online Treatment</div><div id="popup_content">{popup}</div>
 </div>
@@ -38,6 +22,17 @@
 		 	<button type="button" class="btn btn-danger"  id="btn-export"><i class='fa fa-file-excel-o'></i> &nbsp; Export</button>
 			<button type="button" class="btn btn-danger"  id="export-loader" style="display:none"><i class='fa fa-clock-o'></i> &nbsp; Loading ...</button>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Puskesmas</div>
+			  <div class="col-xs-6">
+			  		<select class="form-control" id="puskesmas">
+	                    <?php foreach($datapuskesmas as $pus) : ?>
+	                      <?php $select = $pus->code == 'P'.$this->session->userdata('puskesmas') ? 'selected' : '' ?>
+	                      <option value="<?php echo $pus->code ?>" <?php echo $select ?>><?php echo $pus->value ?></option>
+	                    <?php endforeach ?>
+			  		</select>
+			  </div>
+			</div>
 			<div class="row" style="padding-top:5px">
 			  <div class="col-xs-6" style="text-align:right;padding:5px">Jenis Kelamin</div>
 			  <div class="col-xs-6">
@@ -152,10 +147,10 @@
                 },
 				{ text: 'Informasi', datafield: 'bpjs', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-				    if(dataRecord.cl_pid != null){
+				    if(dataRecord.cl_pid != null && dataRecord.cl_pid !=""){
 				    	mr = "No MR: "+dataRecord.cl_pid;
 				    }else{
-				    	mr = "<span style='color:red'>No MR: "+dataRecord.cl_pid+"</span>";
+				    	mr = "<span style='color:red'>MR belum terhubung</span>";
 				    }
 
 				    if(dataRecord.bpjs != null){
@@ -244,6 +239,12 @@
 
     $("#jenis_kelamin").change(function(){
 		$.post("<?php echo base_url().'hot/pasien/filter_jenis_kelamin' ?>", 'jenis_kelamin='+$(this).val(),  function(){
+			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
+		});
+    });
+
+    $("#puskesmas").change(function(){
+		$.post("<?php echo base_url().'hot/pasien/filter_puskesmas' ?>", 'puskesmas='+$(this).val(),  function(){
 			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
 		});
     });

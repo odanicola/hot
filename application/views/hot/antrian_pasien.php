@@ -26,12 +26,6 @@
 	$(function () {	
 		$("#menu_hot_antrian").addClass("active");
 		$("#menu_dashboard").addClass("active");
-		$("#popup").jqxWindow({
-			theme: theme, resizable: false,
-			width: 250,
-			height: 150,
-			isModal: true, autoOpen: false, modalOpacity: 0.4
-		});
 	});
 
 	   var source = {
@@ -93,67 +87,18 @@
 			columns: [
 				{ text: 'No', align: 'center', width: '25%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;text-align:center'><br>"+dataRecord.urut+"<br></div>";
+					return "<div style='width:100%;padding:10px;text-align:center'>"+dataRecord.urut+"</div>";
                  }
                 },				
 
                 { text: 'Nama', datafield: 'nama', align: 'center', width: '75%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"/"+dataRecord.jk+"/"+dataRecord.usia+" Tahun"+"</div>";
+					return "<div style='width:100%;padding:10px;'>"+dataRecord.nama+" , "+dataRecord.jk+" / "+dataRecord.usia+" Tahun"+"</div>";
                  }
                 }
             ]
 		});
 
-	function btn_edit(id){
-      	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
-	}
-
-	function btn_delete(id){
-		$("#popup_content").html("<div style='padding:5px' align='center'><br>Hapus Pendaftaran?</br><br><div style='text-align:center'><input class='btn btn-danger' style='width:100px' type='button' value='Ya' onClick='del(\""+id+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Tidak' onClick='close_popup();'></div></div>");
-	}
-
-	function del(id){
-		$.post("<?php echo base_url().'hot/kunjungan/del/' ?>", 'id_kunjungan='+id,  function(res){
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>Hapus Data "+res+"</br><br><div style='text-align:center'><input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-	}
-
-	function close_popup(){
-        $("#popup").jqxWindow('close');
-        $("#jqxgrid").jqxGrid('clearselection');
-    }
-
-    $("#jenis_kelamin").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_jenis_kelamin' ?>", 'filter_jenis_kelamin='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#tahun").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_tahun' ?>", 'filter_tahun='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#bulan").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_bulan' ?>", 'filter_bulan='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#tanggal").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_tanggal' ?>", 'filter_tanggal='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
-    $("#status_antri").change(function(){
-		$.post("<?php echo base_url().'hot/kunjungan/filter_status_antri' ?>", 'filter_status_antri='+$(this).val(),  function(){
-			$("#jqxgrid").jqxGrid('updatebounddata', 'cells');
-		});
-    });
-
+		setInterval(function refresh(){ $("#jqxgrid").jqxGrid('clearfilters')},10000);
 
 </script>

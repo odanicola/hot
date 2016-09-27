@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         webView = (WebView) findViewById(R.id.webView);
-        webView.loadUrl("http://infokes1.aplikasi-puskesmas.com/jaktim/hot/");
+        webView.loadUrl("http://36.66.87.78/hot/");
         webView.setWebViewClient(new MainWebViewClient(){
             public boolean shouldOverrideUrlLoading(WebView view, String url){
                 webView.loadUrl(url);
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
             navigationView.setNavigationItemSelectedListener(this);
 
             webView = (WebView) findViewById(R.id.webView);
-            webView.loadUrl("http://infokes1.aplikasi-puskesmas.com/jaktim/hot/");
+            webView.loadUrl("http://36.66.87.78/hot/");
             webView.setWebViewClient(new MainWebViewClient(){
                 public boolean shouldOverrideUrlLoading(WebView view, String url){
                     webView.loadUrl(url);

@@ -72,7 +72,7 @@
 
             <div class="form-group">
               <label>Nama*</label>
-              <input type="text" class="form-control" name="nama" placeholder="Nama" value="<?php 
+              <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama" value="<?php 
                 if(set_value('nama')=="" && isset($nama)){
                   echo $nama;
                 }else{
@@ -91,10 +91,10 @@
                   }
                 ?>
                 <label class="radio-inline">
-                  <input type="radio" name="jk" value="L" class="iCheck-helper" <?php echo  ('L' == $jk) ? 'checked' : '' ?>>Pria
+                  <input type="radio" name="jk" id="jk_L" value="L" class="iCheck-helper" <?php echo  ('L' == $jk) ? 'checked' : '' ?>>Pria
                 </label>
                 <label class="radio-inline">
-                  <input type="radio" name="jk" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
+                  <input type="radio" name="jk" id="jk_P" value="P" class="iCheck-helper" <?php echo  ('P' == $jk) ? 'checked' : '' ?>>Wanita
                 </label>
             </div>
 
@@ -121,8 +121,8 @@
             </div> 
 
             <div class="form-group">
-              <label>No Telepon</label>
-              <input type="text" class="form-control" name="phone_number" placeholder="No Telepon" value="<?php 
+              <label>No Telepon*</label>
+              <input type="text" class="form-control" name="phone_number" id="phone_number" placeholder="No Telepon" value="<?php 
                 if(set_value('phone_number')=="" && isset($phone_number)){
                   echo $phone_number;
                 }else{
@@ -157,7 +157,7 @@
             </div>            
             <div class="form-group">
               <label>Alamat</label>
-              <input type="text" class="form-control" name="alamat" placeholder="Alamat" value="<?php 
+              <input type="text" class="form-control" name="alamat" id="alamat" placeholder="Alamat" value="<?php 
                 if(set_value('alamat')=="" && isset($alamat)){
                   echo $alamat;
                 }else{
@@ -203,6 +203,15 @@
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_pasien").addClass("active");
 
+    $("#popup_daftar").jqxWindow({
+      theme: theme, resizable: false,
+      width: 240,
+      height: 160,
+      isModal: true, autoOpen: false, modalOpacity: 0.2
+    });
+
+    var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
+
     var csource = function (query, response) {
       var dataAdapter = new $.jqx.dataAdapter
         (
@@ -234,7 +243,7 @@
                         name: item.nama_lengkap,
                         value: item.id
                       }
-                  }));                                
+                  }));
           }
             }
            }
@@ -250,7 +259,41 @@
             if (item) {
               var label = item.label.split("<br>");
                 $("#cl_pid").val(item.value);
-                alert(item.value);
+                $.ajax({
+                    dataType : 'json',
+                    url : '<?php echo base_url()."epus_api/pasien_detail/"?>' + item.value,
+                    success : function(response){
+                      if(response.content.nik.length==16){
+                        
+                        if($.isNumeric(response.content.nik.substr(0, 1))){
+                          $("#username").val(response.content.nik);
+                        }else{
+                          $("#popup_content_daftar").html("<div style='text-align:center'><br>Data NIK tidak benar <br>Silahkan input manual."+btn+"</div>");
+                          $("#popup_daftar").jqxWindow('open');
+                        }
+
+                      }else{
+                        $("#popup_content_daftar").html("<div style='text-align:center'><br>Data NIK tidak benar <br>Silahkan input manual."+btn+"</div>");
+                        $("#popup_daftar").jqxWindow('open');
+                      }
+
+                      $("#bpjs").val(response.content.no_bpjs);
+                      $("#nama").val(response.content.nama_lengkap);
+                      $("#alamat").val(response.content.alamat);
+                      $("#phone_number").val('');
+
+                      if(response.content.jeniskelamin == "Perempuan"){
+                        $("#jk_P").prop("checked",true);
+                      }else{
+                        $("#jk_L").prop("checked",true);
+                      }
+
+                      var tgl = response.content.tgl_lahir.split("-");
+                      var date = new Date(tgl[0], (tgl[1]-1), tgl[2]);
+                      $("#tgl_lahir").jqxDateTimeInput('setDate', date);
+
+                    }
+                });
             }
         }
     });
@@ -265,7 +308,6 @@
         var nik  = $("[name='username']").val();
         var bpjs = $("[name='bpjs']").val();
 
-        var btn = "</br></br></br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_daftar()'>";
 
 
         data.append('username',     $("[name='username']").val());
@@ -283,14 +325,7 @@
         data.append('code',         $("[name='code']").val());
         data.append('cl_pid',       $("[name='cl_pid']").val());
 
-        $("#popup_daftar").jqxWindow({
-          theme: theme, resizable: false,
-          width: 240,
-          height: 160,
-          isModal: true, autoOpen: false, modalOpacity: 0.2
-        });
-
-        if ($("[name='username']").val() == "" || $("[name='bpjs']").val()==""){
+        if ($("[name='username']").val() == ""){
             $("#popup_content_daftar").html("<div style='text-align:center'><br>Isi data dengan lengkap."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
         }else if($("[name='password']").val() == "" || $("[name='password2']").val()==""){
@@ -308,7 +343,10 @@
         }else if(nik.length!=16){
             $("#popup_content_daftar").html("<div style='text-align:center'><br>NIK 16 digit."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
-        }else if(bpjs.length!=13){
+        }else if(nik.length==16 && !$.isNumeric(nik.substr(0, 1))){
+            $("#popup_content_daftar").html("<div style='text-align:center'><br>NIK tidak benar."+btn+"</div>");
+            $("#popup_daftar").jqxWindow('open');
+        }else if($("[name='bpjs']").val()!="" && bpjs.length!=13){
             $("#popup_content_daftar").html("<div style='text-align:center'><br>Nomor BPJS 13 digit."+btn+"</div>");
             $("#popup_daftar").jqxWindow('open');
         }else if(!validateEmail($("[name='email']").val())){
@@ -326,7 +364,7 @@
             success : function(response){
               a = response.split("|");
                 if(a[0]=="true"){
-                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup_ok()'></div></div>");
+                  $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_ok()'></div></div>");
                   $("#popup").jqxWindow({
                     theme: theme, resizable: false,
                     width: 250,
@@ -375,9 +413,9 @@
 
                   if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
                   if(res.response.sex=="P"){
-                    $("select[name='jk']").val("P").change();
+                    $("#jk_P").prop("checked",true);
                   }else{
-                    $("select[name='jk']").val("L").change();
+                    $("#jk_L").prop("checked",true);
                   }
                 $("#pass").focus();
               }
@@ -411,9 +449,9 @@
 
                   if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
                   if(res.response.sex=="P"){
-                    $("select[name='jk']").val("P").change();
+                    $("#jk_P").prop("checked",true);
                   }else{
-                    $("select[name='jk']").val("L").change();
+                    $("#jk_L").prop("checked",true);
                   }
                 $("#pass").focus();
               }

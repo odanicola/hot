@@ -27,6 +27,14 @@ class Pasien extends CI_Controller {
 		}
 	}
 
+	function filter_puskesmas(){
+		if($_POST) {
+			if($this->input->post('puskesmas') != '') {
+				$this->session->set_userdata('filter_puskesmas',$this->input->post('puskesmas'));
+			}
+		}
+	}
+
 	function filter_urutan_usia(){
 		if($_POST) {
 			if($this->input->post('urutan_usia') != '') {
@@ -65,6 +73,10 @@ class Pasien extends CI_Controller {
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
 		}
 
+		if($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-'){
+			$this->db->where('app_users_profile.code',substr($this->session->userdata('filter_puskesmas'),1));
+		}
+
 		if($this->session->userdata('filter_urutan_usia')!='' && $this->session->userdata('filter_urutan_usia')!='-'){
 			if($this->session->userdata('filter_urutan_usia')==01){
 				$this->db->order_by("usia", "ASC");
@@ -101,6 +113,10 @@ class Pasien extends CI_Controller {
 
 		if($this->session->userdata('filter_jenis_kelamin')!='' && $this->session->userdata('filter_jenis_kelamin')!='-'){
 			$this->db->where('app_users_profile.jk',$this->session->userdata('filter_jenis_kelamin'));
+		}
+
+		if($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-'){
+			$this->db->where('app_users_profile.code',substr($this->session->userdata('filter_puskesmas'),1));
 		}
 
 		if($this->session->userdata('filter_urutan_usia')!='' && $this->session->userdata('filter_urutan_usia')!='-'){
@@ -145,6 +161,9 @@ class Pasien extends CI_Controller {
 		$this->session->set_userdata('filter_jenis_bpjs','');
 		$this->session->set_userdata('filter_urutan_usia','');
 		$this->session->set_userdata('filter_jenis_kelamin','');
+		$this->session->set_userdata('filter_puskesmas','');
+
+		$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
 
 		$data['content'] = $this->parser->parse("hot/data_pasien",$data,true);
 
@@ -414,6 +433,12 @@ class Pasien extends CI_Controller {
 			}else{
 				$this->db->order_by('app_users_profile.nama','ASC');
 			}
+		}else{
+
+		}
+
+		if($this->session->userdata('filter_puskesmas')!=''){
+			$this->db->where('app_users_profile.code',$this->session->userdata('filte_puskesmas'));
 		}else{
 
 		}
