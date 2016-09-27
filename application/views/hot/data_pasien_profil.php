@@ -256,6 +256,7 @@
               url : '<?php echo base_url()."hot/pasien/data_pasien_edit/1/{username}"   ?>',
               data : data,
               success : function(response){
+                $("html, body").animate({ scrollTop: 0 }, "slow");
                 a = response.split("|");
                 if(a[0]=='OK'){
                   $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil diubah.<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");

@@ -6,7 +6,7 @@ class Kunjungan_model extends CI_Model {
     }
 
     function get_data_pasien($start=0,$limit=999999,$options=array()){
-        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu",false);
+        $this->db->select("id_kunjungan,app_users_profile.username,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number, app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia,kunjungan.status_antri,kunjungan.tgl,kunjungan.waktu,kunjungan.systolic,kunjungan.diastolic",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         if($this->session->userdata('level')!='pasien'){
             $this->db->order_by('id_kunjungan','asc');
@@ -49,6 +49,16 @@ class Kunjungan_model extends CI_Model {
 
         $query->free_result();
         return $data;
+    }
+
+    function get_sebelumnya($nik="",$tgl_kunjungan){
+        $data = array();
+        $this->db->where("username",$nik);
+        $this->db->where("tgl <",$tgl_kunjungan);
+        $this->db->where("status_antri","selesai");
+        $query = $this->db->get("kunjungan");
+
+        return $query->num_rows();
     }
 
     function insert(){
@@ -110,6 +120,7 @@ class Kunjungan_model extends CI_Model {
         $data['gdp']            = $this->input->post('gdp');
         $data['gdpp']           = $this->input->post('gdpp');
         $data['kolesterol']     = $this->input->post('kolesterol');
+        $data['asamurat']       = $this->input->post('asamurat');
         $data['is_diabetic']    = $this->input->post('is_diabetic');
         $data['is_ckd']         = $this->input->post('is_ckd');
         $data['is_black']       = $this->input->post('is_black');

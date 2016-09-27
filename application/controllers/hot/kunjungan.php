@@ -212,11 +212,53 @@ class Kunjungan extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	function json_sebelumnya($username, $tgl){
+		$this->db->where('kunjungan.username', $username);
+		$this->db->where('kunjungan.tgl < ', $tgl);
+		$this->db->where('kunjungan.status_antri', 'selesai');
+		$rows_all = $this->kunjungan_model->get_data_pasien();
+
+		$this->db->where('kunjungan.username', $username);
+		$this->db->where('kunjungan.tgl < ', $tgl);
+		$this->db->where('kunjungan.status_antri', 'selesai');
+		$rows = $this->kunjungan_model->get_data_pasien($this->input->post('recordstartindex'), $this->input->post('pagesize'));
+		$data = array();
+		foreach($rows as $act) {
+			$data[] = array(
+				'id_kunjungan'	=> $act->id_kunjungan,
+				'urut'	    	=> substr($act->id_kunjungan,-3),
+				'tgl'	    	=> date("d-m-Y",strtotime($act->tgl)),
+				'waktu'	    	=> $act->waktu,
+				'username'	    => $act->username,
+				'systolic'	    => $act->systolic,
+				'diastolic'	    => $act->diastolic,
+			);
+		}
+
+		$size = sizeof($rows_all);
+		$json = array(
+			'TotalRows' => (int) $size,
+			'Rows'      => $data
+		);
+
+		echo json_encode(array($json));
+	}
+
+	function sebelumnya($username="",$tgl=""){
+		$this->authentication->verify('hot','show');
+
+		$data['sebelumnya']	= $this->kunjungan_model->get_sebelumnya($username,$tgl); 
+		$data['username'] 	= $username;
+		$data['tgl'] 		= $tgl;
+
+		die($this->parser->parse("hot/kunjungan_sebelumnya",$data));
+	}
 
 	function edit($id_kunjungan=0){
 		$this->authentication->verify('hot','edit');
 
 		$data 				    = $this->kunjungan_model->get_pemeriksaan($id_kunjungan); 
+		$data['sebelumnya']	    = $this->kunjungan_model->get_sebelumnya($data['username'],$data['tgl']); 
 		$data['title_group']    = "Kunjungan";
 		$data['title_form']     = "Pengukuran";
 		$data['action']		    = "edit";
@@ -229,6 +271,7 @@ class Kunjungan extends CI_Controller {
 		$data['gdpp']			= $data['gdpp']=="" ? 140 : $data['gdpp'];
 		$data['kolesterol']		= $data['kolesterol']=="" ? 200 : $data['kolesterol'];
 		$data['asamurat']		= $data['asamurat']=="" ? 7.7 : $data['asamurat'];
+		$data['tgl_kunjungan']	= $data['tgl'];
 		$data['tgl']	= date("d M Y", strtotime($data['tgl']));
 		$data['waktu']	= date("H:i:s",time());
 
