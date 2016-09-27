@@ -163,44 +163,35 @@ class Api_model extends CI_Model {
         $query = $this->db->get_where('mas_user_api', array('user_id'=>$client_id,'token'=>$request_token),1);
         if($query->num_rows() == 0) {
             $id_pasien        = $this->input->post('id_pasien');
-            if(!empty($id_pasien))
-            {
-                $this->db->like('pasien.cl_pid',$id_pasien);
-            }
             
-            if (!empty($limit)) {
-                $limit = $limit;
-            }else{
-                $limit = 10;
-            }
+            $this->db->like('pasien.cl_pid',$id_pasien);
+
             $this->db->order_by("id");
             $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*",false);
             $this->db->join('cl_village desa','pasien.cl_village=desa.code','left');
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
-            $querygetObat=$this->db->get('cl_pasien as pasien',$limit);
+            $querygetObat=$this->db->get('cl_pasien as pasien');
             if($querygetObat->num_rows() >0)
             {
-                $datas = $querygetObat->result_array();
-                foreach ($datas as $data) {
-                    $content[] = array(   
-                                    'id'                => $data['id'],
-                                    'nama_lengkap'      => $data['nama_lengkap'],
-                                    'alamat'            => $data['alamat'],
-                                    'desa'              => $data['desa'],
-                                    'ttl'               => $data['ttl'],
-                                    'nik'               => $data['nik'],
-                                    'data_origin'       => $data['data_origin'],
-                                    'no_bpjs'           =>$data['no_bpjs'],
-                                    'kode_provider'     =>$data['kode_provider'],
-                                    'nama_provider'    =>$data['nama_provider'],
-                                    'hubunganKeluarga' =>$data['hubunganKeluarga'],
-                                    'jnsKelasKode'     =>$data['jnsKelasKode'],
-                                    'jnsKelasNama'     =>$data['jnsKelasNama'],
-                                    'jnsPesertaKode'   =>$data['jnsPesertaKode'],
-                                    'jnsPesertaNama'   =>$data['jnsPesertaNama'],
-                                    'status'           =>$data['status'],
-                                    );
-                }
+                $data = $querygetObat->row_array();
+                $content = array(   
+                                'id'                => $data['id'],
+                                'nama_lengkap'      => $data['nama_lengkap'],
+                                'alamat'            => $data['alamat'],
+                                'desa'              => $data['desa'],
+                                'ttl'               => $data['ttl'],
+                                'nik'               => $data['nik'],
+                                'data_origin'       => $data['data_origin'],
+                                'no_bpjs'           => $data['no_bpjs'],
+                                'kode_provider'     => $data['kode_provider'],
+                                'nama_provider'     => $data['nama_provider'],
+                                'hubunganKeluarga'  => $data['hubunganKeluarga'],
+                                'jnsKelasKode'      => $data['jnsKelasKode'],
+                                'jnsKelasNama'      => $data['jnsKelasNama'],
+                                'jnsPesertaKode'    => $data['jnsPesertaKode'],
+                                'jnsPesertaNama'    => $data['jnsPesertaNama'],
+                                'status'            => $data['status'],
+                                );
                  $status_code = $this->status_code('200');
             }
             else
@@ -217,7 +208,7 @@ class Api_model extends CI_Model {
         // $update['token']=$token;
         // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        $result = array('header'=>$this->header(),$content,'status_code'=>$status_code);
         return $result;
     }
     function do_get_dataAllDokter(){

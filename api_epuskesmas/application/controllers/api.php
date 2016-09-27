@@ -166,14 +166,17 @@ class Api extends CI_Controller {
         $this->form_validasi('do_get_dataAllPasien_validation',$form);
     }
     function get_data_DetailPasien(){
-        $request_token = $this->input->post('request_token');
-        $client_id = $this->input->post('client_id');
+        $request_token  = $this->input->post('request_token');
+        $client_id      = $this->input->post('client_id');
+        // $id_pasien      = $this->input->post('id_pasien');
         
         $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
         $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
+        // $rules_id_pasien        = array('trim','required');
         
         $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
         $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
+        // $form[1] = array('var'=>'id_pasien','label'=>'ID Pasien','value'=>$id_pasien,'rules'=>$rules_id_pasien);
         
         $this->form_validasi('do_get_data_DetailPasien_validation',$form);
     }
@@ -259,13 +262,19 @@ class Api extends CI_Controller {
         $this->action_data_resep($data);
         
     }
-
-
-
-
     function action_data_resep($data=array()){
         
         $this->form_validasi('do_action_dataResep_validation',$data);
+    }
+    function getarray_data_Anamnesa(){
+        $data['request_time ']      = $this->input->post('request_time');
+        $data['request_token']      = $this->input->post('request_token'); 
+        $data['client_id']          = $this->input->post('client_id');
+        $data['request_output']     = $this->input->post('request_output');
+        $data['no_register']        = $this->input->post('no_register');
+       
+        $this->action_data_resep($data);
+        
     }
      function action_data_anamnesa($data=array()){
         $request_token          = $this->input->post('request_token');
