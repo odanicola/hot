@@ -164,10 +164,10 @@ class Api_model extends CI_Model {
         if($query->num_rows() == 0) {
             $id_pasien        = $this->input->post('id_pasien');
             
-            $this->db->like('pasien.cl_pid',$id_pasien);
+            $this->db->where('pasien.cl_pid',$id_pasien);
 
             $this->db->order_by("id");
-            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*",false);
+            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*,(SELECT IF(status_periksa='0',reg_id,'')reg_id FROM app_reg WHERE cl_pid=pasien.cl_pid ORDER BY reg_time DESC LIMIT 1) AS reg_id",false);
             $this->db->join('cl_village desa','pasien.cl_village=desa.code','left');
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
             $querygetObat=$this->db->get('cl_pasien as pasien');
@@ -191,6 +191,7 @@ class Api_model extends CI_Model {
                                 'jnsPesertaKode'    => $data['jnsPesertaKode'],
                                 'jnsPesertaNama'    => $data['jnsPesertaNama'],
                                 'status'            => $data['status'],
+                                'reg_id'            => $data['reg_id'],
                                 );
                  $status_code = $this->status_code('200');
             }
@@ -204,11 +205,9 @@ class Api_model extends CI_Model {
              $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
              $status_code = $this->status_code('412'); 
         }
-        
-        // $update['token']=$token;
-        // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
-        
-        $result = array('header'=>$this->header(),$content,'status_code'=>$status_code);
+        $result['header'] = $this->header();
+        $result['content'] = $content;
+        $result['status_code'] = $status_code;
         return $result;
     }
     function do_get_dataAllDokter(){
@@ -592,7 +591,7 @@ class Api_model extends CI_Model {
         return $status_code;
     }
     function do_aaction_dataSettingBPJS(){
-        $content=array();  
+        $content=array();
         $request_token  = $this->input->post('request_token');
         $client_id      = $this->input->post('client_id');
         
@@ -603,25 +602,27 @@ class Api_model extends CI_Model {
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
-                    $content[][$data['name']]=$data['value'];
+                    $content[$data['name']]=$data['value'];
                 }
                  $status_code = $this->status_code('200');
             }
             else
             {
-                $content = array("validation"=>"Data yang dicari tidak diketemukan");
+                $content['validation'] = "Data yang dicari tidak diketemukan";
                 $status_code = $this->status_code('204');
             }
         }else{
              $query->free_result(); 
-             $content = array('validation'=>'Client ID and Token you entered is incorrect.');  
+             $content['validation'] = 'Client ID and Token you entered is incorrect.';  
              $status_code = $this->status_code('412'); 
         }
         
         // $update['token']=$token;
         // $this->db->update('mas_user_api',$update,array('user_id' => $client_id));
         
-        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        $result['header'] = $this->header();
+        $result['content'] = $content;
+        $result['status_code'] = $status_code;
         return $result;
     }
 }
