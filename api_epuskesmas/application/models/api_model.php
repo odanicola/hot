@@ -182,7 +182,7 @@ class Api_model extends CI_Model {
                                 'alamat'            => $data['alamat'],
                                 'desa'              => $data['desa'],
                                 'tmp_lahir'         => $data['tmp_lahir'],
-                                'tgl_lahir'         => date("Y-m-d",strtotime($data['tgl_lahir'])),
+                                'tgl_lahir'         => substr($data['tgl_lahir'],0,4).'-'.substr($data['tgl_lahir'],4,2).'-'.substr($data['tgl_lahir'],5,2),
                                 'jeniskelamin'      => $data['jeniskelamin'],
                                 'data_origin'       => $data['data_origin'],
                                 'kode_provider'     => $data['kode_provider'],
