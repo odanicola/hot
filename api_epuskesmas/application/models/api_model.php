@@ -167,7 +167,7 @@ class Api_model extends CI_Model {
             $this->db->where('pasien.cl_pid',$id_pasien);
 
             $this->db->order_by("id");
-            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa,cl_bplace as tmp_lahir,cl_bday as tgl_lahir ,concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*,(SELECT IF(status_periksa='0',reg_id,'')reg_id FROM app_reg WHERE cl_pid=pasien.cl_pid ORDER BY reg_time DESC LIMIT 1) AS reg_id,IF(pasien.cl_gender='0' OR pasien.cl_gender='2','Perempuan','Laki-laki') AS jeniskelamin,",false);
+            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa,cl_bplace as tmp_lahir,cl_bday as tgl_lahir ,concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*,(SELECT IF(status_periksa='0',reg_id,'')reg_id FROM app_reg WHERE cl_pid=pasien.cl_pid ORDER BY reg_time DESC LIMIT 1) AS reg_id,IF(pasien.cl_gender='0' OR pasien.cl_gender='2','Perempuan','Laki-laki') AS jeniskelamin,pasien.cl_mobile_no as noHp,pasien.cl_phone_no",false);
             $this->db->join('cl_village desa','pasien.cl_village=desa.code','left');
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
             $querygetObat=$this->db->get('cl_pasien as pasien');
@@ -182,7 +182,9 @@ class Api_model extends CI_Model {
                                 'alamat'            => $data['alamat'],
                                 'desa'              => $data['desa'],
                                 'tmp_lahir'         => $data['tmp_lahir'],
-                                'tgl_lahir'         => substr($data['tgl_lahir'],0,4).'-'.substr($data['tgl_lahir'],4,2).'-'.substr($data['tgl_lahir'],5,2),
+                                'noHp'              => ((strlen($data['noHp']) > 9) ? $data['noHp'] : (strlen($data['cl_phone_no']) > 5) ? $data['cl_phone_no'] :  $data['noHp']),
+                                'tgl_lahirda'       => $data['tgl_lahir'],
+                                'tgl_lahir'         => substr($data['tgl_lahir'],0,4).'-'.substr($data['tgl_lahir'],4,2).'-'.substr($data['tgl_lahir'],6,2),
                                 'jeniskelamin'      => $data['jeniskelamin'],
                                 'data_origin'       => $data['data_origin'],
                                 'kode_provider'     => $data['kode_provider'],

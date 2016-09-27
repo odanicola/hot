@@ -93,10 +93,10 @@
                     <td>Nafas</td>
                     <td><input type="text" size="10" name="anamnesa_nafas" value="" /> Cm</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td>Edukasi</td>
                     <td colspan="4"><textarea name="anamnesa_edukasi" rows="2" cols="25"></textarea></td>
-                </tr>
+                </tr> -->
             </table>
         </td>
     </tr>
@@ -105,11 +105,11 @@
         <td width='3%' align='center'>:</td>
         <td ><textarea name="anamnesa_terapi" rows="2" cols="25"></textarea></td>
     </tr>
-    <tr>
+    <!-- <tr>
         <td width='20%'>Keterangan</td>
         <td width='3%' align='center'>:</td>
         <td ><textarea name="keterangan" rows="2" cols="25"></textarea></td>
-    </tr>
+    </tr> -->
     <tr>
         <td>&nbsp;</td>
         <td>&nbsp;</td>

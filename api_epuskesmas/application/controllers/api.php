@@ -271,8 +271,37 @@ class Api extends CI_Controller {
         $data['request_token']      = $this->input->post('request_token'); 
         $data['client_id']          = $this->input->post('client_id');
         $data['request_output']     = $this->input->post('request_output');
-        $data['no_register']        = $this->input->post('no_register');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+        $data['no_register']        = $this->input->post('reg_id');
+
        
+
+
+
+
+
+// anamnesa_dokter_id
+
+// anamnesa_asisten_nama
+// anamnesa_asisten_id
+// anamnesa_sistole
+// anamnesa_berat
+// anamnesa_diastole
+// anamnesa_tinggi
+// anamnesa_nadi
+// anamnesa_suhu
+// anamnesa_nafas
+// anamnesa_terapi
         $this->action_data_resep($data);
         
     }
