@@ -396,7 +396,7 @@ class Api_model extends CI_Model {
             if (!isset($status_code) && empty($status_code)) {
                 $this->db->where('reg_id',$data['no_register']);
                 $this->db->set('app_update_time',time());
-                $this->db->set('app_update',$this->session->userdata('username'));
+                $this->db->set('app_update',$data['pengguna']);
                 $this->db->update('app_reg');
 
                 $id = $datasave['reg_id'];
@@ -457,8 +457,8 @@ class Api_model extends CI_Model {
                         $datasave['no']=$key['resep_no_urut'];
                         $datasave['no_urut']='0';
                         $datasave['created_date']=time();
-                        $datasave['created_by']=$this->session->userdata('username');
-                        $datasave['modified_by']=$this->session->userdata('username');
+                        $datasave['created_by']=$data['pengguna'];
+                        $datasave['modified_by']=$$data['pengguna'];
                         $datasave['modified_date']=time();
                         
                         
@@ -473,7 +473,7 @@ class Api_model extends CI_Model {
                 }
                 $this->db->where('reg_id',$data['no_register']);
                 $this->db->set('app_update_time',time());
-                $this->db->set('app_update',$this->session->userdata('username'));
+                $this->db->set('app_update',$data['pengguna']);
                 $this->db->update('app_reg');
 
                 $id = $datasave['reg_id'];
@@ -600,6 +600,127 @@ class Api_model extends CI_Model {
         $result['content'] = $content;
         $result['status_code'] = $status_code;
         return $result;
+    }
+    function do_get_dataBPJSDiagnosaAnamnesa($data=array()){
+        switch($data['status_pulang'])
+        {
+            case "4":
+                $dataubah = array(  'bpjs_kode_poli_rujukan_internal'   => '',
+                                    'bpjs_kode_rs_rujukan'              => $data['bpjs_provider'],
+                                    'bpjs_kode_poli_rujukan'            => $data['bpjs_poli'],
+                                );
+                $datawhere = array( 'status_keluar'                     => '4',
+                                    'reg_id'                            => $data['no_register'],
+                                  );    
+                $this->update('bpjs_data_kunjungan',$dataubah,$datawhere);
+            break;
+            
+            // status 5 adalah rujuk internal
+            case "5":
+                $dataubah = array(  'bpjs_kode_poli_rujukan_internal'   => $data['bpjs_poli_inter'],
+                                );
+                $datawhere = array( 'status_keluar'                     => '3',
+                                    'reg_id'                            => $data['no_register'],
+                                  );    
+                $this->update('bpjs_data_kunjungan',$dataubah,$datawhere);
+            break;
+
+            default :
+            if($data['status_pulang']=="" ) {
+                if(substr($data['no_register'],0,2)=="RJ")
+                    $data['status_pulang'] = "3";
+                else
+                    $data['status_pulang'] = "0";
+            }
+            $this->db->where('reg_id',$data['no_register']);
+            $this->db->set('status_keluar',$data['status_pulang']);
+            $this->db->update('bpjs_data_kunjungan');
+        }
+
+        $this->db->where("reg.reg_id",$data['no_register']);
+        $this->db->select("reg.reg_time,pasien.no_bpjs,kunjungan.bpjs_no_kunjungan,kunjungan.bpjs_kode_rs_rujukan as provider,bpjs_kode_poli_rujukan as poli_provider,kunjungan.status_kelua",false);
+        $this->db->join('bpjs_data_kunjungan kunjungan','kunjungan.reg_id=reg.reg_id','left');
+        $this->db->join('bpjs_data_pasien pasien','pasien.cl_pid=reg.cl_pid','left');
+        $data_peserta   = $this->db->get('app_reg reg')->row_array();
+
+
+        $this->db->where('reg_id',$data['no_register']);
+        $tampilanam= $this->db->get('app_poli_detail_anamnesa')->result_array();
+        foreach ($tampilanam as $datanam) {
+            $data_anam[$datanam['name']] = $datanam['value'];
+        }
+
+        $this->db->where('code_mapping',$data_anam["dokter_id"]);
+        $data_dokter = $this->db->get('bpjs_data_dokter')->row_array();
+
+        $this->db->where('reg_id',$data['no_register']);
+        $this->db->select("SELECT diag_id,bpjs_data_icdx.status_spesialis,bpjs_data_icdx.value");
+        $this->db->join('bpjs_data_icdx','bpjs_data_icdx.code=app_poli_detail_diagnosa.diag_id','left');
+        $query = $this->db->get('app_poli_detail_diagnosa',3);
+        //return $sql;
+        foreach ($query->result_array as $datobat)
+        {
+            $data_diag[] = $datobat["diag_id"];
+        }
+
+        $kdStatusPulang = $data_peserta["status_keluar"];
+        $noKunjungan    = $data_peserta["bpjs_no_kunjungan"];
+        $noKartu        = $data_peserta["no_bpjs"];
+        $tglDaftar      = date('d-m-Y',$data_peserta["reg_time"]);
+        $tglPulang      = date('d-m-Y',$data_peserta["reg_time"]);
+
+        $keluhan        = $data_anam["anamnesa"];
+        $sistole        = $data_anam["sistole"];
+        $diastole       = $data_anam["diastole"];
+        $beratBadan     = $data_anam["berat"];
+        $tinggiBadan    = $data_anam["tinggi"];
+        $respRate       = $data_anam["nafas"];
+        $heartRate      = $data_anam["nadi"];
+        $kdSadar        = $data_anam["kesadaran"];
+        $terapi         = $data_anam["terapi"];
+        if($this->func_bpjsIsDkiJakarta()) 
+        {
+            if(Bpjs::func_getProviderAsal($data['no_register'])!='default')
+            {
+                $sql_dokter = "SELECT kdDokter FROM bpjs_data_pendaftaran WHERE reg_id='".$_GET['id_reg']."'";
+                $query_dokter = mysql_query($sql_dokter);
+                $data_dokternyah = mysql_fetch_assoc($query_dokter);
+                $kdDokter       = $data_dokternyah["kdDokter"];
+            }
+        }
+
+    }
+    function func_bpjsIsDkiJakarta()
+    {
+        $sql = $this->db->query("SELECT value FROM bpjs_setting WHERE name='versi dki'");
+        $data = $sql->row_array();
+        if($data['value']=="on") return true; else return false;
+    }
+    function func_getProviderAsal($reg_id)
+    {
+        $sql = $this->db->query("SELECT provider_kirim FROM bpjs_data_pendaftaran WHERE reg_id='".$reg_id."'");
+        $data = $sql->row_array();
+        if($data["provider_kirim"]=="") 
+        {
+            $this->db->where('reg_id',$reg_id);
+            $this->db->set('provider_kirim',$this->func_getSelfProvider());
+            $this->db->update('bpjs_data_pendaftaran');
+            return "default";
+        }
+        
+        if($data["provider_kirim"]==$this->func_getSelfProvider()) 
+        return "default"; //berarti provider kirimnya adalah puskesmas bersangkutan
+        else 
+        return $data["provider_kirim"];
+    }
+
+    function func_getSelfProvider()
+    {
+        $sql = $this->db->query("SELECT 
+        (SELECT value FROM bpjs_setting WHERE name='bpjs_username') as username
+        ");
+        $data = $sql->row_array();
+        return $data["username"];
     }
 }
 ?>

@@ -70,5 +70,11 @@ class Form extends CI_Controller {
 
         $this->load->view('api/form_get_settingBPJS',$data);   
     }
+    function form_get_insertBPJSDiagnosaAnamnesa(){
+        $data = array();
+        $data['title_form'] = "Form Semua Insert Resep";
+
+        $this->load->view('api/form_get_insertBPJSDiagnosaAnamnesa',$data);   
+    }
 }
 ?>
