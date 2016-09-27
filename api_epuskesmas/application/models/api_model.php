@@ -499,63 +499,41 @@ class Api_model extends CI_Model {
         
         return $result;
     }
-    function do_aaction_dataAnamnesa(){
+    function do_aaction_dataAnamnesa($dataanamnesa=array()){
         $this->db->where('reg_id',$this->input->post('reg_id'));
         if ($this->db->delete('app_poli_detail_anamnesa')==FALSE) {
             $content=array('validation'=>'Execution data is failed'); 
             $status_code = $this->status_code('417'); 
         }else{
-            foreach($_POST as $a=>$b)
-            {
-                if(substr($a,0,9)=='anamnesa_')
-                {
-                    $c = str_replace('_input','',$a);
-                    $c = substr($c,9,100);
-                    $no_urut=empty($_POST['no_urut'])?0:$_POST['no_urut'];
-                    $sql = "INSERT INTO app_poli_detail_anamnesa(reg_id,name,value,no_urut,created_by,created_date) 
-                    VALUES('".$_POST['reg_id']."','".$c."','".$b."',".$no_urut.",'".$_SESSION['username']."','".time()."')
-                    ON DUPLICATE KEY UPDATE value='".$b."',modified_by='".$_SESSION['username']."',modified_date='".time()."'
-                    ";
-                    //echo $sql;die;
-                    mysql_query($sql);
+            // print_r($dataanamnesa);
+            // die();
+            foreach ($dataanamnesa['anamnesa'] as $data) {
+                foreach ($data as $key => $value) {
+                    $datasave['reg_id'] =  $dataanamnesa['no_register'];
+                    $datasave['name']   =  $key;
+                    $datasave['value']  =  $value;
+                    $datasave['no_urut']=  '0';
+                    $datasave['created_date']   =  time();
+                    $datasave['created_by']     =  $dataanamnesa['pengguna'];
+                    $datasave['modified_date']  =  time();
+                    $datasave['modified_by']    =  $dataanamnesa['pengguna'];
+                    $this->db->insert('app_poli_detail_anamnesa',$datasave);
                 }
             }
-            foreach ($data['resep'] as $key) {
-                $qCekUsername = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$key['resep_kodeobat']),1);
-                if($qCekUsername->num_rows()>0){
-                    $content=array('validation'=>'Diagnosa entered is already existed.'); 
-                    $status_code = $this->status_code('412'); 
-                }else{
-                    $sno_urut=sprintf("%04s", $key['resep_no_urut']);;
-                    $datasave['id_transc']="RE".$_POST['no_register'].$sno_urut;
-                    $datasave['reg_id']=$data['no_register'];
-                    $datasave['obat_id']=$key['resep_kodeobat'];
-                    $datasave['obat_jml']=$key['resep_jumlah'];
-                    $datasave['obat_racik']=$key['resep_racikan'];
-                    $datasave['obat_dosis']=$key['resep_dosis'];
-                    $datasave['no']=$key['resep_no_urut'];
-                    $datasave['no_urut']='0';
-                    $datasave['created_date']=time();
-                    $datasave['created_by']=$this->session->userdata('username');
-                    $datasave['modified_by']=$this->session->userdata('username');
-                    $datasave['modified_date']=time();
-                    
-                    
-                    $this->db->insert('app_poli_detail_resep', $datasave);
-                }
-                $nama_obat = $key['resep_nama_obat'];
-            }
-            $this->db->where('reg_id',$data['no_register']);
+            $this->db->where('reg_id',$dataanamnesa['no_register']);
             $this->db->set('status_apotek','1');
             $this->db->update('app_reg');
 
-            $id = $datasave['reg_id'];
-            $options = array('reg_id' => $id,'obat_id'=>$datasave['obat_id'],'no'=>$datasave['no']);
-            $query = $this->db->get_where('app_poli_detail_resep',$options,1);
+            
+            $reg_id= $this->input->post('reg_id');
+            $this->db->where('reg_id',$reg_id);
+            $query = $this->db->get('app_poli_detail_anamnesa');
             if ($query->num_rows() > 0){
-                $data = $query->row_array();
-                $content = array('id'=>$data['reg_id'],'kode obat'=>$data['obat_id'],'nama obat'=>$nama_obat,'no urut'=>$data['no'],
-                                'jumlah obat'=>$data['obat_jml'],'dosis obat'=>$data['obat_dosis'],'Kode Racikan'=>$data['obat_racik']);
+                $data = $query->result_array();
+                $content['id'] = $reg_id;
+                foreach ($data as $keypil) {
+                    $content[$keypil['name']] = $keypil['value'];
+                }
                 $status_code = $this->status_code('201');
             }else{
                 $query->free_result();   

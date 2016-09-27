@@ -77,7 +77,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 		<p>4. <a href="<?php echo base_url().'form/form_get_allDokter'; ?>">Semua Data Dokter</a></p>
 		<!-- <p>5. <a href="<?php /*echo base_url().'form/form_get_allObat'; */ ?>">Semua Data Obat</a></p> -->
 		<p>5. <a href="<?php echo base_url().'form/form_get_pasienByDiagnosa'; ?>">Semua Data Pasien Menurut Diagnosa</a></p>
-		<p>6. <a href="<?php echo base_url().'form/form_get_insertAnamnesa'; ?>">Insert Anamnesa (Belum)</a></p>
+		<p>6. <a href="<?php echo base_url().'form/form_get_insertAnamnesa'; ?>">Insert Anamnesa</a></p>
 		<p>7. <a href="<?php echo base_url().'form/form_get_insertDiagosa'; ?>">Insert Diagnosa</a></p>
 		<p>8. <a href="<?php echo base_url().'form/form_get_insertResep'; ?>">Insert Resep</a></p>
 		<p>9. <a href="<?php echo base_url().'form/form_get_SettingBPJS'; ?>">Setting BPJS</a></p>

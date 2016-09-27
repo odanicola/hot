@@ -36,21 +36,26 @@
         <td width='3%' align='center'>:</td>
         <td colspan="4"><input type="text" size="30" name="reg_id" value="RJ201605100001" /> *</td>
     </tr>
+     <tr>
+        <td width='20%'>Pengguna</td>
+        <td width='3%' align='center'>:</td>
+        <td colspan="4"><input type="text" size="30" name="pengguna" value="puskesmas" /> *</td>
+    </tr>
     <tr>
         <td width='20%'>Pemeriksa</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_dokter_id" value="" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_dokter_nama" value="Siti Lestari" /> *</td>
         <td width='20%'>NIP</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_dokter_nama" value="" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_dokter_id" value="198108140002" /> *</td>
     </tr>
     <tr>
        <td width='20%'>Asisten</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_asisten_nama" value="" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_asisten_nama" value="Novita Puspa Dewi" /> *</td>
         <td width='20%'>NIP Asistern</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_asisten_id" value="" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_asisten_id" value="198311120004" /> *</td>
     </tr>
     <tr>
         <td width='20%'>Anamnesa</td>
@@ -133,7 +138,7 @@ $("#btn_lihatdatas").click(function(){
     }else{
         $.ajax({
           type   : "POST",
-          url    : "<?php echo base_url(); ?>api/action_data_anamnesa",
+          url    : "<?php echo base_url(); ?>api/getarray_data_Anamnesa",
           data   : $("form").serialize(),
           success: function (response, text) {
             $("#showdata").html(response);

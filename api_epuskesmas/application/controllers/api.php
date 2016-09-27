@@ -37,7 +37,7 @@ class Api extends CI_Controller {
     
     function form_validasi($function,$form){
        $request_output=$this->input->post('request_output');
-       if ($function=='do_action_dataDiagnosa_validation' || $function=='do_action_dataResep_validation') {
+       if ($function=='do_action_dataDiagnosa_validation' || $function=='do_action_dataResep_validation'|| $function=='do_aaction_dataAnamnesa_validation') {
            header("Access-Control-Allow-Origin: *");
             
             $content = $this->direct_model($function,$form);
@@ -272,66 +272,28 @@ class Api extends CI_Controller {
         $data['client_id']          = $this->input->post('client_id');
         $data['request_output']     = $this->input->post('request_output');
         $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
-        $data['no_register']        = $this->input->post('reg_id');
+        $data['pengguna']           = $this->input->post('pengguna');
+        $data['anamnesa'][]['anamnesa']     = $this->input->post('anamnesa_anamnesa');
+        $data['anamnesa'][]['dokter_id']     = $this->input->post('anamnesa_dokter_id');
+        $data['anamnesa'][]['dokter_nama']   = $this->input->post('anamnesa_dokter_nama');
+        $data['anamnesa'][]['asisten_nama']  = $this->input->post('anamnesa_asisten_nama');
+        $data['anamnesa'][]['asisten_id']    = $this->input->post('anamnesa_asisten_id');
+        $data['anamnesa'][]['sistole']       = $this->input->post('anamnesa_sistole');
+        $data['anamnesa'][]['kesadaran']     = $this->input->post('anamnesa_kesadaran');
+        $data['anamnesa'][]['berat']         = $this->input->post('anamnesa_berat');
+        $data['anamnesa'][]['diastole']      = $this->input->post('anamnesa_diastole');
+        $data['anamnesa'][]['tinggi']        = $this->input->post('anamnesa_tinggi');
+        $data['anamnesa'][]['nadi']          = $this->input->post('anamnesa_nadi');
+        $data['anamnesa'][]['suhu']          = $this->input->post('anamnesa_suhu');
+        $data['anamnesa'][]['nafas']         = $this->input->post('anamnesa_nafas');
+        $data['anamnesa'][]['terapi']        = $this->input->post('anamnesa_terapi');
 
-       
-
-
-
-
-
-// anamnesa_dokter_id
-
-// anamnesa_asisten_nama
-// anamnesa_asisten_id
-// anamnesa_sistole
-// anamnesa_berat
-// anamnesa_diastole
-// anamnesa_tinggi
-// anamnesa_nadi
-// anamnesa_suhu
-// anamnesa_nafas
-// anamnesa_terapi
-        $this->action_data_resep($data);
+        $this->action_data_anamnesa($data);
         
     }
      function action_data_anamnesa($data=array()){
-        $request_token          = $this->input->post('request_token');
-        $client_id              = $this->input->post('client_id');
-        $anamnesa_asisten_id    = $this->input->post('anamnesa_asisten_id');
-        $anamnesa_asisten_nama  = $this->input->post('anamnesa_asisten_nama');
-        $anamnesa_dokter_id     = $this->input->post('anamnesa_dokter_id');
-        $anamnesa_dokter_nama   = $this->input->post('anamnesa_dokter_nama');
-        $reg_id                 = $this->input->post('reg_id');
         
-
-        $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
-        $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
-        $rules_anamnesa_asisten_id      = array('trim','required');
-        $rules_anamnesa_asisten_nama    = array('trim','required');
-        $rules_anamnesa_dokter_id       = array('trim','required');
-        $rules_anamnesa_dokter_nama     = array('trim','required');
-        $rules_reg_id                   = array('trim','required');
-
-        $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
-        $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
-        $form[2] = array('var'=>'anamnesa_asisten_id','label'=>'Kode Asisten','value'=>$anamnesa_asisten_id,'rules'=>$rules_anamnesa_asisten_id);
-        $form[3] = array('var'=>'anamnesa_asisten_nama','label'=>'Nama Asisten','value'=>$anamnesa_asisten_nama,'rules'=>$rules_anamnesa_asisten_nama);
-        $form[4] = array('var'=>'anamnesa_dokter_id','label'=>'Kode Dokter','value'=>$anamnesa_dokter_id,'rules'=>$rules_anamnesa_dokter_id);
-        $form[5] = array('var'=>'anamnesa_dokter_nama','label'=>'Nama Dokter','value'=>$anamnesa_dokter_nama,'rules'=>$rules_anamnesa_dokter_nama);
-        $form[6] = array('var'=>'reg_id','label'=>'Register Pasien','value'=>$reg_id,'rules'=>$rules_reg_id);
-        
-        $this->form_validasi('do_aaction_dataAnamnesa_validation',$form);
+        $this->form_validasi('do_aaction_dataAnamnesa_validation',$data);
     }
     function get_data_SettingBPJS(){
         $request_token = $this->input->post('request_token');
