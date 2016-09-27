@@ -154,7 +154,7 @@ class Api_model extends CI_Model {
         
         $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         return $result;
-    }
+    }    
     function do_get_data_DetailPasien(){
         $content=array();  
         $request_token  = $this->input->post('request_token');
@@ -167,7 +167,7 @@ class Api_model extends CI_Model {
             $this->db->where('pasien.cl_pid',$id_pasien);
 
             $this->db->order_by("id");
-            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa, concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*,(SELECT IF(status_periksa='0',reg_id,'')reg_id FROM app_reg WHERE cl_pid=pasien.cl_pid ORDER BY reg_time DESC LIMIT 1) AS reg_id",false);
+            $this->db->select("pasien.cl_pid AS id,pasien.cl_nik as nik, concat_ws(' ',cl_pname,cl_midname,cl_surname) AS nama_lengkap, pasien.cl_address AS alamat, desa.value AS desa,cl_bplace as tmp_lahir,cl_bday as tgl_lahir ,concat(cl_bplace,' , ',substr(cl_bday,7,2),'-',substr(cl_bday,5,2),'-',substr(cl_bday,1,4)) AS ttl, pasien.data_origin, desa.*,bpjs.*,(SELECT IF(status_periksa='0',reg_id,'')reg_id FROM app_reg WHERE cl_pid=pasien.cl_pid ORDER BY reg_time DESC LIMIT 1) AS reg_id,IF(pasien.cl_gender='0' OR pasien.cl_gender='2','Perempuan','Laki-laki') AS jeniskelamin,",false);
             $this->db->join('cl_village desa','pasien.cl_village=desa.code','left');
             $this->db->join('bpjs_data_pasien bpjs','bpjs.cl_pid=pasien.cl_pid','left');
             $querygetObat=$this->db->get('cl_pasien as pasien');
@@ -176,21 +176,17 @@ class Api_model extends CI_Model {
                 $data = $querygetObat->row_array();
                 $content = array(   
                                 'id'                => $data['id'],
+                                'nik'               => $data['nik'],
+                                'no_bpjs'           => $data['no_bpjs'],
                                 'nama_lengkap'      => $data['nama_lengkap'],
                                 'alamat'            => $data['alamat'],
                                 'desa'              => $data['desa'],
-                                'ttl'               => $data['ttl'],
-                                'nik'               => $data['nik'],
+                                'tmp_lahir'         => $data['tmp_lahir'],
+                                'tgl_lahir'         => date("Y-m-d",strtotime($data['tgl_lahir'])),
+                                'jeniskelamin'      => $data['jeniskelamin'],
                                 'data_origin'       => $data['data_origin'],
-                                'no_bpjs'           => $data['no_bpjs'],
                                 'kode_provider'     => $data['kode_provider'],
                                 'nama_provider'     => $data['nama_provider'],
-                                'hubunganKeluarga'  => $data['hubunganKeluarga'],
-                                'jnsKelasKode'      => $data['jnsKelasKode'],
-                                'jnsKelasNama'      => $data['jnsKelasNama'],
-                                'jnsPesertaKode'    => $data['jnsPesertaKode'],
-                                'jnsPesertaNama'    => $data['jnsPesertaNama'],
-                                'status'            => $data['status'],
                                 'reg_id'            => $data['reg_id'],
                                 );
                  $status_code = $this->status_code('200');
