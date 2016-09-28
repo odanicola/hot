@@ -88,11 +88,11 @@ class Pasien_model extends CI_Model {
 
         if ($query->num_rows() > 0) {
             // echo "NIK pasien sudah pernah terdaftar";
-            return 'false'.'|NIK pasien sudah pernah terdaftar';
+            return 'false'.'|NIK pasien pernah terdaftar<br>';
         }else{
             if($this->db->insert('app_users_list', $data_list)){
                 $this->db->insert('app_users_profile', $data_profile);
-                return 'true'.'|Data berhasil disimpan';  
+                return 'true'.'|Data berhasil disimpan<br>';  
             }else{
                 echo mysql_error();
             }

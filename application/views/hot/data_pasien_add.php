@@ -330,11 +330,11 @@
     };
 
     $("#btn-simpan").click(function(){
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        
         var data = new FormData();
         var nik  = $("[name='username']").val();
         var bpjs = $("[name='bpjs']").val();
-
-
 
         data.append('username',     $("[name='username']").val());
         data.append('bpjs',         $("[name='bpjs']").val());
