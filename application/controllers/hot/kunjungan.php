@@ -183,8 +183,8 @@ class Kunjungan extends CI_Controller {
 				'bpjs'   	    => $act->bpjs,
 				'phone_number'	=> $act->phone_number,
 				'status_antri'	=> ucwords($act->status_antri),
-				'edit'		    => 1,
-				'delete'	    => 1
+				'cl_pid'		=> $act->cl_pid,
+				'reg_id'		=> $act->reg_id
 			);
 		}
 

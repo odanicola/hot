@@ -112,8 +112,8 @@
 			{ name: 'bpjs', type: 'string'},
 			{ name: 'phone_number', type: 'string'},
 			{ name: 'status_antri', type: 'string'},
-			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
+			{ name: 'cl_pid', type: 'string'},
+			{ name: 'reg_id', type: 'string'}
         ],
 		url: "<?php echo site_url('hot/kunjungan/json'); ?>",
 		cache: false,
@@ -176,10 +176,33 @@
                  }
                 },
 		 	<?php } ?>
-
 				{ text: 'Status', datafield: 'bpjs', align: 'center', width: '45%', cellsrenderer: function (row) {
 				    var dataRecord = $("#jqxgrid").jqxGrid('getrowdata', row);
-					return "<div style='width:100%;padding-top:14px;text-align:center' >"+dataRecord.status_antri+"<br>BJPS: "+dataRecord.bpjs+"</div>";
+				    if(dataRecord.cl_pid != null && dataRecord.cl_pid != ""){
+				    	var status_mr = "";
+				    }else{
+				    	var status_mr = "<br><span style='color:red'>MR belum terhubung</span>";
+				    }
+				    if(dataRecord.bpjs != null && dataRecord.bpjs != ""){
+				    	var status_bpjs = "Peserta BPJS";
+				    }else{
+				    	var status_bpjs = "<span style='color:orange'>Non BPJS</span>";
+				    }
+				    if(dataRecord.reg_id != null && dataRecord.reg_id != ""){
+				    	var status_reg_id = "";
+				    }else{
+				    	if(dataRecord.cl_pid != null && dataRecord.cl_pid != "" && dataRecord.status_antri=="Antri"){
+				    		check_reg_id(dataRecord.cl_pid, dataRecord.id_kunjungan);
+			            }
+
+				    	var status_reg_id = "<br><span style='color:red'>Belum daftar ulang</span>";
+				    }
+
+				    if(status_mr == "" && status_reg_id == ""){
+						return "<div style='width:100%;padding-top:14px;text-align:center;color:green' >"+dataRecord.status_antri+" <br> "+	status_bpjs+"</div>";
+				    }else{
+						return "<div style='width:100%;padding-top:14px;text-align:center' >"+dataRecord.status_antri+" / "+	status_bpjs+status_mr+status_reg_id+"</div>";
+				    }
                  }
                 }            
             ]
@@ -190,7 +213,15 @@
 			var rowData = args.row;
 
 			if(rowData.status_antri != "Batal"){
-        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+				if(rowData.cl_pid != null && rowData.cl_pid != ""){
+					if(rowData.reg_id != null && rowData.reg_id != ""){
+	        			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Pengukuran' onClick='btn_edit(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+	        		}else{
+	        			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+	        		}
+	        	}else{
+	        		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit Profile' onClick='btn_profile(\""+rowData.username+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
+	        	}
 			}else{
         		$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.nama+"</br><br><div style='text-align:center'><input class='btn btn-danger' style='width:100px' type='button' value='Delete' onClick='btn_delete(\""+rowData.id_kunjungan+"\")'>&nbsp;&nbsp;<input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup();'></div></div>");
 			}
@@ -198,6 +229,19 @@
 			$("#popup").jqxWindow('open');
 		});
 
+	function check_reg_id(id, id_kunjungan){
+	    $.ajax({
+	        dataType : 'json',
+	        url : '<?php echo base_url()."epus_api/pasien_reg_update/"?>' + id + '/' + id_kunjungan,
+	        success : function(response){
+	        	alert(response);
+	        }
+	    });
+	}
+
+	function btn_profile(id){
+      	document.location.href="<?php echo base_url()?>hot/pasien/edit/" + id;
+	}
 
 	function btn_edit(id){
       	document.location.href="<?php echo base_url()?>hot/kunjungan/edit/" + id;
