@@ -36,6 +36,7 @@ class Kunjungan extends CI_Controller {
 				$code = $this->session->userdata('puskesmas');
 			}
 			$data['datapuskesmas']  = $this->hot_model->get_pus($code,"code","cl_phc");
+			$this->session->set_userdata('filter_puskesmas','P'.$this->session->userdata('puskesmas'));
 
 			$data['content'] = $this->parser->parse("hot/kunjungan_daftar_add",$data,true);
 			$this->template->show($data,"home");
@@ -197,7 +198,7 @@ class Kunjungan extends CI_Controller {
 	}
 
 	function json_autocomplete(){
-		$rows_all = $this->kunjungan_model->get_filter_pasien();
+		$rows_all = $this->kunjungan_model->get_autocomplete_pasien();
 		$data = array();
 		foreach($rows_all as $act) {
 			$data[] = array(

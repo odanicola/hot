@@ -161,7 +161,7 @@ class Pasien extends CI_Controller {
 		$this->session->set_userdata('filter_jenis_bpjs','');
 		$this->session->set_userdata('filter_urutan_usia','');
 		$this->session->set_userdata('filter_jenis_kelamin','');
-		$this->session->set_userdata('filter_puskesmas','');
+		$this->session->set_userdata('filter_puskesmas','P'.$this->session->userdata('puskesmas'));
 
 		$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
 

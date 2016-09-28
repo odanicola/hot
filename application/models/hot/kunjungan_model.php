@@ -29,6 +29,19 @@ class Kunjungan_model extends CI_Model {
         return $query->result();
     }
 
+    function get_autocomplete_pasien(){
+        $filter = $this->input->post('nama');
+
+        $this->db->where("app_users_profile.code",$this->session->userdata('puskesmas'));
+        $this->db->where("level","pasien");
+        $this->db->where("(nama LIKE '%".$filter."%' OR bpjs LIKE '%".$filter."%' OR app_users_profile.username LIKE '%".$filter."%')");
+
+        $this->db->select("CONCAT(app_users_profile.nama,', ',app_users_profile.jk,' / ',DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),app_users_profile.tgl_lahir)), '%Y')+0,' Tahun <br>',app_users_profile.username,'<br>',bpjs) as nama,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia, app_users_profile.nama as name, app_users_profile.username, app_users_profile.jk,app_users_profile.bpjs",false);
+        $this->db->join('app_users_list','app_users_profile.username = app_users_list.username','left');
+        $query = $this->db->get("app_users_profile",10,0);
+        return $query->result();
+    }
+
     function get_pemeriksaan($id_kunjungan){
         $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.tb,app_users_profile.bb,app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
