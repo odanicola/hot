@@ -66,12 +66,12 @@
 			datatype: "json",
 			type	: "POST",
 			datafields: [
-			{ name: 'code', type: 'string'},
 			{ name: 'cl_phc', type: 'string'},
+			{ name: 'sdm_id', type: 'string'},
+			{ name: 'code', type: 'string'},
 			{ name: 'value', type: 'string'},
-			{ name: 'status', type: 'int'},
-			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
+			{ name: 'sdm_nopeg', type: 'string'},
+			{ name: 'sdm_jenis', type: 'string'}
         ],
 		url: "<?php echo site_url('hot/dokter/json'); ?>",
 		cache: false,
@@ -112,11 +112,17 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '75%'},
-				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '25%', cellsrenderer: function (row,column,value) {
-					return "<div style='width:100%;padding:7px;text-align:center'>"+(value==1 ? "<i class='icon fa fa-check-square-o'></i>" : "-")+"</div>";
+				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '55%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.value+"<br>"+dataRecord.sdm_nopeg+"</div>";
                  }
-                }            
+                },
+				{ text: 'Status', datafield: 'sdm_jenis', align: 'center', filtertype: 'textbox', width: '45%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid_dokter").jqxGrid('getrowdata', row);
+				    var status = (dataRecord.code !="" && dataRecord.code !=null) ? "PCare ID: " + dataRecord.code : "<span style='color:red'>Tidak Terhubung PCare</span>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.sdm_jenis+"<br>"+status+"</div>";
+                 }
+                }
             ]
 		});
 
@@ -124,20 +130,17 @@
 			var args = event.args;
 			var rowData = args.row;
 
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.code+"\",\""+rowData.cl_phc+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
+			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.sdm_id+"\",\""+rowData.cl_phc+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
  			$("html, body").animate({ scrollTop: 0 }, "slow");
 			$("#popup").jqxWindow('open');
 		});
 
-	function btn_edit(code,cl_phc){
-		var code ="" +code;
-		var pad  = "000"
-		var new_code = pad.substring(0, pad.length - code.length) + code
-      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+new_code+"/"+cl_phc;
+	function btn_edit(sdm_id,cl_phc){
+      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+sdm_id+"/"+cl_phc;
 	}
 
 	function sync(){
-		$.post("<?php echo base_url().'bpjs_api/get_dokter' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
+		$.post("<?php echo base_url().'epus_api/dokter_search' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
 			$("#jqxgrid_dokter").jqxGrid('updateBoundData', 'filter');
 			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter sebanyak "+res+" data.<br>"+btn_ok+"</div>");
 			$("#popup").jqxWindow('open');
@@ -150,7 +153,11 @@
     }
 
 	$("#btn_syncronize").click(function(){
-		$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter dengan PCare? <br>"+btn_confirm+"</div>");
+		if($("#puskesmas").val() != "-"){
+			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter dengan ePuskesmas? <br>"+btn_confirm+"</div>");
+		}else{
+			$("#popup_content").html("<div style='text-align:center'><br><br>Tentukan nama puskesmas <br>"+btn_ok+"</div>");
+		}
 		$("#popup").jqxWindow('open');
 	});
 

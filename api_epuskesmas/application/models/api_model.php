@@ -248,19 +248,23 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->order_by("id");
-            $this->db->select("app_sdm.sdm_id as id,app_sdm.sdm_nama as nama,app_sdm.sdm_nopeg,app_sdm.tanggal_lahir,app_sdm.tempat_lahir, ds_phc_staff.nama as jenis_sdm,",false);
+            $this->db->select("app_sdm.sdm_id as sdm_id,app_sdm.sdm_nama as nama,app_sdm.sdm_nopeg,app_sdm.tanggal_lahir,app_sdm.tempat_lahir, app_sdm.sdm_jenis_id, ds_phc_staff.nama as sdm_jenis,bpjs_data_dokter.code",false);
             $this->db->join('ds_phc_staff','ds_phc_staff.id=app_sdm.sdm_jenis_id','left');
+            $this->db->join('bpjs_data_dokter','bpjs_data_dokter.code_mapping=app_sdm.sdm_id','left');
             $querygetObat=$this->db->get('app_sdm',$limit);
             if($querygetObat->num_rows() >0)
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
-                                    'id'                => $data['id'],
+                                    'code'              => $data['code'],
+                                    'sdm_id'            => $data['sdm_id'],
                                     'nama'              => $data['nama'],
                                     'sdm_nopeg'         => $data['sdm_nopeg'],
-                                    'tempat_lahir'      => date("d-m-Y",strtotime($data['tanggal_lahir'])).', '.$data['tempat_lahir'],
-                                    'jenis_sdm'         => $data['jenis_sdm'],
+                                    'tanggal_lahir'     => date("d-m-Y",strtotime($data['tanggal_lahir'])),
+                                    'tempat_lahir'      => $data['tempat_lahir'],
+                                    'sdm_jenis_id'      => $data['sdm_jenis_id'],
+                                    'sdm_jenis'         => $data['sdm_jenis']
                                     );
                 }
                  $status_code = $this->status_code('200');

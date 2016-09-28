@@ -268,7 +268,7 @@ class Bpjs extends CI_Model {
       	return $data;
 	}
 
-	function get_dokter($code){
+	/*function get_dokter($code){
     	$this->db->where('code',$code);
     	$data = $this->db->get('cl_phc_bpjs')->row_array();
 
@@ -290,7 +290,7 @@ class Bpjs extends CI_Model {
 
 	      	return $data['response']['count'];
 		}
-	}
+	}*/
 
 	function get_obat(){
 		$data = $this->getApi('obat/dpho/1301/0/9999',"live");

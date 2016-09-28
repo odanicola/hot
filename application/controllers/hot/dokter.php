@@ -78,12 +78,12 @@ class Dokter extends CI_Controller {
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
-				'code'	    => $act->code,
 				'cl_phc'	=> $act->cl_phc,
-				'status'	=> $act->status,
+				'sdm_id'	=> $act->sdm_id,
+				'code'	    => $act->code,
 				'value'		=> $act->value,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'sdm_nopeg'	=> $act->sdm_nopeg,
+				'sdm_jenis'	=> $act->sdm_jenis
 			);
 		}
 		$size = sizeof($rows_all);

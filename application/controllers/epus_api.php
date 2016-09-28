@@ -66,4 +66,57 @@ class Epus_api extends CI_Controller {
 
         echo $result;
 	}
+
+	function dokter_search($qr=""){
+		$config = $this->epus->get_config("get_data_allDokter");
+
+		$url 		= $config['server'];
+		$qr 		= $this->input->post("qr");
+		$puskesmas 	= $this->input->post("puskesmas");
+
+		$fields_string = array(
+        	'client_id' 		=> $config['client_id'],
+	        'kodepuskesmas' 	=> $puskesmas,
+	        'filterDokter' 	 	=> $qr,
+	        'limit' 			=> 9999,
+	        'request_output' 	=> $config['request_output'],
+	        'request_time' 		=> $config['request_time'],
+	        'request_token' 	=> $config['request_token']
+	    );
+
+
+		$curl = curl_init();
+
+        curl_setopt($curl,CURLOPT_URL,$url);
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl,CURLOPT_POST,count($fields_string));
+		curl_setopt($curl,CURLOPT_POSTFIELDS, $fields_string);
+
+        $result = curl_exec($curl);
+		curl_close($curl);
+
+		$res = json_decode($result);
+
+		$this->db->where('cl_phc', $puskesmas);
+		$this->db->delete('bpjs_data_dokter');
+
+		if(!empty($res->content)){
+			foreach ($res->content as $value) {
+				$data = array();
+				$data['cl_phc'] 	= $puskesmas;
+				$data['code'] 		= $value->code;
+				$data['value'] 		= $value->nama;
+				$data['sdm_id'] 		= $value->sdm_id;
+				$data['sdm_nopeg'] 		= $value->sdm_nopeg;
+				$data['sdm_jenis_id'] 	= $value->sdm_jenis_id;
+				$data['sdm_jenis'] 		= $value->sdm_jenis;
+
+				$this->db->insert('bpjs_data_dokter', $data);
+			}
+
+			echo count($res->content);
+		}else{
+			echo "-";
+		}
+	}
 }
