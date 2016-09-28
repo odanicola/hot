@@ -3,8 +3,8 @@ class Hot_model extends CI_Model {
 
     var $tabel_pasien_profil = 'app_users_profile';
     var $tabel_pasien_akun   = 'app_users_list';
-    var $tabel_dokter        = 'bpjs_data_dokter';
-    var $tabel_obat          = 'bpjs_data_obat';
+    var $tabel_dokter        = 'cl_sdm';
+    var $tabel_obat          = 'cl_drug';
     var $t_puskesmas         = 'cl_phc';
 
     function __construct() {
@@ -206,7 +206,7 @@ class Hot_model extends CI_Model {
         $this->db->where('code',$code);
         $this->db->where('cl_phc',$cl_phc);
 
-        if($this->db->update('bpjs_data_dokter',$data)){
+        if($this->db->update('cl_sdm',$data)){
             return true; 
         }else{
             return mysql_error();
@@ -220,7 +220,7 @@ class Hot_model extends CI_Model {
         $data['sediaan']          = $this->input->post('sediaan');
         
         $this->db->where('code',$code);
-        if($this->db->update('bpjs_data_obat',$data)){
+        if($this->db->update('cl_drug',$data)){
             return true; 
         }else{
             return mysql_error();

@@ -15,7 +15,7 @@ class Morganisasi_model extends CI_Model {
 	}
 
 	function get_jml_dokter(){
-		$query = $this->db->query("SELECT COUNT(`code`) AS jml FROM bpjs_data_dokter WHERE cl_phc='P".$this->session->userdata('puskesmas')."'");
+		$query = $this->db->query("SELECT COUNT(`sdm_id`) AS jml FROM cl_sdm WHERE cl_phc='P".$this->session->userdata('puskesmas')."'");
 
 		return $query->result();
 	}

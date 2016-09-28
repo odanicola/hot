@@ -15,6 +15,24 @@
 	      <div class="box-footer">
 		 	<button type="button" id="btn_syncronize" class="btn btn-primary"><i class='fa fa-plus-square-o'></i> &nbsp; Sinkronisasi Data</button>
 		 	<button type="button" class="btn btn-success" id="btn-refresh"><i class='fa fa-refresh'></i> &nbsp; Refresh</button>
+			<div class="row" style="padding-top:5px">
+			  <div class="col-xs-6" style="text-align:right;padding:5px">Puskesmas</div>
+			  <div class="col-xs-6">
+			      <select  id="puskesmas" type="text" class="form-control">
+                      <?php foreach($datapuskesmas as $pus) : ?>
+                        <?php
+                        if(set_value('code')=="" && isset($code)){
+                          $code = $code;
+                        }else{
+                          $code = set_value('code');
+                        }
+                        $select = $pus->code == $code ? 'selected' : '' ;
+                        ?>
+                      	<option value="<?php echo $pus->code;$pus->value; ?>" <?php echo $select ?>><?php echo $pus->value; ?></option>
+                      <?php endforeach ?>
+                  </select>
+			  </div>
+			</div>
 	    </div>
         <div class="box-body">
 		    <div class="div-grid">
@@ -47,12 +65,12 @@
 			datatype: "json",
 			type	: "POST",
 			datafields: [
+			{ name: 'drug_id', type: 'string'},
 			{ name: 'code', type: 'string'},
-			{ name: 'value', type: 'string'},
-			{ name: 'sediaan', type: 'int'},
-			{ name: 'status', type: 'int'},
-			{ name: 'edit', type: 'number'},
-			{ name: 'delete', type: 'number'}
+			{ name: 'nama', type: 'string'},
+			{ name: 'harga', type: 'number'},
+			{ name: 'satuan', type: 'string'},
+			{ name: 'stok', type: 'number'}
         ],
 		url: "<?php echo site_url('hot/obat/json'); ?>",
 		cache: false,
@@ -93,30 +111,42 @@
 				return obj.data;    
 			},
 			columns: [
-				{ text: 'Nama', datafield: 'value', align: 'center', filtertype: 'textbox', width: '50%'},
-				{ text: 'Sediaan', datafield: 'sediaan', align: 'center', filtertype: 'textbox', width: '25%'},
-				{ text: 'Status', datafield: 'status', align: 'center', filtertype: 'textbox', width: '25%', cellsrenderer: function (row,column,value) {
-					return "<div style='width:100%;padding:7px;text-align:center'>"+(value==1 ? "<i class='icon fa fa-check-square-o'></i>" : "-")+"</div>";
+				{ text: 'Nama', datafield: 'nama', align: 'center', filtertype: 'textbox', width: '50%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid_obat").jqxGrid('getrowdata', row);
+				    var status = (dataRecord.code !="" && dataRecord.code !=null) ? "PCare ID: " + dataRecord.code : "<span style='color:red'>Tidak Terhubung PCare</span>";
+					return "<div style='width:100%;padding:7px;'>"+dataRecord.nama+"<br>"+status+"</div>";
                  }
-                }            
+                },
+				{ text: 'Satuan', datafield: 'satuan', align: 'center', filtertype: 'textbox', width: '25%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid_obat").jqxGrid('getrowdata', row);
+				    var satuan = (dataRecord.satuan !="" && dataRecord.satuan !=null) ? dataRecord.satuan : "<span style='color:red'>-</span>";
+					return "<div style='width:100%;padding:14px;text-align:center'>"+satuan+"</div>";
+                 }
+              	},
+				{ text: 'Stok', datafield: 'stok', align: 'center', filtertype: 'textbox', width: '25%', cellsrenderer: function (row) {
+				    var dataRecord = $("#jqxgrid_obat").jqxGrid('getrowdata', row);
+				    var stok = (dataRecord.stok !="" && dataRecord.stok !=null) ? dataRecord.stok : "<span style='color:red'>-</span>";
+					return "<div style='width:100%;padding:14px;text-align:center'>"+stok+"</div>";
+                 }
+                }
             ]
 		});
 
-		$("#jqxgrid_obat").on('rowselect', function (event) {
-			var args = event.args;
-			var rowData = args.row;
+//		$("#jqxgrid_obat").on('rowselect', function (event) {
+//			var args = event.args;
+//			var rowData = args.row;
+//
+//			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
+//			$("html, body").animate({ scrollTop: 0 }, "slow");
+//			$("#popup").jqxWindow('open');
+//		});
 
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit("+rowData.code+")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
- 			$("html, body").animate({ scrollTop: 0 }, "slow");
-			$("#popup").jqxWindow('open');
-		});
-
-	function btn_edit(code){
-      	document.location.href="<?php echo base_url()?>hot/obat/edit/"+code;
-	}
+//	function btn_edit(code){
+//     	document.location.href="<?php echo base_url()?>hot/obat/edit/"+code;
+//	}
 
 	function sync(){
-		$.post("<?php echo base_url().'bpjs_api/get_obat' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
+		$.post("<?php echo base_url().'epus_api/obat_search' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
 			$("#jqxgrid_obat").jqxGrid('updateBoundData', 'filter');
 			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data obat sebanyak "+res+" data.<br>"+btn_ok+"</div>");
 			$("#popup").jqxWindow('open');
@@ -129,8 +159,21 @@
     }
 
 	$("#btn_syncronize").click(function(){
-		$("#popup_content").html("<div style='text-align:center'><br><br>Sync data obat dengan PCare? <br>"+btn_confirm+"</div>");
+		$("html, body").animate({ scrollTop: 0 }, "slow");
+
+		if($("#puskesmas").val() != "-"){
+			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter dengan ePuskesmas? <br>"+btn_confirm+"</div>");
+		}else{
+			$("#popup_content").html("<div style='text-align:center'><br><br>Tentukan nama puskesmas <br>"+btn_ok+"</div>");
+		}
 		$("#popup").jqxWindow('open');
+
 	});
+
+    $("#puskesmas").change(function(){
+		$.post("<?php echo base_url().'hot/obat/filter_puskesmas' ?>", 'puskesmas='+$(this).val(),  function(){
+			$("#jqxgrid_obat").jqxGrid('updateBoundData', 'cells');
+		});
+    });
 
 </script>

@@ -1,7 +1,7 @@
 <?php
 class Dokter_model extends CI_Model {
 
-    var $tabel_dokter        = 'bpjs_data_dokter';
+    var $tabel_dokter        = 'cl_sdm';
 
     function __construct() {
         parent::__construct();
@@ -32,7 +32,7 @@ class Dokter_model extends CI_Model {
         $this->db->where('code',$code);
         $this->db->where('cl_phc',$cl_phc);
 
-        if($this->db->update('bpjs_data_dokter',$data)){
+        if($this->db->update('cl_sdm',$data)){
             return true; 
         }else{
             return mysql_error();

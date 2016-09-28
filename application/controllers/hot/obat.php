@@ -11,11 +11,22 @@ class Obat extends CI_Controller {
 		$this->authentication->verify('mst','edit');
 		$data['title_group'] 	= "Dashboard";
 		$data['title_form']  	= "Data Obat";
+		$data['datapuskesmas']  = $this->obat_model->get_pus("317204","code","cl_phc");
+
+		$this->session->set_userdata('filter_puskesmas','P'.$this->session->userdata('puskesmas'));
 		$data['content'] 	 	= $this->parser->parse("hot/data_obat",$data,true);
 
 		$this->template->show($data,"home");
 	}
 
+	function filter_puskesmas(){
+		if($_POST) {
+			if($this->input->post('puskesmas') != '') {
+				$this->session->set_userdata('filter_puskesmas',$this->input->post('puskesmas'));
+			}
+		}
+	}
+	
 	function json(){
 		$this->authentication->verify('hot','show');
 
@@ -35,6 +46,10 @@ class Obat extends CI_Controller {
 			}
 		}
 
+		$kodepus=$this->session->userdata('filter_puskesmas');
+		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
+			$this->db->where('cl_phc',$kodepus);
+		}
 		$rows_all = $this->obat_model->get_data_obat();
 
 		if($_POST) {
@@ -53,16 +68,20 @@ class Obat extends CI_Controller {
 			}
 		}
 
+		$kodepus=$this->session->userdata('filter_puskesmas');
+		if ($this->session->userdata('filter_puskesmas')!='' && $this->session->userdata('filter_puskesmas')!='-') {
+			$this->db->where('cl_phc',$kodepus);
+		}
 		$rows = $this->obat_model->get_data_obat($this->input->post('recordstartindex'), $this->input->post('pagesize'));
 		$data = array();
 		foreach($rows as $act) {
 			$data[] = array(
+				'drug_id'	=> $act->drug_id,
 				'code'	    => $act->code,
-				'sediaan'	=> $act->sediaan,
-				'status'	=> $act->status,
-				'value'		=> $act->value,
-				'edit'		=> 1,
-				'delete'	=> 1
+				'harga'		=> $act->harga,
+				'nama'		=> $act->nama,
+				'satuan'	=> $act->satuan,
+				'stok'		=> $act->stok,
 			);
 		}
 		$size = sizeof($rows_all);

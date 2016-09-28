@@ -171,6 +171,7 @@ class Pasien_model extends CI_Model {
     function delete_pasien($username){
         $this->db->delete('app_users_list', array('username' => $username));
         $this->db->delete('app_users_profile', array('username' => $username));
+        $this->db->delete('kunjungan', array('username' => $username));
     } 
 
     function get_pus ($code,$condition,$table){

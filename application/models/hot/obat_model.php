@@ -1,7 +1,7 @@
 <?php
 class Obat_model extends CI_Model {
 
-    var $tabel_obat          = 'bpjs_data_obat';
+    var $tabel_obat          = 'cl_drug';
 
     function __construct() {
         parent::__construct();

@@ -126,18 +126,18 @@
             ]
 		});
 
-		$("#jqxgrid_dokter").on('rowselect', function (event) {
-			var args = event.args;
-			var rowData = args.row;
+//		$("#jqxgrid_dokter").on('rowselect', function (event) {
+//			var args = event.args;
+//			var rowData = args.row;
+//
+//			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.sdm_id+"\",\""+rowData.cl_phc+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
+// 			$("html, body").animate({ scrollTop: 0 }, "slow");
+//			$("#popup").jqxWindow('open');
+//		});
 
-			$("#popup_content").html("<div style='padding:5px' align='center'><br>"+rowData.value+"</br><br><div style='text-align:center'><input class='btn btn-primary' style='width:100px' type='button' value='Edit' onClick='btn_edit(\""+rowData.sdm_id+"\",\""+rowData.cl_phc+"\")'> <input class='btn btn-warning' style='width:100px' type='button' value='Close' onClick='close_popup()'></div></div>");
- 			$("html, body").animate({ scrollTop: 0 }, "slow");
-			$("#popup").jqxWindow('open');
-		});
-
-	function btn_edit(sdm_id,cl_phc){
-      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+sdm_id+"/"+cl_phc;
-	}
+//	function btn_edit(sdm_id,cl_phc){
+//      	document.location.href="<?php echo base_url()?>hot/dokter/edit/"+sdm_id+"/"+cl_phc;
+//	}
 
 	function sync(){
 		$.post("<?php echo base_url().'epus_api/dokter_search' ?>", 'puskesmas='+$("#puskesmas").val(),  function(res){
@@ -153,6 +153,8 @@
     }
 
 	$("#btn_syncronize").click(function(){
+		$("html, body").animate({ scrollTop: 0 }, "slow");
+
 		if($("#puskesmas").val() != "-"){
 			$("#popup_content").html("<div style='text-align:center'><br><br>Sync data dokter dengan ePuskesmas? <br>"+btn_confirm+"</div>");
 		}else{

@@ -28,23 +28,23 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->group_by("cl_drugnm.code");
-            $this->db->select("cl_drugnm.code, cl_drugnm.nama, cl_drugnm.harga, cl_drugbsunit.value,obat_stock_ket.stok_min, obat_stock_ket.stok_max, SUM(obat_stok_detail.jml_obat) AS stok_sekarang");
+            $this->db->select("cl_drugnm.code as drug_id, cl_drugnm.nama, cl_drugnm.harga, cl_drugbsunit.value,SUM(obat_stok_detail.jml_obat) AS stok, bpjs_data_obat.code");
             $this->db->join('cl_drugbsunit','cl_drugnm.satuan = cl_drugbsunit.id','left');
             $this->db->join('obat_stok_detail','cl_drugnm.code = obat_stok_detail.id_obat','left');
-            $this->db->join('obat_stock_ket','cl_drugnm.code = obat_stock_ket.obat_kode','left');
+            $this->db->join('bpjs_data_obat','cl_drugnm.code = bpjs_data_obat.code_mapping','left');
             $querygetObat=$this->db->get('cl_drugnm',$limit);
             if($querygetObat->num_rows() >0)
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
-                                    'code'      => $data['code'],
-                                    'nama'      => $data['nama'],
-                                    'value'     => $data['value'],
-                                    'harga'     => $data['harga'],
-                                    'stok_min'  => $data['stok_min']==null?"":$data['stok_min'],
-                                    'stok_max'  => $data['stok_max']==null?"":$data['stok_max'],
-                                    'stok_sekarang'=>$data['stok_sekarang']);
+                        'drug_id'   => $data['drug_id'],
+                        'code'      => $data['code'],
+                        'nama'      => $data['nama'],
+                        'satuan'    => $data['value'],
+                        'stok'      => $data['stok'],
+                        'harga'     => $data['harga']
+                    );
                 }
                  $status_code = $this->status_code('200');
             }
