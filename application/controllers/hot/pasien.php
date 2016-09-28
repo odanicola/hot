@@ -177,6 +177,7 @@ class Pasien extends CI_Controller {
 		$data['title_form']  = "Tambah Data Pasien";
 		$data['action']      = "add";
 		$data['alert_form']  = '';
+		$data['code']  		 = 'P'.$this->session->userdata('puskesmas');
 
 		$data['datapuskesmas']  = $this->pasien_model->get_pus("317204","code","cl_phc");
 

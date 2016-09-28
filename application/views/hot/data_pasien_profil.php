@@ -30,7 +30,7 @@
             </div>
             <div class="form-group">
               <label>BPJS</label>
-              <input type="text" class="form-control" name="bpjs" placeholder="BPJS" value="<?php 
+              <input type="text" class="form-control" name="bpjs" id="bpjs" placeholder="BPJS" value="<?php 
                 if(set_value('bpjs')=="" && isset($bpjs)){
                   echo $bpjs;
                 }else{
@@ -38,6 +38,31 @@
                 }
                 ?>">
             </div>
+
+            <div class="form-group">
+              <label>Provider</label>
+              <div class="row">
+                <div class="col-xs-6">
+                    <input type="text" class="form-control" id="kode_provider" placeholder="Kode Faskes" readonly value="<?php 
+                      if(set_value('kode_provider')=="" && isset($kode_provider)){
+                        echo $kode_provider;
+                      }else{
+                        echo  set_value('kode_provider');
+                      }
+                      ?>">
+                </div>
+                <div class="col-xs-6">
+                    <input type="text" class="form-control" id="nama_provider" placeholder="Nama Faskes" readonly value="<?php 
+                      if(set_value('nama_provider')=="" && isset($nama_provider)){
+                        echo $nama_provider;
+                      }else{
+                        echo  set_value('nama_provider');
+                      }
+                      ?>">
+                </div>
+              </div>
+            </div>
+
             <div class="form-group">
               <label>Nomor RM</label>
               <input type="text" class="form-control" name="cl_pid" id="cl_pid" placeholder="Nomor MR" value="<?php 
@@ -172,13 +197,6 @@
   $(function () { 
     tabIndex = 1;
 
-    $("#popup").jqxWindow({
-      theme: theme, resizable: false,
-      width: 250,
-      height: 150,
-      isModal: true, autoOpen: false, modalOpacity: 0.4
-    });
-
     var csource = function (query, response) {
       var dataAdapter = new $.jqx.dataAdapter
         (
@@ -230,10 +248,56 @@
         }
     });
 
+    $("#bpjs").keyup(function(){
+      var bpjs = $("#bpjs").val();
+      if(bpjs.length==13){
+        $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
+            if(res.metaData.code=="200"){
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+
+                $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                $("#popup").jqxWindow({
+                  theme: theme, resizable: false,
+                  width: 320,
+                  height: 210,
+                  isModal: true, autoOpen: false, modalOpacity: 0.4
+                });                  
+                $("#popup").jqxWindow('open');
+
+                $("input[name='nama']").val(res.response.nama).change();
+
+                var tgl = res.response.tglLahir.split("-");
+                var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
+                $("#tgl_lahir").jqxDateTimeInput('setDate', date);
+
+                if(res.response.noHP!=" " && res.response.noHP!="" && res.response.noHP!=null) $("input[name='phone_number']").val(res.response.noHP).change();
+                if(res.response.sex=="P"){
+                  $("#jk_P").prop("checked",true);
+                }else{
+                  $("#jk_L").prop("checked",true);
+                }
+                $("#kode_provider").val(res.response.kdProviderPst.kdProvider);
+                $("#nama_provider").val(res.response.kdProviderPst.nmProvider);
+
+                $("#pass").focus();
+              }
+          },"json");
+        }
+    });
+
     $("#btn_simpan").click(function(){
+          $("html, body").animate({ scrollTop: 0 }, "slow");
+          $("#popup").jqxWindow({
+            theme: theme, resizable: false,
+            width: 250,
+            height: 150,
+            isModal: true, autoOpen: false, modalOpacity: 0.4
+          });
+
+          $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Mohon tunggu, proses simpan data.....<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+          $("#popup").jqxWindow('open');
+
           var data = new FormData();
-          $('#biodata_notice-content').html('<div class="alert">Mohon tunggu, proses simpan data....</div>');
-          $('#biodata_notice').show();
 
           data.append('username',     $("[name='username']").val());
           data.append('jk',           $("[name='jk']:checked").val());
@@ -247,6 +311,8 @@
           data.append('alamat',       $("[name='alamat']").val());
           data.append('code',         $("[name='code']").val());
           data.append('cl_pid',       $("[name='cl_pid']").val());
+          data.append('kode_provider', $("#kode_provider").val());
+          data.append('nama_provider', $("#nama_provider").val());
 
           $.ajax({
               cache : false,
@@ -256,7 +322,6 @@
               url : '<?php echo base_url()."hot/pasien/data_pasien_edit/1/{username}"   ?>',
               data : data,
               success : function(response){
-                $("html, body").animate({ scrollTop: 0 }, "slow");
                 a = response.split("|");
                 if(a[0]=='OK'){
                   $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>Data berhasil diubah.<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");

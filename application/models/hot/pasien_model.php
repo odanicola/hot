@@ -80,6 +80,8 @@ class Pasien_model extends CI_Model {
         $data_profile['tb']              = $this->input->post('tb');
         $data_profile['bb']              = $this->input->post('bb');
         $data_profile['cl_pid']          = $this->input->post('cl_pid');
+        $data_profile['kode_provider']   = $this->input->post('kode_provider');
+        $data_profile['nama_provider']   = $this->input->post('nama_provider');
 
         $this->db->where('username',$this->input->post('username'));
         $query = $this->db->get('app_users_list');
@@ -140,6 +142,8 @@ class Pasien_model extends CI_Model {
         $data_profile['alamat']          = $this->input->post('alamat');
         $data_profile['tb']              = $this->input->post('tb');
         $data_profile['bb']              = $this->input->post('bb');
+        $data_profile['kode_provider']   = $this->input->post('kode_provider');
+        $data_profile['nama_provider']   = $this->input->post('nama_provider');
 
         $data_list['code']               = substr($this->input->post('code'),1,10);
 

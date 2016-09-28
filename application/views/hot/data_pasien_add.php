@@ -55,6 +55,30 @@
             </div>
 
             <div class="form-group">
+              <label>Provider</label>
+              <div class="row">
+                <div class="col-xs-6">
+                    <input type="text" class="form-control" id="kode_provider" placeholder="Kode Faskes" readonly value="<?php 
+                      if(set_value('kode_provider')=="" && isset($kode_provider)){
+                        echo $kode_provider;
+                      }else{
+                        echo  set_value('kode_provider');
+                      }
+                      ?>">
+                </div>
+                <div class="col-xs-6">
+                    <input type="text" class="form-control" id="nama_provider" placeholder="Nama Faskes" readonly value="<?php 
+                      if(set_value('nama_provider')=="" && isset($nama_provider)){
+                        echo $nama_provider;
+                      }else{
+                        echo  set_value('nama_provider');
+                      }
+                      ?>">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label>Password*</label>
               <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php 
                 if(set_value('password')=="" && isset($password)){
@@ -175,7 +199,6 @@
                 </select>
             </div>
           </div>
-          </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div><!-- /.box -->
   </div><!-- /.box -->
@@ -280,7 +303,10 @@
                       $("#bpjs").val(response.content.no_bpjs);
                       $("#nama").val(response.content.nama_lengkap);
                       $("#alamat").val(response.content.alamat);
-                      $("#phone_number").val('');
+                      $("#phone_number").val(response.content.noHp);
+                      $("#kode_provider").val(response.content.kode_provider);
+                      $("#nama_provider").val(response.content.nama_provider);
+                      $("[name='code']").val(response.content.data_origin);
 
                       if(response.content.jeniskelamin == "Perempuan"){
                         $("#jk_P").prop("checked",true);
@@ -324,6 +350,8 @@
         data.append('alamat',       $("[name='alamat']").val());
         data.append('code',         $("[name='code']").val());
         data.append('cl_pid',       $("[name='cl_pid']").val());
+        data.append('kode_provider', $("#kode_provider").val());
+        data.append('nama_provider', $("#nama_provider").val());
 
         if ($("[name='username']").val() == ""){
             $("#popup_content_daftar").html("<div style='text-align:center'><br>Isi data dengan lengkap."+btn+"</div>");
@@ -363,23 +391,18 @@
             data : data,
             success : function(response){
               a = response.split("|");
+                $("#popup").jqxWindow({
+                  theme: theme, resizable: false,
+                  width: 250,
+                  height: 150,
+                  isModal: true, autoOpen: false, modalOpacity: 0.4
+                });
+
                 if(a[0]=="true"){
                   $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><br><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup_ok()'></div></div>");
-                  $("#popup").jqxWindow({
-                    theme: theme, resizable: false,
-                    width: 250,
-                    height: 150,
-                    isModal: true, autoOpen: false, modalOpacity: 0.4
-                  });
                   $("#popup").jqxWindow('open');
                 }else{
                   $("#popup_content").html("<div style='padding:5px'><br><div style='text-align:center'>"+a[1]+"<br><input class='btn btn-danger' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-                  $("#popup").jqxWindow({
-                    theme: theme, resizable: false,
-                    width: 250,
-                    height: 150,
-                    isModal: true, autoOpen: false, modalOpacity: 0.4
-                  });
                   $("#popup").jqxWindow('open');
                 }
             }
@@ -389,20 +412,22 @@
         return false;
     });
 
+
       $("#username").keyup(function(){
         var nik = $("#username").val();
         if(nik.length==16){
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/nik/"+nik,function(res){
               if(res.metaData.code=="200"){
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
               
-            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-              $("#popup").jqxWindow({
-                theme: theme, resizable: false,
-                width: 320,
-                height: 210,
-                isModal: true, autoOpen: false, modalOpacity: 0.4
-              });
-              $("#popup").jqxWindow('open');
+                  $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                  $("#popup").jqxWindow({
+                    theme: theme, resizable: false,
+                    width: 320,
+                    height: 210,
+                    isModal: true, autoOpen: false, modalOpacity: 0.4
+                  });                  
+                  $("#popup").jqxWindow('open');
 
                   $("input[name='bpjs']").val(res.response.noKartu).change();
                   $("input[name='nama']").val(res.response.nama).change();
@@ -411,13 +436,16 @@
                   var date = new Date(tgl[2], (tgl[1]-1), tgl[0]);
                   $("#tgl_lahir").jqxDateTimeInput('setDate', date);
 
-                  if(res.response.noHP!=" " && res.response.noHP!="") $("input[name='phone_number']").val(res.response.noHP).change();
+                  if(res.response.noHP!=" " && res.response.noHP!="" && res.response.noHP!=null) $("input[name='phone_number']").val(res.response.noHP).change();
                   if(res.response.sex=="P"){
                     $("#jk_P").prop("checked",true);
                   }else{
                     $("#jk_L").prop("checked",true);
                   }
-                $("#pass").focus();
+                  $("#kode_provider").val(res.response.kdProviderPst.kdProvider);
+                  $("#nama_provider").val(res.response.kdProviderPst.nmProvider);
+
+                  $("#pass").focus();
               }
           },"json");
         }
@@ -430,15 +458,16 @@
         if(bpjs.length==13){
           $.get("<?php echo base_url()?>bpjs_api/bpjs_search/bpjs/"+bpjs,function(res){
               if(res.metaData.code=="200"){
+                  $("html, body").animate({ scrollTop: 0 }, "slow");
 
-            $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
-              $("#popup").jqxWindow({
-                theme: theme, resizable: false,
-                width: 320,
-                height: 210,
-                isModal: true, autoOpen: false, modalOpacity: 0.4
-              });
-              $("#popup").jqxWindow('open');
+                  $("#popup_content").html("<div style='padding:5px'><br>Anda terdaftar sebagai peserta BPJS <br>Faskes : "+res.response.kdProviderPst.nmProvider+" </br> Jenis Peserta "+res.response.jnsPeserta.nama+"</br>Status "+res.response.ketAktif+".</br> Tunggakan Rp. "+res.response.tunggakan+".</br></br><div style='text-align:center'><input class='btn btn-success' style='width:100px' type='button' value='OK' onClick='close_popup()'></div></div>");
+                  $("#popup").jqxWindow({
+                    theme: theme, resizable: false,
+                    width: 320,
+                    height: 210,
+                    isModal: true, autoOpen: false, modalOpacity: 0.4
+                  });                  
+                  $("#popup").jqxWindow('open');
 
                   $("input[name='username']").val(res.response.noKTP).change();
                   $("input[name='nama']").val(res.response.nama).change();
@@ -453,12 +482,13 @@
                   }else{
                     $("#jk_L").prop("checked",true);
                   }
-                $("#pass").focus();
+                  $("#kode_provider").val(res.response.kdProviderPst.kdProvider);
+                  $("#nama_provider").val(res.response.kdProviderPst.nmProvider);
+  
+                  $("#pass").focus();
               }
           },"json");
         }
     });
-
-
   });
 </script>
