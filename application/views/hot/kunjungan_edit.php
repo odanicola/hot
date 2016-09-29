@@ -188,7 +188,11 @@
               <div class="col-xs-9">{jk} / {usia} Tahun</div>
             </div>
             <div class="row" style="padding:4px">
-              <div class="col-xs-12 text-center"><button type="button" id="btn-sebelum" class="btn btn-warning">Lihat {sebelumnya} Kunjungan Sebelumnya</button></div>
+              <div class="col-xs-12 text-center">
+                <button type="button" id="btn-sebelum" class="btn btn-warning">
+                  <?php echo $sebelumnya > 0 ? "Lihat ".$sebelumnya." Kunjungan Sebelumnya" : " Status : Pasien Baru "; ?>
+                </button>
+              </div>
             </div>
 
             <div class="row" style="padding:4px;display:none" id="div-sebelumnya"></div>
