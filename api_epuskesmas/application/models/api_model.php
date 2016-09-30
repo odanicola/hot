@@ -3,6 +3,7 @@ class Api_model extends CI_Model {
     
     function __construct(){
         parent::__construct();
+        $this->load->model('bpjs');
         $codepuskesmas=$this->input->post('kodepuskesmas');
         if (!empty($codepuskesmas)) {
             $this->load->database("epuskesmas_live_jaktim_".$codepuskesmas, FALSE, TRUE);
@@ -610,6 +611,14 @@ class Api_model extends CI_Model {
         $result['status_code'] = $status_code;
         return $result;
     }
+    function anamnesaByReg($id_reg='0',$name=''){
+        $data = $this->db->get_where('app_poli_detail_anamnesa',array('reg_id' => $id_reg,'name' => $name))->row_array();   
+        return $data['value'];
+    }
+    function diagnosaByReg($id_reg='0',$no_urut=''){
+        $data = $this->db->get_where('app_poli_detail_diagnosa',array('reg_id' => $id_reg,'no' => $no_urut))->row_array();   
+        return $data['diag_id'];
+    }
     function do_get_dataBPJSDiagnosaAnamnesaResep($data=array()){
         $this->db->where('reg_id',$this->input->post('reg_id'));
         if ($this->db->delete('app_poli_detail_anamnesa')==FALSE) {
@@ -732,7 +741,6 @@ class Api_model extends CI_Model {
                                 $cekinsert = $this->db->insert('app_poli_detail_resep', $datasaveres);
                             }
                         }
-                        $nama_obat = $keyres['resep_nama_obat'];
                     }
                     if ($cekinsert==TRUE) {
                         $this->db->where('reg_id',$data['no_register']);
@@ -755,6 +763,51 @@ class Api_model extends CI_Model {
                 $status_code = $this->status_code('417'); 
             }
         }
+        $this->db->join('bpjs_data_pasien','bpjs_data_pasien.cl_pid=app_reg.cl_pid','left');
+        $this->db->join('bpjs_data_kunjungan','bpjs_data_kunjungan.reg_id=app_reg.reg_id','left');
+        $this->db->where('app_reg.reg_id',$data['no_register']);
+        $cekPasienbpjs=$this->db->get('app_reg');
+        $databpjs = $cekPasienbpjs->row_array();
+        if ($cekPasienbpjs->num_rows() > 0 && isset($databpjs['bpjs_no_kunjungan']) && isset($databpjs['no_bpjs'])) {
+            $dataregidanamnesa  = $this->anamnesaByReg($databpjs['reg_id'],'anamnesa');
+            $dataregidkesadaran = $this->anamnesaByReg($databpjs['reg_id'],'kesadaran');
+            $dataregidsistole   = $this->anamnesaByReg($databpjs['reg_id'],'sistole');
+            $dataregiddiastole  = $this->anamnesaByReg($databpjs['reg_id'],'diastole');
+            $dataregidberat     = $this->anamnesaByReg($databpjs['reg_id'],'berat');
+            $dataregidtinggi    = $this->anamnesaByReg($databpjs['reg_id'],'tinggi');
+            $dataregidnafas     = $this->anamnesaByReg($databpjs['reg_id'],'nafas');
+            $dataregidnadi      = $this->anamnesaByReg($databpjs['reg_id'],'nadi');
+            $dataregidterapi    = $this->anamnesaByReg($databpjs['reg_id'],'terapi');
+            $dataregdiagnosa2   = $this->diagnosaByReg($databpjs['reg_id'],'2');
+            $dataregdiagnosa3   = $this->diagnosaByReg($databpjs['reg_id'],'3');
+
+            $data_kunjungan = array(
+              "noKunjungan"             =>  $databpjs['bpjs_no_kunjungan'],
+              "noKartu"                 =>  $databpjs['no_bpjs'],
+              "tglDaftar"               =>  date("d-m-Y",strtotime($databpjs['reg_time'])),
+              "keluhan"                 =>  isset($dataregidanamnesa) ? $dataregidanamnesa : '',
+              "kdSadar"                 =>  isset($dataregidkesadaran) ? $dataregidkesadaran : '',
+              "sistole"                 =>  isset($dataregidsistole) ? $dataregidsistole : '',
+              "diastole"                =>  isset($dataregiddiastole) ? $dataregiddiastole : '',
+              "beratBadan"              =>  isset($dataregidberat) ? $dataregidberat : '',
+              "tinggiBadan"             =>  isset($dataregidtinggi) ? $dataregidtinggi : '',
+              "respRate"                =>  isset($dataregidnafas) ? $dataregidnafas : '',
+              "heartRate"               =>  isset($dataregidnadi) ? $dataregidnadi : '',
+              "terapi"                  =>  isset($dataregidterapi) ? $dataregidterapi : '',
+              "kdProviderRujukLanjut"   =>  '',
+              "kdStatusPulang"          =>  $data['status_pulang'],
+              "tglPulang"               =>  date("d-m-Y",time()),
+              "kdDokter"                =>  $data['kode_dokter'],
+              "kdDiag1"                 =>  $this->diagnosaByReg($databpjs['reg_id'],'1'),
+              "kdDiag2"                 =>  isset($dataregdiagnosa2) ? $dataregdiagnosa2 : '',
+              "kdDiag3"                 =>  isset($dataregdiagnosa3) ? $dataregdiagnosa3 : '',
+              "kdPoliRujukInternal"     =>  '',
+              "kdPoliRujukLanjut"       =>  ''
+            ); 
+            $hasilinsertbpjs = $this->bpjs->insertbpjs($data_kunjungan);
+            print_r($hasilinsertbpjs);
+            die();
+        }
         if (!isset($status_code) && empty($status_code)) {
             $reg_id= $this->input->post('reg_id');
             $this->db->where('reg_id',$reg_id);
@@ -775,7 +828,7 @@ class Api_model extends CI_Model {
                 foreach ($dataanam as $keypil) {
                     $content[$keypil['name']] = $keypil['value'];
                 }
-                $content += array('id'=>$dataresep['reg_id'],'kode diagnosa'=>$datadiagnosa['diag_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$datadiagnosa['no'],'kode kasus'=>$datadiagnosa['diag_kasus'],'kode jenis'=>$datadiagnosa['diag_jenis'],'kode obat'=>$dataresep['obat_id'],'nama obat'=>$nama_obat,'no urut'=>$dataresep['no'],'jumlah obat'=>$dataresep['obat_jml'],'dosis obat'=>$dataresep['obat_dosis'],'Kode Racikan'=>$dataresep['obat_racik']);
+                $content += array('id'=>$dataresep['reg_id'],'kode diagnosa'=>$datadiagnosa['diag_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$datadiagnosa['no'],'kode kasus'=>$datadiagnosa['diag_kasus'],'kode jenis'=>$datadiagnosa['diag_jenis'],'kode obat'=>$dataresep['obat_id'],'no urut'=>$dataresep['no'],'jumlah obat'=>$dataresep['obat_jml'],'dosis obat'=>$dataresep['obat_dosis'],'Kode Racikan'=>$dataresep['obat_racik']);
                     $status_code = $this->status_code('201');
             }else{
                 $query->free_result();   
@@ -787,6 +840,7 @@ class Api_model extends CI_Model {
         $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
         print_r($result);
         die();
+
         return $result;
 
 

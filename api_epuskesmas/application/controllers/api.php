@@ -374,7 +374,7 @@ class Api extends CI_Controller {
         $data['bpjs_poli_inter']    = $this->input->post('bpjs_poli_inter');
         $data['bpjs_provider']      = $this->input->post('bpjs_provider');
         $data['status_pulang']      = $this->input->post('status_pulang');
-
+        $data['kode_dokter']        = $this->input->post('anamnesa_dokter_id');
 
         $data['anamnesa'][]['anamnesa']     = $this->input->post('anamnesa_anamnesa');
         $data['anamnesa'][]['dokter_id']     = $this->input->post('anamnesa_dokter_id');
@@ -398,7 +398,6 @@ class Api extends CI_Controller {
                 $data['resep'][]=array(
                     'resep_no_urut'     => $this->input->post("resep_no_urut$i"), 
                     'resep_kodeobat'    => $this->input->post("resep_kodeobat$i"), 
-                    'resep_nama_obat'   => $this->input->post("resep_nama_obat$i"), 
                     'resep_jumlah'      => $this->input->post("resep_jumlah$i"), 
                     'resep_racikan'     => $this->input->post("resep_racikan$i"), 
                     'resep_dosis'       => $this->input->post("resep_dosis$i"), 

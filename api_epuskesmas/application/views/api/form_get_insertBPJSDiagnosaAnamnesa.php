@@ -156,7 +156,7 @@
                 <?php for ($i=1; $i <=3 ; $i++) { ?>
                 <tr>
                     <td><input type="text" size="30" name="diagnosa_no_icdx<?php echo $i;?>" value=""></td>
-                    <td><input type="text" size="30" name="diagnosa_no_urut<?php echo $i;?>" value=""></td>
+                    <td><input type="text" size="30" name="diagnosa_no_urut<?php echo $i;?>" value="<?php echo $i;?>"></td>
                     <td><input type="text" size="30" name="diagnosa_nama_diagnosa<?php echo $i;?>" value="" /></td>
                     <td>
                         <select class=combo-box style='width:75px' name="diagnosa_jenis_kasus<?php echo $i;?>">
@@ -189,7 +189,6 @@
                 <tr>
                     <td>No Urut</td>
                     <td>Kode Obat *</td>
-                    <td>Nama Obat *</td>
                     <td>Jumlah *</td>
                     <td>Racikan *</td>
                     <td>Dosis *</td>
@@ -198,7 +197,6 @@
                 <tr>
                     <td><input type="text" size="30" name="resep_no_urut<?php echo $i;?>" value="<?php echo $i;?>"></td>
                     <td><input type="text" size="30" name="resep_kodeobat<?php echo $i;?>" value=""></td>
-                    <td><input type="text" size="30" name="resep_nama_obat<?php echo $i;?>" value=""></td>
                     <td><input type="text" size="30" name="resep_jumlah<?php echo $i;?>" value="" /></td>
                     <td>
                         <select name="resep_racikan<?php echo $i;?>">

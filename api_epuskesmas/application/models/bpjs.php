@@ -30,47 +30,16 @@ class Bpjs extends CI_Model {
 
 	function get_demo_bpjs(){
     	$data = array();
-    	$data['server'] 	='http://dvlp.bpjs-kesehatan.go.id:9080/pcare-rest-dev/';
+    	$data['server'] 	='http://dvlp.bpjs-kesehatan.go.id:9080/pcare-rest-dev/v1/';
     	$data['username'] 	='pkm-tanahgaram';
     	$data['password'] 	='hctg1234';
     	$data['consid'] 	='28944';
     	$data['secretkey'] 	='1kV7BF08BC';
     	return $data;
 	}
-	function get_data_bpjs($default = "live", $kdProviderPeserta = ""){
-    	$data = array();
-    	if($default=="live"){
-    		if($kdProviderPeserta!="" && $kdProviderPeserta!=0){
-		    	$this->db->where('username',$kdProviderPeserta);
-		    	$data = $this->db->get('cl_phc_bpjs')->row_array();
-				if(!isset($data['code']) || !isset($data['server']) || !isset($data['username']) || !isset($data['password']) || !isset($data['consid']) || !isset($data['secretkey'])) {
-	        		$data = $this->get_demo_bpjs();
-		        }
-    		}else{
-		    	$id='P'.$this->session->userdata('puskesmas');
-		    	$this->db->where('code',$id);
-		    	$data = $this->db->get('cl_phc_bpjs')->row_array();
-				if(!isset($data['code']) || !isset($data['server']) || !isset($data['username']) || !isset($data['password']) || !isset($data['consid']) || !isset($data['secretkey'])) {
-	        		$data = $this->get_demo_bpjs();
-		        }
-    		}
-	    }
-    	elseif($default=="global"){
-	    	$id='P'.$this->session->userdata('puskesmas');
-	    	$this->db->where('code',$id);
-	    	$data = $this->db->get('cl_phc_bpjs')->row_array();
-			if(!isset($data['code']) || !isset($data['server']) || !isset($data['username']) || !isset($data['password']) || !isset($data['consid']) || !isset($data['secretkey'])) {
-		    	$id='P3172010202';
-		    	$this->db->where('code',$id);
-		    	$data = $this->db->get('cl_phc_bpjs')->row_array();
-				if(!isset($data['code']) || !isset($data['server']) || !isset($data['username']) || !isset($data['password']) || !isset($data['consid']) || !isset($data['secretkey'])) {
-	        		$data = $this->get_demo_bpjs();
-		        }
-	        }
-        }
-        else{
-        	$data = $this->get_demo_bpjs();
-        }
+	function get_data_bpjs(){
+        
+        $data = $this->get_demo_bpjs();
 
 	    $this->server 		= $data['server'];
 	    $this->username 	= $data['username'];
@@ -88,11 +57,9 @@ class Bpjs extends CI_Model {
 	    return $data;
     }
 
-	function getApi($url="",$methode="global",$ver = 1){
-	   $this->get_data_bpjs($methode);
-	   if($ver!=1){
-			$this->server = str_replace("v1", "v2", $this->server);
-	   }
+	function getApi($url=""){
+
+	   $this->get_data_bpjs();
 
 	   try
 	    {
@@ -116,7 +83,6 @@ class Bpjs extends CI_Model {
 	      //die(json_encode(array("res"=>"error","msg"=>$data)));
 
 	    }
-	    
 	    if($data["metaData"]["code"]=="500"){
 	      die(json_encode(array("res"=>"500","msg"=>$data["metaData"]["message"])));
 	    } 
@@ -124,17 +90,14 @@ class Bpjs extends CI_Model {
 	    if($data["metaData"]["code"]=="412"){
 	      die(json_encode(array("res"=>"412","msg"=>$data["response"][0]["message"])));
 	    } 
-
+	    print_r($data);
+	    die();
 	    return $data;
 	}
 
 	function postApi($url="", $data=array()){
-		if(isset($data['kdProviderPeserta'])){
-		   $this->get_data_bpjs("live",$data['kdProviderPeserta']);
-		}else{
-		   $this->get_data_bpjs("live");
-		}
-	   //$this->get_data_bpjs("demo");
+		$this->get_data_bpjs("live");
+	   
 	   try
 	    {
 	      $response = \Httpful\Request::post($this->server.$url)
@@ -156,16 +119,7 @@ class Bpjs extends CI_Model {
 	      $data = $classProperty->getValue($E);
 	      $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
 	      $data = array("metaData"=>array("message" =>'error',"code"=>777));
-	      //die(json_encode(array("res"=>"error","msg"=>$data)));
 	    }
-	    //die(print_r($response));
-		// if($response["metaData"]["code"]=="201"){
-
-		// }elseif($response["metaData"]["code"]=="304"){
-
-		// }else{
-
-		// }
 
 	    return $data;
 	}
@@ -261,33 +215,13 @@ class Bpjs extends CI_Model {
 
       	return $data;
 	}
-	$data_kunjungan = array(
-          "noKunjungan"             =>  $noKunjungan,
-          "noKartu"                 =>  $noKartu,
-          "tglDaftar"               =>  $tglDaftar,
-          "keluhan"                 =>  $keluhan,
-          "kdSadar"                 =>  $kdSadar,
-          "sistole"                 =>  $sistole,
-          "diastole"                =>  $diastole,
-          "beratBadan"              =>  $beratBadan,
-          "tinggiBadan"             =>  $tinggiBadan,
-          "respRate"                =>  $respRate,
-          "heartRate"               =>  $heartRate,
-          "terapi"                  =>  $terapi,
-          "kdProviderRujukLanjut"   =>  $kdProviderRujukLanjut,
-          "kdStatusPulang"          =>  $kdStatusPulang,
-          "tglPulang"               =>  $tglPulang,
-          "kdDokter"                =>  $kdDokter,
-          "kdDiag1"                 =>  $kdDiag1,
-          "kdDiag2"                 =>  $kdDiag2,
-          "kdDiag3"                 =>  $kdDiag3,
-          "kdPoliRujukInternal"     =>  $kdPoliRujukInternal,
-          "kdPoliRujukLanjut"       =>  $kdPoliRujukLanjut
-        ); 
-	function inserbpjs($data=array()){
-       $tampildata = $this->getApi('peserta/'.$kode);
+			
+	function insertbpjs($data=array()){
+       $tampildata = $this->getApi('peserta/'.$data['noKartu']);
+       print_r($tampildata);
+       die();
        if (($tampildata['metaData']['message']=='error')&&($tampildata['metaData']['code']=='777')) {
-           $tampildata['metaData']['message']=='error';
+           return $tampildata;
        }else{
 	        if (array_key_exists("kdProvider",$tampildata['response']['kdProviderPst'])){
 	            $kodeprov = $tampildata['response']['kdProviderPst']['kdProvider'];
@@ -295,33 +229,30 @@ class Bpjs extends CI_Model {
 	            $kodeprov = '0';
 	        }
             $data_kunjungan = array(
-              "kdProviderPeserta" => $kodeprov,
-              "tglDaftar" 	=> date('d-m-Y'),
-              "noKartu" 	=> $tampildata['response']['noKartu'],
-              "kdPoli" 		=> "020",
-              "keluhan" 	=> null,
-              "kunjSakit" 	=> false,
-              "sistole" 	=> 0,
-              "diastole" 	=> 0,
-              "beratBadan" 	=> 0,
-              "tinggiBadan" => 0,
-              "respRate" 	=> 0,
-              "heartRate" 	=> 0,
-              "rujukBalik" 	=> 0,
-              "rawatInap" 	=> false
+              "noKunjungan"             =>  $data['noKunjungan'],
+              "noKartu"                 =>  $data['noKartu'],
+              "tglDaftar"               =>  $data['tglDaftar'],
+              "keluhan"                 =>  $data['keluhan'],
+              "kdSadar"                 =>  $data['kdSadar'],
+              "sistole"                 =>  $data['sistole'],
+              "diastole"                =>  $data['diastole'],
+              "beratBadan"              =>  $data['beratBadan'],
+              "tinggiBadan"             =>  $data['tinggiBadan'],
+              "respRate"                =>  $data['respRate'],
+              "heartRate"               =>  $data['heartRate'],
+              "terapi"                  =>  $data['terapi'],
+              "kdProviderRujukLanjut"   =>  $data['kdProviderRujukLanjut'],
+              "kdStatusPulang"          =>  $data['kdStatusPulang'],
+              "tglPulang"               =>  $data['tglPulang'],
+              "kdDokter"                =>  $data['kdDokter'],
+              "kdDiag1"                 =>  $data['kdDiag1'],
+              "kdDiag2"                 =>  $data['kdDiag2'],
+              "kdDiag3"                 =>  $data['kdDiag3'],
+              "kdPoliRujukInternal"     =>  $data['kdPoliRujukInternal'],
+              "kdPoliRujukLanjut"       =>  $data['kdPoliRujukLanjut'],
             ); 
-            $datavisit = $this->postApi('pendaftaran', $data_kunjungan);
-            if (($datavisit['metaData']['message']=='CREATED') && ($datavisit['metaData']['code']=='201')){
-            	return $datasmpn = $this->simpandatabpjs($datavisit['response']['message'],$kode);
-	        }
-	        elseif(($datavisit['metaData']['message']=='NOT_MODIFIED') && ($datavisit['metaData']['code']=='304')){
-	            return 'dataada';
-	        }
-	        elseif(($datavisit['metaData']['message']=='PRECONDITION_FAILED') && ($datavisit['metaData']['code']=='412')){
-	            return 'datatidakada';
-	        }else{
-	            return 'bpjserror';
-	        }
+            $datavisit = $this->postApi('kunjungan', $data_kunjungan);
+            return  $datavisit;
         }
     }
    
