@@ -47,7 +47,7 @@
         <td ><input type="text" size="30" name="jumlahdata" value="3" /> *</td>
     </tr>
     <tr>
-        <td width='20%'>Diagnosa Pasien</td>
+        <td width='20%'>Resep Pasien</td>
         <td width='3%' align='center'>:</td>
         <td>
             <table border="1">

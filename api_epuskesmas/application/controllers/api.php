@@ -112,8 +112,8 @@ class Api extends CI_Controller {
             return $this->api_model->do_aaction_dataAnamnesa($data);   
         }else if($function=='do_get_dataSettingBPJS_validation'){
             return $this->api_model->do_aaction_dataSettingBPJS($data);   
-        }else if($function=='do_get_dataBPJSDiagnosaAnamnesa_validation'){
-            return $this->api_model->do_get_dataBPJSDiagnosaAnamnesa($data);   
+        }else if($function=='do_get__BPJSDiagnosaAnamnesaResep_validation'){
+            return $this->api_model->do_get_dataBPJSDiagnosaAnamnesaResep($data);   
         }
     }
     
@@ -363,7 +363,7 @@ class Api extends CI_Controller {
         $form[2] = array('var'=>'kodepuskesmas','label'=>'Kode Puskesmas','value'=>$kodepuskesmas,'rules'=>$rules_kodepuskesmas);
         $this->form_validasi('do_get_dataSettingBPJS_validation',$form);
     }
-    function getarray_data_BPJSDiagnosaAnamnesa(){
+    function getarray_data_BPJSDiagnosaAnamnesaResep(){
         $data['request_time ']      = $this->input->post('request_time');
         $data['request_token']      = $this->input->post('request_token'); 
         $data['client_id']          = $this->input->post('client_id');
@@ -390,9 +390,10 @@ class Api extends CI_Controller {
         $data['anamnesa'][]['suhu']          = $this->input->post('anamnesa_suhu');
         $data['anamnesa'][]['nafas']         = $this->input->post('anamnesa_nafas');
         $data['anamnesa'][]['terapi']        = $this->input->post('anamnesa_terapi');
-        $data['jumlahdata']         = $this->input->post('jumlahdata');
+        $data['jumlahdataDiagnosa']         = $this->input->post('jumlahdataDiagnosa');
+        
 
-        for ($i=1; $i <=$data['jumlahdata'] ; $i++)
+        for ($i=1; $i <=$data['jumlahdataDiagnosa'] ; $i++)
         {   
                 $data['resep'][]=array(
                     'resep_no_urut'     => $this->input->post("resep_no_urut$i"), 
@@ -403,7 +404,38 @@ class Api extends CI_Controller {
                     'resep_dosis'       => $this->input->post("resep_dosis$i"), 
                     );
         }
-        $this->form_validasi('do_get_dataBPJSDiagnosaAnamnesa_validation',$form);
+        $data['jumlahdataResep']         = $this->input->post('jumlahdataResep');
+        for ($i=1; $i <=$data['jumlahdataResep'] ; $i++)
+        {   
+                $data['diagnosa'][]=array(
+                    'diagnosa_no_icdx'          => $this->input->post("diagnosa_no_icdx$i"), 
+                    'diagnosa_no_urut'          => $this->input->post("diagnosa_no_urut$i"), 
+                    'diagnosa_nama_diagnosa'    => $this->input->post("diagnosa_nama_diagnosa$i"), 
+                    'diagnosa_jenis_kasus'      => $this->input->post("diagnosa_jenis_kasus$i"), 
+                    'diagnosa_jenis_diagnosa'   => $this->input->post("diagnosa_jenis_diagnosa$i"), 
+                    );
+        }
+        return $data;
+    }
+     function get_data_BPJSDiagnosaAnamnesaResep(){
+        $request_token = $this->input->post('request_token');
+        $client_id = $this->input->post('client_id');
+         $kodepuskesmas = $this->input->post('kodepuskesmas');
+         $pengguna      = $this->input->post('pengguna');
+
+        $rules_request_token    = array('min_length[32]','max_length[32]','trim','required');
+        $rules_client_id        = array('min_length[14]','max_length[14]','trim','required','callback_customAlphaNumber');
+        $rules_kodepuskesmas    = array('trim','required');
+        $rules_pengguna         = array('trim','required');
+        
+        $form[0] = array('var'=>'request_token','label'=>'Request Token','value'=>$request_token,'rules'=>$rules_request_token);
+        $form[1] = array('var'=>'client_id','label'=>'Client ID','value'=>$client_id,'rules'=>$rules_client_id);
+        $form[2] = array('var'=>'kodepuskesmas','label'=>'Kode Puskesmas','value'=>$kodepuskesmas,'rules'=>$rules_kodepuskesmas);
+        $form[2] = array('var'=>'pengguna','label'=>'Pengguna','value'=>$pengguna,'rules'=>$rules_pengguna);
+
+        $data = $this->getarray_data_BPJSDiagnosaAnamnesaResep();
+
+        $this->form_validasi('do_get__BPJSDiagnosaAnamnesaResep_validation',$form,$data);
     }
 }
 ?>

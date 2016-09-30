@@ -28,23 +28,23 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->group_by("cl_drugnm.code");
-            $this->db->select("cl_drugnm.code as drug_id, cl_drugnm.nama, cl_drugnm.harga, cl_drugbsunit.value,SUM(obat_stok_detail.jml_obat) AS stok, bpjs_data_obat.code");
+            $this->db->select("cl_drugnm.code, cl_drugnm.nama, cl_drugnm.harga, cl_drugbsunit.value,obat_stock_ket.stok_min, obat_stock_ket.stok_max, SUM(obat_stok_detail.jml_obat) AS stok_sekarang");
             $this->db->join('cl_drugbsunit','cl_drugnm.satuan = cl_drugbsunit.id','left');
             $this->db->join('obat_stok_detail','cl_drugnm.code = obat_stok_detail.id_obat','left');
-            $this->db->join('bpjs_data_obat','cl_drugnm.code = bpjs_data_obat.code_mapping','left');
+            $this->db->join('obat_stock_ket','cl_drugnm.code = obat_stock_ket.obat_kode','left');
             $querygetObat=$this->db->get('cl_drugnm',$limit);
             if($querygetObat->num_rows() >0)
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
-                        'drug_id'   => $data['drug_id'],
-                        'code'      => $data['code'],
-                        'nama'      => $data['nama'],
-                        'satuan'    => $data['value'],
-                        'stok'      => $data['stok'],
-                        'harga'     => $data['harga']
-                    );
+                                    'code'      => $data['code'],
+                                    'nama'      => $data['nama'],
+                                    'value'     => $data['value'],
+                                    'harga'     => $data['harga'],
+                                    'stok_min'  => $data['stok_min']==null?"":$data['stok_min'],
+                                    'stok_max'  => $data['stok_max']==null?"":$data['stok_max'],
+                                    'stok_sekarang'=>$data['stok_sekarang']);
                 }
                  $status_code = $this->status_code('200');
             }
@@ -248,23 +248,19 @@ class Api_model extends CI_Model {
                 $limit = 10;
             }
             $this->db->order_by("id");
-            $this->db->select("app_sdm.sdm_id as sdm_id,app_sdm.sdm_nama as nama,app_sdm.sdm_nopeg,app_sdm.tanggal_lahir,app_sdm.tempat_lahir, app_sdm.sdm_jenis_id, ds_phc_staff.nama as sdm_jenis,bpjs_data_dokter.code",false);
+            $this->db->select("app_sdm.sdm_id as id,app_sdm.sdm_nama as nama,app_sdm.sdm_nopeg,app_sdm.tanggal_lahir,app_sdm.tempat_lahir, ds_phc_staff.nama as jenis_sdm,",false);
             $this->db->join('ds_phc_staff','ds_phc_staff.id=app_sdm.sdm_jenis_id','left');
-            $this->db->join('bpjs_data_dokter','bpjs_data_dokter.code_mapping=app_sdm.sdm_id','left');
             $querygetObat=$this->db->get('app_sdm',$limit);
             if($querygetObat->num_rows() >0)
             {
                 $datas = $querygetObat->result_array();
                 foreach ($datas as $data) {
                     $content[] = array(   
-                                    'code'              => $data['code'],
-                                    'sdm_id'            => $data['sdm_id'],
+                                    'id'                => $data['id'],
                                     'nama'              => $data['nama'],
                                     'sdm_nopeg'         => $data['sdm_nopeg'],
-                                    'tanggal_lahir'     => date("d-m-Y",strtotime($data['tanggal_lahir'])),
-                                    'tempat_lahir'      => $data['tempat_lahir'],
-                                    'sdm_jenis_id'      => $data['sdm_jenis_id'],
-                                    'sdm_jenis'         => $data['sdm_jenis']
+                                    'tempat_lahir'      => date("d-m-Y",strtotime($data['tanggal_lahir'])).', '.$data['tempat_lahir'],
+                                    'jenis_sdm'         => $data['jenis_sdm'],
                                     );
                 }
                  $status_code = $this->status_code('200');
@@ -522,10 +518,19 @@ class Api_model extends CI_Model {
                     $datasave['modified_date']  =  time();
                     $datasave['modified_by']    =  $dataanamnesa['pengguna'];
                     $this->db->insert('app_poli_detail_anamnesa',$datasave);
+                    if ($key=='dokter_id') {
+                        $kodedokter = $value;
+                    }
+                    if ($key=='asisten_id') {
+                        $kodeasisten=$value;
+                    }
                 }
             }
             $this->db->where('reg_id',$dataanamnesa['no_register']);
-            $this->db->set('status_apotek','1');
+            $this->db->set('app_update',$dataanamnesa['pengguna']);
+            $this->db->set('app_update_time',time());
+            $this->db->set('reg_pemeriksa',$kodedokter);
+            $this->db->set('reg_pemeriksa2',$kodeasisten);
             $this->db->update('app_reg');
 
             
@@ -605,7 +610,186 @@ class Api_model extends CI_Model {
         $result['status_code'] = $status_code;
         return $result;
     }
-    function do_get_dataBPJSDiagnosaAnamnesa($data=array()){
+    function do_get_dataBPJSDiagnosaAnamnesaResep($data=array()){
+        $this->db->where('reg_id',$this->input->post('reg_id'));
+        if ($this->db->delete('app_poli_detail_anamnesa')==FALSE) {
+            $content=array('validation'=>'Execution anamnesa data is failed'); 
+            $status_code = $this->status_code('417'); 
+        }else{
+            foreach ($data['anamnesa'] as $dataanam) {
+                foreach ($dataanam as $keyanam => $valueanam) {
+
+                    $datasaveanam['reg_id'] =  $data['no_register'];
+                    $datasaveanam['name']   =  $keyanam;
+                    $datasaveanam['value']  =  $valueanam;
+                    $datasaveanam['no_urut']=  '0';
+                    $datasaveanam['created_date']   =  time();
+                    $datasaveanam['created_by']     =  $data['pengguna'];
+                    $datasaveanam['modified_date']  =  time();
+                    $datasaveanam['modified_by']    =  $data['pengguna'];
+
+                    $cekjmlanamnesa = $this->db->get_where('app_poli_detail_anamnesa', array('reg_id'=>$data['no_register'],'name'=>$keyanam),1);
+                    if ($cekjmlanamnesa->num_rows() > 0) {
+                        $content=array('validation'=>'Insert anamnesa data is failed because duplicate data'); 
+                        $status_code = $this->status_code('417'); 
+                    }else{
+                        $this->db->insert('app_poli_detail_anamnesa',$datasaveanam);
+                    }
+                    
+                    if ($keyanam=='dokter_id') {
+                        $kodedokter = $valueanam;
+                    }
+                    if ($keyanam=='asisten_id') {
+                        $kodeasisten=$valueanam;
+                    }
+                }
+            }
+
+        }
+        $this->db->where('reg_id',$data['no_register']);
+        $this->db->set('app_update',$data['pengguna']);
+        $this->db->set('app_update_time',time());
+        $this->db->set('reg_pemeriksa',$kodedokter);
+        $this->db->set('reg_pemeriksa2',$kodeasisten);
+        if ($this->db->update('app_reg')==FALSE) {
+            $content=array('validation'=>'Update docter data in app_reg is failed'); 
+            $status_code = $this->status_code('417'); 
+        }
+        if (!isset($content['validation']) && empty($content['validation'])) {
+            $this->db->where('reg_id',$data['no_register']);
+            if ($this->db->delete('app_poli_detail_diagnosa')==FALSE) {
+                $content=array('validation'=>'Execution diagnosa data is failed'); 
+                $status_code = $this->status_code('417'); 
+            }else{
+                foreach ($data['diagnosa'] as $keydiag) {
+                    $qCekUsername = $this->db->get_where('cl_icdx', array('trim(code)'=>$keydiag['diagnosa_no_icdx']),1);
+                    if($qCekUsername->num_rows() > 0){
+                        $datasavediag['reg_id']=$data['no_register'];
+                        $datasavediag['diag_id']=$keydiag['diagnosa_no_icdx'];
+                        $datasavediag['diag_kasus']=$keydiag['diagnosa_jenis_kasus'];
+                        $datasavediag['diag_jenis']=$keydiag['diagnosa_jenis_diagnosa'];
+                        $datasavediag['no']=$keydiag['diagnosa_no_urut'];
+                        $datasavediag['no_urut']='0';
+
+                        $cekjmldiagnosa = $this->db->get_where('app_poli_detail_diagnosa', array('reg_id'=>$data['no_register'],'diag_id'=>$keydiag['diagnosa_no_icdx']),1);
+                        if ($cekjmldiagnosa->num_rows() > 0) {
+                            $content=array('validation'=>'Insert diagnosa data is failed because duplicate data'); 
+                            $status_code = $this->status_code('417'); 
+                        }else{
+                            $this->db->insert('app_poli_detail_diagnosa', $datasavediag);
+                        }
+                    }else{
+                       $content=array('validation'=>'Sorry,You cannot insert data. Please check your diagnosa in master data!'); 
+                        $status_code = $this->status_code('412'); 
+                    }
+                    $nama_diagnosa = $keydiag['diagnosa_nama_diagnosa'];
+                }
+            }   
+            $this->db->where('reg_id',$data['no_register']);
+            $this->db->set('app_update_time',time());
+            $this->db->set('app_update',$data['pengguna']);
+            if ($this->db->update('app_reg')==FALSE) {
+                $content=array('validation'=>'Update time diagnosa data in app_reg is failed'); 
+                $status_code = $this->status_code('417'); 
+            }
+        }
+        
+        if (!isset($content['validation']) && empty($content['validation'])) {
+            $check = explode("|",$this->cekstokobat($data));
+            // print_r($check);
+            if ($check[0]=='sukses') {
+                $this->db->where('reg_id',$data['no_register']);
+                if ($this->db->delete('app_poli_detail_resep')==FALSE) {
+                    $content=array('validation'=>'Execution Resep data is failed'); 
+                    $status_code = $this->status_code('417'); 
+                }else{
+                    foreach ($data['resep'] as $keyres) {
+                        $qCekUsername = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$keyres['resep_kodeobat']),1);
+                        if($qCekUsername->num_rows()>0){
+                            $content=array('validation'=>'Diagnosa entered is already existed.'); 
+                            $status_code = $this->status_code('412'); 
+                            $cekinsert=FALSE;
+                        }else{
+                            $sno_urut=sprintf("%04s", $keyres['resep_no_urut']);;
+                            $datasaveres['id_transc']="RE".$data['no_register'].$sno_urut;
+                            $datasaveres['reg_id']=$data['no_register'];
+                            $datasaveres['obat_id']=$keyres['resep_kodeobat'];
+                            $datasaveres['obat_jml']=$keyres['resep_jumlah'];
+                            $datasaveres['obat_racik']=$keyres['resep_racikan'];
+                            $datasaveres['obat_dosis']=$keyres['resep_dosis'];
+                            $datasaveres['no']=$keyres['resep_no_urut'];
+                            $datasaveres['no_urut']='0';
+                            $datasaveres['created_date']=time();
+                            $datasaveres['created_by']=$data['pengguna'];
+                            $datasaveres['modified_by']=$data['pengguna'];
+                            $datasaveres['modified_date']=time();
+                            
+                            $cekjmlresep = $this->db->get_where('app_poli_detail_resep', array('reg_id'=>$data['no_register'],'obat_id'=>$keyres['resep_kodeobat']),1);
+                            if ($cekjmlresep->num_rows() > 0) {
+                                $content=array('validation'=>'Insert Resep data is failed because duplicate data'); 
+                                $status_code = $this->status_code('417'); 
+                            }else{
+                                $cekinsert = $this->db->insert('app_poli_detail_resep', $datasaveres);
+                            }
+                        }
+                        $nama_obat = $keyres['resep_nama_obat'];
+                    }
+                    if ($cekinsert==TRUE) {
+                        $this->db->where('reg_id',$data['no_register']);
+                        $this->db->set('status_apotek','1');
+                        if ($this->db->update('app_reg')==FALSE) {
+                             $content=array('validation'=>'Update status apotek data in app_reg is failed'); 
+                             $status_code = $this->status_code('417'); 
+                        }
+                    }
+                    $this->db->where('reg_id',$data['no_register']);
+                    $this->db->set('app_update_time',time());
+                    $this->db->set('app_update',$data['pengguna']);
+                    if ($this->db->update('app_reg')==FALSE) {
+                        $content=array('validation'=>'Update time and username data in app_reg is failed'); 
+                        $status_code = $this->status_code('417'); 
+                    }
+                }
+            }else{
+                $content=array('validation'=>"Sorry, Insert resep data is failed.Stok $check[1] is $check[2]"); 
+                $status_code = $this->status_code('417'); 
+            }
+        }
+        if (!isset($status_code) && empty($status_code)) {
+            $reg_id= $this->input->post('reg_id');
+            $this->db->where('reg_id',$reg_id);
+            $query = $this->db->get('app_poli_detail_anamnesa');
+            $id = $data['no_register'];
+            $optionresep = array('reg_id' => $id,'obat_id'=>$datasaveres['obat_id'],'no'=>$datasaveres['no']);
+            $queryresep = $this->db->get_where('app_poli_detail_resep',$optionresep,1);
+
+            $optiondiag = array('reg_id' => $id,'diag_id'=>$datasavediag['diag_id'],'no'=>$datasavediag['no']);
+            $querydiagnosa = $this->db->get_where('app_poli_detail_diagnosa',$optiondiag,1);
+
+            $this->db->where('reg_id',$reg_id);
+            $queryanamnesa = $this->db->get('app_poli_detail_anamnesa');
+            if ($queryresep->num_rows() > 0 || $querydiagnosa->num_rows() > 0 || $queryanamnesa->num_rows() > 0){
+                $dataresep = $queryresep->row_array();
+                $datadiagnosa = $querydiagnosa->row_array();
+                $dataanam = $queryanamnesa->result_array();
+                foreach ($dataanam as $keypil) {
+                    $content[$keypil['name']] = $keypil['value'];
+                }
+                $content += array('id'=>$dataresep['reg_id'],'kode diagnosa'=>$datadiagnosa['diag_id'],'nama diagnosa'=>$nama_diagnosa,'no urut'=>$datadiagnosa['no'],'kode kasus'=>$datadiagnosa['diag_kasus'],'kode jenis'=>$datadiagnosa['diag_jenis'],'kode obat'=>$dataresep['obat_id'],'nama obat'=>$nama_obat,'no urut'=>$dataresep['no'],'jumlah obat'=>$dataresep['obat_jml'],'dosis obat'=>$dataresep['obat_dosis'],'Kode Racikan'=>$dataresep['obat_racik']);
+                    $status_code = $this->status_code('201');
+            }else{
+                $query->free_result();   
+                $content=array('validation'=>'No data found.'); 
+                $status_code = $this->status_code('204'); 
+            }
+        }
+            
+        $result = array('header'=>$this->header(),'content'=>$content,'status_code'=>$status_code);
+        print_r($result);
+        die();
+        return $result;
+
+
         switch($data['status_pulang'])
         {
             case "4":
@@ -686,13 +870,400 @@ class Api_model extends CI_Model {
         {
             if(Bpjs::func_getProviderAsal($data['no_register'])!='default')
             {
-                $sql_dokter = "SELECT kdDokter FROM bpjs_data_pendaftaran WHERE reg_id='".$_GET['id_reg']."'";
-                $query_dokter = mysql_query($sql_dokter);
-                $data_dokternyah = mysql_fetch_assoc($query_dokter);
+                $sql_dokter = $this->db->query("SELECT kdDokter FROM bpjs_data_pendaftaran WHERE reg_id='".$data['no_register']."'");
+                $data_dokternyah = $sql_dokter->row_array();
                 $kdDokter       = $data_dokternyah["kdDokter"];
             }
         }
+        $d=1;
+        foreach($data_diag as $a)
+        {
+            /*limit diagnosa hanya 3*/
+            if($d==1) $kdDiag1 = $a;
+            if($d==2) $kdDiag2 = $a;
+            if($d==3) $kdDiag3 = $a;
+            $d++;
+        }
+        if($data["status_pulang"]=="5")
+        {
+        } else
+        {
+            $kdProviderRujukLanjut  = $data_peserta["provider"];
+            $kdPoliRujukLanjut      = $data_peserta["poli_provider"];
+        }
 
+        $data_kunjungan = array(
+          "noKunjungan"             =>  $noKunjungan,
+          "noKartu"                 =>  $noKartu,
+          "tglDaftar"               =>  $tglDaftar,
+          "keluhan"                 =>  $keluhan,
+          "kdSadar"                 =>  $kdSadar,
+          "sistole"                 =>  $sistole,
+          "diastole"                =>  $diastole,
+          "beratBadan"              =>  $beratBadan,
+          "tinggiBadan"             =>  $tinggiBadan,
+          "respRate"                =>  $respRate,
+          "heartRate"               =>  $heartRate,
+          "terapi"                  =>  $terapi,
+          "kdProviderRujukLanjut"   =>  $kdProviderRujukLanjut,
+          "kdStatusPulang"          =>  $kdStatusPulang,
+          "tglPulang"               =>  $tglPulang,
+          "kdDokter"                =>  $kdDokter,
+          "kdDiag1"                 =>  $kdDiag1,
+          "kdDiag2"                 =>  $kdDiag2,
+          "kdDiag3"                 =>  $kdDiag3,
+          "kdPoliRujukInternal"     =>  $kdPoliRujukInternal,
+          "kdPoliRujukLanjut"       =>  $kdPoliRujukLanjut
+        ); 
+        if($noKunjungan=="")
+        { //tambah kunjungan, pakai post
+           
+            $response = $this->bpjs->inserbpjs($data_kunjungan);
+            $response = json_decode($response,true);
+
+            if($response["metaData"]["code"]=="201")
+            {
+                /*tambahkan status rujukan*/
+                if($data_peserta["provider"]<>"") $status_rujukan = ",status_rujuk='1' ";
+                
+                /*masukkan ke table*/
+                $sql = "UPDATE bpjs_data_kunjungan SET bpjs_no_kunjungan='".$response["response"]["message"]."'".$status_rujukan." WHERE reg_id='".$reg_id."';";
+                mysql_query($sql);
+                
+                /*masukkan data rujukan*/
+                if($kdStatusPulang == "4")
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='".$data_peserta["provider"]."',bpjs_kode_poli_rujukan='".$data_peserta["poli_provider"]."' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }
+                //update 24 maret 2016 //bug dalam menyimpan status pulang
+                else
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='',bpjs_kode_poli_rujukan='',status_keluar='".$kdStatusPulang."',status_rujuk='0' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }
+                
+                /*masukkan ke tabel diagnosa*/
+                foreach($data_diag as $a)
+                {
+                    mysql_query("INSERT IGNORE INTO bpjs_kunjungan_detail_diagnosa(bpjs_no_kunjungan,id_diagnosa_bpjs,id_diagnosa_mapping,status_nonSpesialis,created_date) VALUES('".$response["response"]["message"]."','".$a."','".$a."','0','".time()."')");
+                }
+                
+                $result = "<table>
+                    <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS berhasil</b></td></tr>
+                    <tr>
+                        <td><image src='images/show_success.gif'></td>
+                        <td>Data kunjungan berhasil ditambahkan. <br>Nomor kunjungan ".$response["response"]["message"]."</td>
+                    </tr>
+                </table>";
+                $result_res = "ok";
+                
+                /*tambahan untuk TACC
+                 masukkan data ke table bpjs_data_kunjungan 
+                 */
+                 if(isset($_POST['taccKode']) && isset($_POST['bypassVersion']))
+                 {
+                    $sql_tacc = "UPDATE bpjs_data_kunjungan SET kdTacc='".$_POST['taccKode']."',alasanTacc='".$_POST['taccAlasan']."' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql_tacc);
+                }
+                 
+            }elseif($response["metaData"]["code"]=="304")
+            {
+                $result = "<table>
+                    <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS gagal</b></td></tr>
+                    <tr>
+                        <td><image src='images/show_error.gif'></td>
+                        <td>Data kunjungan gagal ditambahkan. <br>Reason : Data kunjungan poli telah dientri sebelumnya<br>Mungkin telah dientri di aplikasi Pcare<br>Apakah anda ingin mengupdate data di Pcare dengan data baru hasil pemeriksaan di epuskesmas?
+                        <br>
+                        <input type=button class=\"btn-green\" value=\"Ya, Update Data\" id='bpjs_button_update_kunjungan' onclick=\"getRiwayatKunjungan()\">
+                        
+                        </td>
+                    </tr>
+                </table>";
+                $result_res = "err";
+            }
+            else
+            {
+                
+                /*untuk TACC*/
+                $tacc = false;
+                foreach($response["response"] as $a=>$b)
+                {
+                    if (strpos($b["message"], 'Diagnosa ini merupakan diagnosa Non-Spesial') !== false)
+                    {
+                        $tacc = true;
+                        break;
+                    }
+                }
+                
+                if($tacc)
+                {
+                    $result = "<script>
+                        function sendRujukTacc()
+                        {
+                            $('#popup_windowMonitoring').show();
+                            $('#popup_contentMonitoring').html(\"<img src='images/loading.gif'>\"); 
+                            $.post('index.php?file=".$_GET['file']."&act=dosendkunjungan&id_reg=".$reg_id."&out=".$out."',{
+                                taccKode:$('#bpjsRujukTaccKode').val(),
+                                taccAlasan:$('#bpjsRujukTaccAlasan').val(),
+                                bypassVersion:'v2',
+                                status_pulang   : $('#bpjs_select_status_pulang').val(),
+                                bpjs_provider   : $('#bpjs_provider').val(),
+                                bpjs_poli       : $('#bpjs_poli').val(),
+                                bpjs_poli_inter : $('#bpjs_poli_internal').val(),
+                                status_diag_non_spesialis : $('#status_diag_non_spesialis').val()
+                            },function(hasil){
+                                var json=eval(\"(\"+hasil+\")\");
+                                var content = json.html;
+                                $('#popup_contentMonitoring').html(content);
+                            });
+                            
+                        }
+                    </script><table>
+                        <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS gagal</b></td></tr>
+                        <tr>
+                            <td valign=top><image src='images/show_warning.gif'></td>
+                            <td>Pengiriman data kunjungan ke BPJS gagal karena diagnosa merupakan<br>diagnosa non spesialis.<br>
+                            Silakan isi alasan TACC kemudian kirim ulang kunjungan.<br><br>
+                            <table>
+                                <tr>
+                                    <td>Alasan</td>
+                                    <td>:</td>
+                                    <td><select class=combo-box id=bpjsRujukTaccKode>
+                                        <option value='1'>Time</option>
+                                        <option value='2'>Age</option>
+                                        <option value='3'>Complication</option>
+                                        <option value='4'>COmorbidity</option>
+                                    </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Catatan</td>
+                                    <td>:</td>
+                                    <td>
+                                        <textarea class=text-field cols=30 rows=2 id=bpjsRujukTaccAlasan></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan=3><br>
+                                        <input type=button class=btn-green value='Kirim Rujukan TACC' onclick=sendRujukTacc()>
+                                    </td>
+                                </tr>
+                            </table>
+                            </td>
+                        </tr>
+                    </table>";
+                }
+                else
+                {
+                    $result = "<table>
+                        <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS gagal</b></td></tr>
+                        <tr>
+                            <td><image src='images/show_error.gif'></td>
+                            <td>Data kunjungan gagal ditambahkan. <br>Reason ".$response["metaData"]["message"]."<br>Silakan periksa kembali field-field berikut :";
+                    foreach($response["response"] as $a=>$b)
+                    {
+                        $result .= "<br>".$b["field"]."=>".$b["message"];
+                    }
+                        $result .= "    </td>
+                        </tr>
+                    </table>";
+                }
+                /*hapus data rujukan*/
+                if($kdStatusPulang == "4")
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='',bpjs_kode_poli_rujukan='',status_keluar='0',status_rujuk='0' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }
+                $result_res = "err";
+            }
+        }
+        else
+        { //edit kunjungan, pakai put
+            
+            try
+            {
+                $response = \Httpful\Request::put(Bpjs::func_bpjsrestheader('server').'/'.$versiApi.'/kunjungan')
+                ->xConsId(Bpjs::func_bpjsrestheader('consid',Bpjs::func_getProviderAsal($reg_id)))
+                ->xTimestamp(Bpjs::func_bpjsRestData("xtime",Bpjs::func_getProviderAsal($reg_id)))
+                ->xSignature(Bpjs::func_bpjsRestData("xsign",Bpjs::func_getProviderAsal($reg_id)))
+                ->xAuthorization("Basic ".Bpjs::func_bpjsRestData("xauth",Bpjs::func_getProviderAsal($reg_id)))
+                ->body($data_kunjungan)
+                ->sendsJson()
+                ->timeout(90)
+                ->send();
+            }
+            catch(Exception $E)
+            {
+                $reflector = new \ReflectionClass($E);
+                $classProperty = $reflector->getProperty('message');
+                $classProperty->setAccessible(true);
+                $data = $classProperty->getValue($E);
+                $result = "<table><tr><td><image src='images/show_error.gif'></td><td>Gagal mengirim data ke server BPJS.<br>".$data."</td></tr></table>";
+                if($out=="json") $result = json_encode(array("res"=>"err","html"=>$result));
+                return $result;
+            }
+            
+            //return Bpjs::func_bpjsrestheader('server').'/'.$versiApi.'/kunjungan'.$response; 
+            //echo $response; die;
+            $response = json_decode($response,true);
+            if($response["metaData"]["code"]=="200")
+            {
+                /*jika no_kunjungan_update diset*/
+                /*masukkan ke table*/
+                if($no_kunjungan_update!=="")
+                $sql = "UPDATE bpjs_data_kunjungan SET bpjs_no_kunjungan='".$no_kunjungan_update."' WHERE reg_id='".$reg_id."';";
+                mysql_query($sql);
+                
+                
+                /*tambahkan status rujukan*/
+                $sql = "UPDATE bpjs_data_kunjungan SET status_rujuk='1' WHERE reg_id='".$reg_id."';";
+                mysql_query($sql);
+                
+                /*masukkan data rujukan*/
+                if($kdStatusPulang == "4")
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='".$data_peserta["provider"]."',bpjs_kode_poli_rujukan='".$data_peserta["poli_provider"]."' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }else
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='',bpjs_kode_poli_rujukan='',status_keluar='".$kdStatusPulang."',status_rujuk='0' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }
+                
+                /*update tabel diagnosa*/
+                mysql_query("DELETE FROM bpjs_kunjungan_detail_diagnosa WHERE bpjs_no_kunjungan='".$noKunjungan."'");
+                foreach($data_diag as $a)
+                {
+                    mysql_query("INSERT IGNORE INTO bpjs_kunjungan_detail_diagnosa(bpjs_no_kunjungan,id_diagnosa_bpjs,id_diagnosa_mapping,status_nonSpesialis,created_date) VALUES('".$noKunjungan."','".$a."','".$a."','0','".time()."')");
+                }
+                
+                $result = "<table>
+                    <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS berhasil</b></td></tr>
+                    <tr>
+                        <td><image src='images/show_success.gif'></td>
+                        <td>Data kunjungan berhasil diubah. <br>Nomor kunjungan ".$noKunjungan."</td>
+                    </tr>
+                </table>";
+                
+                /*tambahan untuk TACC
+                 masukkan data ke table bpjs_data_kunjungan 
+                 */
+                 if(isset($_POST['taccKode']) && isset($_POST['bypassVersion']))
+                 {
+                    $sql_tacc = "UPDATE bpjs_data_kunjungan SET kdTacc='".$_POST['taccKode']."',alasanTacc='".$_POST['taccAlasan']."' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql_tacc);
+                }
+                 
+                $data = array("no_kunjungan"=>$noKunjungan);
+                $result_res = "ok";
+            }
+            else
+            {
+                
+                /*untuk TACC*/
+                $tacc = false;
+                foreach($response["response"] as $a=>$b)
+                {
+                    //if (strpos($b["message"], 'Diagnosa ini merupakan diagnosa Non-Spesial') !== false)
+                    if (strpos($b["message"], 'Diagnosa ini merupakan diagnosa Non-Spesial') !== false)
+                    //if (strpos($b["message"], 'Tidak sesuai dengan') !== false)
+                    {
+                        $tacc = true;
+                        break;
+                    }
+                }
+                
+                if($tacc)
+                {
+                    $result = "<script>
+                        function sendRujukTacc()
+                        {
+                            var tacckode     = $('#bpjsRujukTaccKode').val();
+                            var taccalasan   = $('#bpjsRujukTaccAlasan').val();
+                            $('#popup_windowMonitoring').show();
+                            $('#popup_contentMonitoring').html(\"<img src='images/loading.gif'>\"); 
+                            $.post('index.php?file=".$_GET['file']."&act=dosendkunjungan&id_reg=".$reg_id."&out=".$out."',{
+                                taccKode:tacckode,
+                                taccAlasan:taccalasan,
+                                bypassVersion:'v2',
+                                status_pulang   : $('#bpjs_select_status_pulang').val(),
+                                bpjs_provider   : $('#bpjs_provider').val(),
+                                bpjs_poli       : $('#bpjs_poli').val(),
+                                bpjs_poli_inter : $('#bpjs_poli_internal').val(),
+                                status_diag_non_spesialis : $('#status_diag_non_spesialis').val()
+                            },function(hasil){
+                                var json=eval(\"(\"+hasil+\")\");
+                                var content = json.html;
+                                $('#popup_contentMonitoring').html(content);
+                            });
+                            
+                        }
+                    </script><table>
+                        <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS gagal</b></td></tr>
+                        <tr>
+                            <td valign=top><image src='images/show_warning.gif'></td>
+                            <td>Pengiriman data kunjungan ke BPJS gagal karena diagnosa merupakan<br>diagnosa non spesialis.<br>
+                            Silakan isi alasan TACC kemudian kirim ulang kunjungan.<br><br>
+                            <table>
+                                <tr>
+                                    <td>Alasan</td>
+                                    <td>:</td>
+                                    <td><select class=combo-box id=bpjsRujukTaccKode>
+                                        <option value='1'>Time</option>
+                                        <option value='2'>Age</option>
+                                        <option value='3'>Complication</option>
+                                        <option value='4'>COmorbidity</option>
+                                    </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Catatan</td>
+                                    <td>:</td>
+                                    <td>
+                                        <textarea class=text-field cols=30 rows=2 id=bpjsRujukTaccAlasan></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan=3><br>
+                                        <input type=button class=btn-green value='Kirim Rujukan TACC' onclick=sendRujukTacc()>
+                                    </td>
+                                </tr>
+                            </table>
+                            </td>
+                        </tr>
+                    </table>";
+                }
+                else
+                {
+                    $result = "<table>
+                        <tr><td colspan=2 align=center><b>Sinkronisasi data ke BPJS gagal</b></td></tr>
+                        <tr>
+                            <td><image src='images/show_error.gif'></td>
+                            <td>Data kunjungan gagal diubah. <br>Reason ".$response["metaData"]["message"]."<br>Silakan periksa kembali field-field berikut :";
+                            foreach($response["response"] as $a=>$b)
+                            {
+                                $result .= "<br>".$b["field"]."=>".$b["message"];
+                            }
+                                $result .= "    </td>
+                        </tr>
+                    </table>";
+                }
+                
+                /*hapus data rujukan*/
+                if($kdStatusPulang == "4")
+                {
+                    $sql = "UPDATE bpjs_data_kunjungan SET bpjs_kode_rs_rujukan='',bpjs_kode_poli_rujukan='',status_keluar='".$kdStatusPulang."',status_rujuk='0' WHERE reg_id='".$reg_id."'";
+                    mysql_query($sql);
+                }
+                $result_res = "err";
+            }
+        }
+        if($out=="json")
+        {
+            $result = json_encode(array("res"=>$result_res,"html"=>$result,"data"=>$data,"kode_metadata"=>$response["metaData"]["code"]));
+        } 
+        return $result;
     }
     function func_bpjsIsDkiJakarta()
     {

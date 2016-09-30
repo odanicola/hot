@@ -87,7 +87,7 @@
         <td width='20%'>Anamnesa</td>
         <td width='3%' align='center'>:</td>
         <td><textarea name="anamnesa_anamnesa" rows="2" cols="25"></textarea></td>
-        <td width='20%' rowspan="3" colspan="3">
+        <td width='20%' rowspan="2" colspan="4">
             <table>
                 <tr>
                     <td>Sistole</td>
@@ -137,14 +137,14 @@
         <td ><textarea name="anamnesa_terapi" rows="2" cols="25"></textarea></td>
     </tr>
     <tr>
-        <td width='20%'>Jumlah Data</td>
+        <td width='20%'>Jumlah Data Diagnosa</td>
         <td width='3%' align='center'>:</td>
-        <td ><input type="text" size="30" name="jumlahdata" value="3" /> *</td>
+        <td colspan="4"><input type="text" size="30" name="jumlahdataDiagnosa" value="3" /> *</td>
     </tr>
     <tr>
         <td width='20%'>Diagnosa Pasien</td>
         <td width='3%' align='center'>:</td>
-        <td colspan="2">
+        <td colspan="4">
             <table border="1">
                 <tr>
                     <td>No iCD-X *</td>
@@ -177,6 +177,46 @@
         </td>
     </tr>
     <tr>
+        <td width='20%'>Jumlah Data Resep</td>
+        <td width='3%' align='center'>:</td>
+        <td colspan="4"><input type="text" size="30" name="jumlahdataResep" value="3" /> *</td>
+    </tr>
+    <tr>
+        <td width='20%'>Resep Pasien</td>
+        <td width='3%' align='center'>:</td>
+        <td colspan="4">
+            <table border="1">
+                <tr>
+                    <td>No Urut</td>
+                    <td>Kode Obat *</td>
+                    <td>Nama Obat *</td>
+                    <td>Jumlah *</td>
+                    <td>Racikan *</td>
+                    <td>Dosis *</td>
+                </tr>
+                <?php for ($i=1; $i <=3 ; $i++) { ?>
+                <tr>
+                    <td><input type="text" size="30" name="resep_no_urut<?php echo $i;?>" value="<?php echo $i;?>"></td>
+                    <td><input type="text" size="30" name="resep_kodeobat<?php echo $i;?>" value=""></td>
+                    <td><input type="text" size="30" name="resep_nama_obat<?php echo $i;?>" value=""></td>
+                    <td><input type="text" size="30" name="resep_jumlah<?php echo $i;?>" value="" /></td>
+                    <td>
+                        <select name="resep_racikan<?php echo $i;?>">
+                            <option value="0">-</option>
+                            <option selected="" value="1">R1</option>
+                            <option value="2">R2</option>
+                            <option value="3">R3</option>
+                            <option value="4">R4</option>
+                            <option value="5">R5</option>
+                        </select>
+                    </td>
+                    <td><input type="text" size="30" name="resep_dosis<?php echo $i;?>" value="" /></td>
+                </tr>
+                <?php } ?>
+            </table>
+        </td>
+    </tr>
+    <tr>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>
@@ -199,7 +239,7 @@ $("#btn_lihatdatas").click(function(){
     }else{
         $.ajax({
           type   : "POST",
-          url    : "<?php echo base_url(); ?>api/getarray_data_BPJSDiagnosaAnamnesa",
+          url    : "<?php echo base_url(); ?>api/get_data_BPJSDiagnosaAnamnesaResep",
           data   : $("form").serialize(),
           success: function (response, text) {
             $("#showdata").html(response);
