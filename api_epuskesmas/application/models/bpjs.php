@@ -261,10 +261,33 @@ class Bpjs extends CI_Model {
 
       	return $data;
 	}
-	function inserbpjs($kode){
+	$data_kunjungan = array(
+          "noKunjungan"             =>  $noKunjungan,
+          "noKartu"                 =>  $noKartu,
+          "tglDaftar"               =>  $tglDaftar,
+          "keluhan"                 =>  $keluhan,
+          "kdSadar"                 =>  $kdSadar,
+          "sistole"                 =>  $sistole,
+          "diastole"                =>  $diastole,
+          "beratBadan"              =>  $beratBadan,
+          "tinggiBadan"             =>  $tinggiBadan,
+          "respRate"                =>  $respRate,
+          "heartRate"               =>  $heartRate,
+          "terapi"                  =>  $terapi,
+          "kdProviderRujukLanjut"   =>  $kdProviderRujukLanjut,
+          "kdStatusPulang"          =>  $kdStatusPulang,
+          "tglPulang"               =>  $tglPulang,
+          "kdDokter"                =>  $kdDokter,
+          "kdDiag1"                 =>  $kdDiag1,
+          "kdDiag2"                 =>  $kdDiag2,
+          "kdDiag3"                 =>  $kdDiag3,
+          "kdPoliRujukInternal"     =>  $kdPoliRujukInternal,
+          "kdPoliRujukLanjut"       =>  $kdPoliRujukLanjut
+        ); 
+	function inserbpjs($data=array()){
        $tampildata = $this->getApi('peserta/'.$kode);
        if (($tampildata['metaData']['message']=='error')&&($tampildata['metaData']['code']=='777')) {
-           return  'bpjserror';
+           $tampildata['metaData']['message']=='error';
        }else{
 	        if (array_key_exists("kdProvider",$tampildata['response']['kdProviderPst'])){
 	            $kodeprov = $tampildata['response']['kdProviderPst']['kdProvider'];
