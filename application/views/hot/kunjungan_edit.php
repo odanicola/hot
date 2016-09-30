@@ -37,6 +37,9 @@
       $("#kolesterol").jqxNumberInput({ width: '98%', height: 50, value: "200", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{kolesterol}' });
       $("#asamurat").jqxNumberInput({ width: '98%', height: 50, value: "7.7", textAlign: "center" , inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 1, value: '{asamurat}' });
 
+      $("#respiratory_rate").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{respiratory_rate}' });
+      $("#heart_rate").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{heart_rate}' });
+      
       $("#gdp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdp}' });
       $("#gds").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gds}' });
       $("#gdpp").jqxNumberInput({ width: '98%', height: 50, value: "50", textAlign: "center", inputMode: 'simple', spinMode: 'advanced', template: "warning", symbolPosition: 'right', decimalDigits: 0, value: '{gdpp}' });
@@ -91,6 +94,64 @@
       });
 
 
+
+    var csource = function (query, response) {
+      var dataAdapter = new $.jqx.dataAdapter
+        (
+          { 
+            datatype: "json",
+            datafields: [
+                { name: 'sdm_id', type: 'string'},
+                { name: 'code', type: 'string'},
+                { name: 'sdm_nopeg', type: 'string'},
+                { name: 'value', type: 'string'}
+            ],
+            username: 'username',
+            url: "<?php echo base_url();?>hot/dokter/dokter_search/",
+            type: "post"
+          },
+          {
+              autoBind: true,
+              formatData: function (data) {
+                data.qr = query;
+                return data;
+              },
+              loadComplete: function (data) {
+                if (data.content.length>0){
+                  response($.map(data.content, function (item) {
+                      return {
+                        label: item.value + ', ' + item.sdm_jenis + '<br>NIK: ' + item.sdm_nopeg,
+                        value: item.value + '__' + item.sdm_id
+                      }
+                  }));
+          }
+            }
+           }
+      );
+    }
+    $("#cl_sdm").jqxInput({ source: csource, width: '99%' });
+    $("#cl_sdm").focus(function() {
+      $(this).select();
+    });
+    $("#cl_sdm").keyup(function() {
+      $("#cl_sdm").change();
+    });
+    $("#cl_sdm").change(function() {
+      if($(this).val()==""){
+        $("#cl_sdm_code").val('');
+      }
+    });
+    $("#cl_sdm").on('select', function (event) {
+        if (event.args) {
+            var item = event.args.item;
+            if (item) {
+              var value = item.value.split("__");
+                $("#cl_sdm").val(value[0]);
+                $("#cl_sdm_code").val(value[1]);
+            }
+        }
+    });
+
       $("#btn-simpan").click(function(){
         var data = new FormData();
         data.append("waktu",        $("#waktu").val());
@@ -101,6 +162,8 @@
         data.append("systolic",     $("#systolic").jqxSlider('value'));
         data.append("diastolic",    $("#diastolic").jqxSlider('value'));
         data.append("pulse",        $("#pulse").jqxSlider('value'));
+        data.append("respiratory_rate", $("#respiratory_rate").val());
+        data.append("heart_rate",   $("#heart_rate").val());
         data.append("gds",          $("#gds").val());
         data.append("gdp",          $("#gdp").val());
         data.append("gdpp",         $("#gdpp").val());
@@ -109,6 +172,8 @@
         data.append("is_diabetic",  $("#is_diabetic").is(':checked') ? 1:0);
         data.append("is_ckd",       $("#is_ckd").is(':checked') ? 1:0);
         data.append("is_black",     $("#is_black").is(':checked') ? 1:0);
+        data.append("kdsadar",      $("#kdsadar").val());
+        data.append("cl_sdm_code",  $("#cl_sdm_code").val());
         data.append("status_antri", "periksa");
         data.append("username_op",  "<?php echo $this->session->userdata('username')?>");
 
@@ -176,7 +241,6 @@
         <div class="box-header">
           <h3 class="box-title">{title_form}</h3>
         </div>
-
         <div id="pengukuran">
           <div class="box-body">
             <div class="row" style="padding:4px">
@@ -208,6 +272,13 @@
               <div class="col-xs-3 text-right"><b>Jam</b></div>
               <div class="col-xs-9">{waktu}</div>
               <input type="hidden" id="waktu" value="{waktu}">
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:5px"><b>Tenaga<br>Medis</b></div>
+              <div class="col-xs-9">
+                <input type="text" id="cl_sdm" class="form-control" value="{cl_sdm}" style="height: 50px" placeholder="Pilih Dokter">
+                <input type="hidden" id="cl_sdm_code" value="{cl_sdm_code}">
+              </div>
             </div>
             <div class="row tb" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:14px"><b>TB</b></div>
@@ -264,42 +335,67 @@
             </div>
 
             <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:15px"><b>Kesadaran</b></div>
+              <div class="col-xs-9">
+                <select name="kdsadar" id="kdsadar" class="form-control" style="height:50px">
+                  <option value='01' <?php if(isset($kdsadar) && $kdsadar=="01") echo "selected"; ?>>Compos mentis</option>
+                  <option value='02' <?php if(isset($kdsadar) && $kdsadar=="02") echo "selected"; ?>>Somnolence</option>
+                  <option value='03' <?php if(isset($kdsadar) && $kdsadar=="03") echo "selected"; ?>>Sopor</option>
+                  <option value='04' <?php if(isset($kdsadar) && $kdsadar=="04") echo "selected"; ?>>Coma</option>
+                </select>
+              </div>
+            </div>            
+            <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:5px"><b>Respiratory<br>Rate</b></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_respiratory_rate'/></div>
+              <div class="col-xs-3" style="left:24px"><div class="respiratory_rate" id="respiratory_rate"></div></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_respiratory_rate' style="height:48px;width:44px;" /></div> 
+              <div class="col-xs-4 text-center" style="padding-top:7px;"> &nbsp; per<br>minute</div>
+            </div>
+            <div class="row" style="padding:4px">
+              <div class="col-xs-3 text-right" style="padding-top:5px"><b>Heart<br>Rate</b></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_heart_rate'/></div>
+              <div class="col-xs-3" style="left:24px"><div class="heart_rate" id="heart_rate"></div></div>
+              <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_heart_rate' style="height:48px;width:44px;" /></div> 
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; bpm</div>
+            </div>
+            <div class="row" style="padding:4px">
               <div class="col-xs-12"><b>LAB :</b></div>
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDS</b></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_gds'/></div>
-              <div class="col-xs-4" style="left:24px"><div class="gds" id="gds"></div></div>
+              <div class="col-xs-3" style="left:24px"><div class="gds" id="gds"></div></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_gds' style="height:48px;width:44px;" /></div> 
-              <div class="col-xs-3 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDP</b></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_gdp'/></div>
-              <div class="col-xs-4" style="left:24px"><div class="gdp" id="gdp"></div></div>
+              <div class="col-xs-3" style="left:24px"><div class="gdp" id="gdp"></div></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_gdp' style="height:48px;width:44px;" /></div> 
-              <div class="col-xs-3 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>GDPP</b></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_gdpp'/></div>
-              <div class="col-xs-4" style="left:24px"><div class="gdpp" id="gdpp"></div></div>
+              <div class="col-xs-3" style="left:24px"><div class="gdpp" id="gdpp"></div></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_gdpp' style="height:48px;width:44px;" /></div> 
-              <div class="col-xs-3 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
             </div>
             <div class="row" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:15px"><b>Kolesterol</b></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_kolesterol'/></div>
-              <div class="col-xs-4" style="left:24px"><div class="kolesterol" id="kolesterol"></div></div>
+              <div class="col-xs-3" style="left:24px"><div class="kolesterol" id="kolesterol"></div></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_kolesterol' style="height:48px;width:44px;" /></div> 
-              <div class="col-xs-3 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
             </div>
             <div class="row asamurat" style="padding:4px">
               <div class="col-xs-3 text-right" style="padding-top:14px"><b>Asam Urat</b></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='-' class='btn btn-danger minus_asamurat'/></div>
-              <div class="col-xs-4" style="left:24px"><div class="asamurat" id="asamurat"></div></div>
+              <div class="col-xs-3" style="left:24px"><div class="asamurat" id="asamurat"></div></div>
               <div class="col-xs-1"><input type='button' style="height:51px;width:51px" value='+' class='btn btn-warning plus_asamurat' style="height:48px;width:44px;" /></div> 
-              <div class="col-xs-3 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
+              <div class="col-xs-4 text-center" style="padding-top:14px;"> &nbsp; mg/dl</div>
             </div>
           </div>
           <div class="box-footer text-center" style="padding:15px">
@@ -308,15 +404,16 @@
           </div>
         </div>
 
+      </div>
+  	</div>
 
-        <div id="hasil" <?php if(!isset($username_op)){ echo "style='display:none'"; } ?>>
-          <div style="clear:both"></div>
+    <div class="col-md-6"  class="row" id="hasil" <?php if(!isset($username_op)){ echo "style='display:none'"; } ?>>
+      <div class="box box-warning">
+        <div class="box-header">
+          <h3 class="box-title">Resume Pasien</h3>
+        </div>
+        <div id="pengukuran">
           <div class="box-body">
-            <div class="row" style="padding:4px;">
-              <div class="col-xs-12 text-center" style="background:#E3E3E3;padding:5px"><label>Resume Pasien :</label></div>
-            </div>
-          </div>
-
           <div class="row" style="padding:4px">
             <div class="col-xs-4 text-right" style="padding-top:15px"><b>Hasil Pengukuran</b></div>
             <div class="col-xs-8"></div>
@@ -332,27 +429,24 @@
           <div class="row" style="padding:4px">
             <div class="col-xs-12"><b>OBAT :</b></div>
           </div>
-        </div>
-
       </div>
-  	</div>
+    </div>
   </div>
+
 </section>
 
 <script>
 	$(function () {	
-
+    bmi();
     $("#menu_dashboard").addClass("active");
     $("#menu_hot_kunjungan").addClass("active");
-
-    bmi();
 
     function inc_bb(){
         var currentVal = parseInt($("#bb").val(),10);
         if (!isNaN(currentVal)) {
             $("#bb").val(currentVal + 1);
         }
-    } 
+    }
 
     $('.btn.btn-warning.plus_bb').on('touchstart mousedown', function(e) {    
         e.preventDefault(); //stops propagation
@@ -445,6 +539,127 @@
         if (timer !== ''){
             clearInterval(timer);
             $tb.data('timer', '');
+        }
+    });
+
+
+    function dec_heart_rate(){
+        var currentVal = parseInt($("#heart_rate").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#heart_rate").val(currentVal - 1);
+        }
+        if(currentVal >= 100){
+            $("#heart_rate").css('color','red');
+        }else{
+            $("#heart_rate").css('color','green');
+        }
+    } 
+
+    $('.btn.btn-danger.minus_heart_rate').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $heart_rate=$("#heart_rate");
+        $heart_rate.data('timer',setInterval(function(){dec_heart_rate();},100));
+    });
+
+    $('.btn.btn-danger.minus_heart_rate').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $heart_rate, timer;
+        $heart_rate=$("#heart_rate");
+        timer = $heart_rate.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $heart_rate.data('timer', '');
+        }
+    });
+
+    function inc_respiratory_rate(){
+        var currentVal = parseInt($("#respiratory_rate").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#respiratory_rate").val(currentVal + 1);
+        }
+        if(currentVal >= 100){
+            $("#respiratory_rate").css('color','red');
+        }else{
+            $("#respiratory_rate").css('color','green');
+        }
+    }  
+
+    $('.btn.btn-warning.plus_respiratory_rate').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $respiratory_rate=$("#respiratory_rate");
+        $respiratory_rate.data('timer',setInterval(function(){inc_respiratory_rate();},100));
+    });
+
+    $('.btn.btn-warning.plus_respiratory_rate').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $respiratory_rate, timer;
+        $respiratory_rate=$("#respiratory_rate");
+        timer = $respiratory_rate.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $respiratory_rate.data('timer', '');
+        }
+    });
+
+    function dec_respiratory_rate(){
+        var currentVal = parseInt($("#respiratory_rate").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#respiratory_rate").val(currentVal - 1);
+        }
+        if(currentVal >= 100){
+            $("#respiratory_rate").css('color','red');
+        }else{
+            $("#respiratory_rate").css('color','green');
+        }
+    } 
+
+    $('.btn.btn-danger.minus_respiratory_rate').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $respiratory_rate=$("#respiratory_rate");
+        $respiratory_rate.data('timer',setInterval(function(){dec_respiratory_rate();},100));
+    });
+
+    $('.btn.btn-danger.minus_respiratory_rate').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $respiratory_rate, timer;
+        $respiratory_rate=$("#respiratory_rate");
+        timer = $respiratory_rate.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $respiratory_rate.data('timer', '');
+        }
+    });
+
+    function inc_heart_rate(){
+        var currentVal = parseInt($("#heart_rate").val(),10);
+        if (!isNaN(currentVal)) {
+            $("#heart_rate").val(currentVal + 1);
+        }
+        if(currentVal >= 100){
+            $("#heart_rate").css('color','red');
+        }else{
+            $("#heart_rate").css('color','green');
+        }
+    }  
+
+    $('.btn.btn-warning.plus_heart_rate').on('touchstart mousedown', function(e) {    
+        e.preventDefault(); //stops propagation
+        $heart_rate=$("#heart_rate");
+        $heart_rate.data('timer',setInterval(function(){inc_heart_rate();},100));
+    });
+
+    $('.btn.btn-warning.plus_heart_rate').on('touchend mouseup', function(e) {    
+        e.preventDefault(); //stops propagation
+        var $heart_rate, timer;
+        $heart_rate=$("#heart_rate");
+        timer = $heart_rate.data('timer');
+            
+        if (timer !== ''){
+            clearInterval(timer);
+            $heart_rate.data('timer', '');
         }
     });
 

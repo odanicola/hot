@@ -95,31 +95,29 @@ class Dokter extends CI_Controller {
 		echo json_encode(array($json));
 	}
 
-	function edit($code="",$cl_phc=""){
-		$this->authentication->verify('hot','edit');
+	function dokter_search(){
+		$qr = $this->input->post('qr');
+		$puskesmas 	= "P".$this->session->userdata('puskesmas');
 
-        $this->form_validation->set_rules('value','Nama', 'trim');
-        $this->form_validation->set_rules('status','Status', 'trim');
-
-		if($this->form_validation->run()== FALSE){
-			$data 					= $this->dokter_model->get_data_dokter_where($code,$cl_phc); 
-			$data['title_group']    = "Dashboard";
-			$data['title_form']     = "Ubah Data Dokter";
-			$data['action']		    = "edit";
-			$data['code']			= $code;
-			$data['cl_phc']			= $cl_phc;
-			$data['content'] 		= $this->parser->parse("hot/data_dokter_add",$data,true);
-
-		}elseif($this->dokter_model->update_dokter($code,$cl_phc)==1){
-				$this->session->set_flashdata('alert_form', 'Save data successful...');
-				redirect(base_url()."hot/dokter");
-				die("OK");
-		}else{
-			$this->session->set_flashdata('alert_form', 'Save data failed...');
-			redirect(base_url()."hot/dokter/edit");
-			$data['alert_form'] = 'Save data failed...';
-			die("NOTOK");
+		$this->db->where('cl_phc',$puskesmas);
+		$this->db->where("value LIKE '%".$qr."%' OR sdm_id LIKE '%".$qr."%'");
+		$rows = $this->dokter_model->get_data_dokter(0,10);
+		$data = array();
+		foreach($rows as $act) {
+			$data[] = array(
+				'cl_phc'	=> $act->cl_phc,
+				'sdm_id'	=> $act->sdm_id,
+				'code'	    => $act->code,
+				'value'		=> $act->value,
+				'sdm_nopeg'	=> $act->sdm_nopeg,
+				'sdm_jenis'	=> $act->sdm_jenis
+			);
 		}
-		$this->template->show($data,"home");
+		$size = sizeof($rows);
+		$json = array(
+			'content' => $data
+		);
+
+		echo json_encode($json);	
 	}
 }

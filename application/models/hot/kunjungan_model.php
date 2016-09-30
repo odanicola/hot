@@ -42,8 +42,23 @@ class Kunjungan_model extends CI_Model {
         return $query->result();
     }
 
+    function get_dokter($cl_sdm_code=""){
+        if($cl_sdm_code != ""){
+            $this->db->where('sdm_id',$cl_sdm_code);
+            $this->db->where('cl_phc','P'.$this->session->userdata('puskesmas'));
+            $query = $this->db->get('cl_sdm')->row();
+            if(!empty($query->value)){
+                return $query->value;
+            }else{
+                return "";
+            }
+        }else{
+            return "";
+        }
+    }
+
     function get_pemeriksaan($id_kunjungan){
-        $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.tb,app_users_profile.bb,app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
+        $this->db->select("kunjungan.*,app_users_profile.nama,app_users_profile.jk,app_users_profile.phone_number,app_users_profile.tb as tb_profile,app_users_profile.bb as bb_profile,app_users_profile.bpjs,DATE_FORMAT(FROM_DAYS(DATEDIFF(NOW(),tgl_lahir)), '%Y')+0 AS usia",false);
         $this->db->join('app_users_profile','kunjungan.username = app_users_profile.username AND kunjungan.code = app_users_profile.code');
         $this->db->order_by('id_kunjungan','asc');
         $this->db->where('id_kunjungan',$id_kunjungan);
@@ -129,6 +144,8 @@ class Kunjungan_model extends CI_Model {
         $data['systolic']       = $this->input->post('systolic');
         $data['diastolic']      = $this->input->post('diastolic');
         $data['pulse']          = $this->input->post('pulse');
+        $data['respiratory_rate'] = $this->input->post('respiratory_rate');
+        $data['heart_rate']     = $this->input->post('heart_rate');
         $data['gds']            = $this->input->post('gds');
         $data['gdp']            = $this->input->post('gdp');
         $data['gdpp']           = $this->input->post('gdpp');
@@ -139,6 +156,8 @@ class Kunjungan_model extends CI_Model {
         $data['is_black']       = $this->input->post('is_black');
         $data['status_antri']   = $this->input->post('status_antri');
         $data['username_op']    = $this->input->post('username_op');
+        $data['kdsadar']        = $this->input->post('kdsadar');
+        $data['cl_sdm_code']    = $this->input->post('cl_sdm_code');
 
 
         $this->db->where('id_kunjungan',$id_kunjungan);

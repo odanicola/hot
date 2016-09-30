@@ -260,10 +260,13 @@ class Kunjungan extends CI_Controller {
 
 		$data 				    = $this->kunjungan_model->get_pemeriksaan($id_kunjungan); 
 		$data['sebelumnya']	    = $this->kunjungan_model->get_sebelumnya($data['username'],$data['tgl']); 
+		$data['cl_sdm']			= $this->kunjungan_model->get_dokter($data['cl_sdm_code']); 
 		$data['title_group']    = "Kunjungan";
 		$data['title_form']     = "Pengukuran";
 		$data['action']		    = "edit";
 		$data['id_kunjungan']	= $id_kunjungan;
+		$data['tb']				= $data['tb']=="" ? $data['tb_profile'] : $data['tb'];
+		$data['bb']				= $data['bb']=="" ? $data['bb_profile'] : $data['bb'];
 		$data['systolic']		= $data['systolic']=="" ? 130 : $data['systolic'];
 		$data['diastolic']		= $data['diastolic']=="" ? 80 : $data['diastolic'];
 		$data['pulse']			= $data['pulse']=="" ? 80 : $data['pulse'];
@@ -272,9 +275,11 @@ class Kunjungan extends CI_Controller {
 		$data['gdpp']			= $data['gdpp']=="" ? 140 : $data['gdpp'];
 		$data['kolesterol']		= $data['kolesterol']=="" ? 200 : $data['kolesterol'];
 		$data['asamurat']		= $data['asamurat']=="" ? 7.7 : $data['asamurat'];
+		$data['heart_rate']		= $data['heart_rate']=="" ? 80 : $data['heart_rate'];
+		$data['respiratory_rate'] = $data['respiratory_rate']=="" ? 20 : $data['respiratory_rate'];
 		$data['tgl_kunjungan']	= $data['tgl'];
-		$data['tgl']	= date("d M Y", strtotime($data['tgl']));
-		$data['waktu']	= date("H:i:s",time());
+		$data['tgl']			= date("d M Y", strtotime($data['tgl']));
+		$data['waktu']			= date("H:i:s",time());
 
 		$data['content'] 		= $this->parser->parse("hot/kunjungan_edit",$data,true);
 
