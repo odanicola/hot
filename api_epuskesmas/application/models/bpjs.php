@@ -90,14 +90,11 @@ class Bpjs extends CI_Model {
 	    if($data["metaData"]["code"]=="412"){
 	      die(json_encode(array("res"=>"412","msg"=>$data["response"][0]["message"])));
 	    } 
-	    print_r($data);
-	    die();
 	    return $data;
 	}
 
 	function postApi($url="", $data=array()){
 		$this->get_data_bpjs("live");
-	   
 	   try
 	    {
 	      $response = \Httpful\Request::post($this->server.$url)
@@ -120,7 +117,8 @@ class Bpjs extends CI_Model {
 	      $data = "Tidak dapat terkoneksi ke server BPJS, silakan dicoba lagi";
 	      $data = array("metaData"=>array("message" =>'error',"code"=>777));
 	    }
-
+	    print_r($response);
+	    die();
 	    return $data;
 	}
 
@@ -217,43 +215,31 @@ class Bpjs extends CI_Model {
 	}
 			
 	function insertbpjs($data=array()){
-       $tampildata = $this->getApi('peserta/'.$data['noKartu']);
-       print_r($tampildata);
-       die();
-       if (($tampildata['metaData']['message']=='error')&&($tampildata['metaData']['code']=='777')) {
-           return $tampildata;
-       }else{
-	        if (array_key_exists("kdProvider",$tampildata['response']['kdProviderPst'])){
-	            $kodeprov = $tampildata['response']['kdProviderPst']['kdProvider'];
-	        }else{
-	            $kodeprov = '0';
-	        }
-            $data_kunjungan = array(
-              "noKunjungan"             =>  $data['noKunjungan'],
-              "noKartu"                 =>  $data['noKartu'],
-              "tglDaftar"               =>  $data['tglDaftar'],
-              "keluhan"                 =>  $data['keluhan'],
-              "kdSadar"                 =>  $data['kdSadar'],
-              "sistole"                 =>  $data['sistole'],
-              "diastole"                =>  $data['diastole'],
-              "beratBadan"              =>  $data['beratBadan'],
-              "tinggiBadan"             =>  $data['tinggiBadan'],
-              "respRate"                =>  $data['respRate'],
-              "heartRate"               =>  $data['heartRate'],
-              "terapi"                  =>  $data['terapi'],
-              "kdProviderRujukLanjut"   =>  $data['kdProviderRujukLanjut'],
-              "kdStatusPulang"          =>  $data['kdStatusPulang'],
-              "tglPulang"               =>  $data['tglPulang'],
-              "kdDokter"                =>  $data['kdDokter'],
-              "kdDiag1"                 =>  $data['kdDiag1'],
-              "kdDiag2"                 =>  $data['kdDiag2'],
-              "kdDiag3"                 =>  $data['kdDiag3'],
-              "kdPoliRujukInternal"     =>  $data['kdPoliRujukInternal'],
-              "kdPoliRujukLanjut"       =>  $data['kdPoliRujukLanjut'],
-            ); 
-            $datavisit = $this->postApi('kunjungan', $data_kunjungan);
-            return  $datavisit;
-        }
+        $data_kunjungan = array(
+          "noKunjungan"             =>  $data['noKunjungan'],
+          "noKartu"                 =>  $data['noKartu'],
+          "tglDaftar"               =>  $data['tglDaftar'],
+          "keluhan"                 =>  $data['keluhan'],
+          "kdSadar"                 =>  $data['kdSadar'],
+          "sistole"                 =>  $data['sistole'],
+          "diastole"                =>  $data['diastole'],
+          "beratBadan"              =>  $data['beratBadan'],
+          "tinggiBadan"             =>  $data['tinggiBadan'],
+          "respRate"                =>  $data['respRate'],
+          "heartRate"               =>  $data['heartRate'],
+          "terapi"                  =>  $data['terapi'],
+          "kdProviderRujukLanjut"   =>  $data['kdProviderRujukLanjut'],
+          "kdStatusPulang"          =>  $data['kdStatusPulang'],
+          "tglPulang"               =>  $data['tglPulang'],
+          "kdDokter"                =>  $data['kdDokter'],
+          "kdDiag1"                 =>  $data['kdDiag1'],
+          "kdDiag2"                 =>  $data['kdDiag2'],
+          "kdDiag3"                 =>  $data['kdDiag3'],
+          "kdPoliRujukInternal"     =>  $data['kdPoliRujukInternal'],
+          "kdPoliRujukLanjut"       =>  $data['kdPoliRujukLanjut'],
+        ); 
+        $datavisit = $this->postApi('kunjungan', $data_kunjungan);
+        return  $datavisit;
     }
    
     function simpandatabpjs($nourut=0,$kartu=0){

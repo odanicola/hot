@@ -783,7 +783,7 @@ class Api_model extends CI_Model {
 
             $data_kunjungan = array(
               "noKunjungan"             =>  $databpjs['bpjs_no_kunjungan'],
-              "noKartu"                 =>  $databpjs['no_bpjs'],
+              "noKartu"                 =>  '0001101970192',//$databpjs['no_bpjs'],
               "tglDaftar"               =>  date("d-m-Y",strtotime($databpjs['reg_time'])),
               "keluhan"                 =>  isset($dataregidanamnesa) ? $dataregidanamnesa : '',
               "kdSadar"                 =>  isset($dataregidkesadaran) ? $dataregidkesadaran : '',
@@ -804,10 +804,12 @@ class Api_model extends CI_Model {
               "kdPoliRujukInternal"     =>  '',
               "kdPoliRujukLanjut"       =>  ''
             ); 
+            // $deletekunjungan = $this->bpjs->insertbpjs($data_kunjungan);
             $hasilinsertbpjs = $this->bpjs->insertbpjs($data_kunjungan);
             print_r($hasilinsertbpjs);
-            die();
+            
         }
+        die();
         if (!isset($status_code) && empty($status_code)) {
             $reg_id= $this->input->post('reg_id');
             $this->db->where('reg_id',$reg_id);
