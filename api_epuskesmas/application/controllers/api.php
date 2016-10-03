@@ -375,6 +375,7 @@ class Api extends CI_Controller {
         $data['bpjs_provider']      = $this->input->post('bpjs_provider');
         $data['status_pulang']      = $this->input->post('status_pulang');
         $data['kode_dokter']        = $this->input->post('anamnesa_dokter_id');
+        $data['actionupdate']        = $this->input->post('actionupdate');
 
         $data['anamnesa'][]['anamnesa']     = $this->input->post('anamnesa_anamnesa');
         $data['anamnesa'][]['dokter_id']     = $this->input->post('anamnesa_dokter_id');

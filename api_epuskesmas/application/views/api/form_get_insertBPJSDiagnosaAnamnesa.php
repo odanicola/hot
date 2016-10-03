@@ -32,6 +32,16 @@
         <td colspan="4"><input type="text" size="30" name="kodepuskesmas" value="P3172010203" /> *</td>
     </tr>
     <tr>
+        <td width='20%'>Action BPJS</td>
+        <td width='3%' align='center'>:</td>
+        <td colspan="4">
+            <select name="actionupdate" class="combo-box">
+                <option value='no'>Insert</option>
+                <option value='yes'>Update</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
         <td width='20%'>No Register</td>
         <td width='3%' align='center'>:</td>
         <td colspan="4"><input type="text" size="30" name="reg_id" value="RJ201605100001" /> *</td>
@@ -70,18 +80,18 @@
     <tr>
         <td width='20%'>Pemeriksa</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_dokter_nama" value="Siti Lestari" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_dokter_nama" value="Dr. Madga Mariana" /> *</td>
         <td width='20%'>NIP</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_dokter_id" value="198108140002" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_dokter_id" value="198304020015" /> *</td>
     </tr>
     <tr>
        <td width='20%'>Asisten</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_asisten_nama" value="Novita Puspa Dewi" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_asisten_nama" value="Dr. Marytha Pramesti" /> *</td>
         <td width='20%'>NIP Asistern</td>
         <td width='3%' align='center'>:</td>
-        <td><input type="text" size="30" name="anamnesa_asisten_id" value="198311120004" /> *</td>
+        <td><input type="text" size="30" name="anamnesa_asisten_id" value="198405280015" /> *</td>
     </tr>
     <tr>
         <td width='20%'>Anamnesa</td>
